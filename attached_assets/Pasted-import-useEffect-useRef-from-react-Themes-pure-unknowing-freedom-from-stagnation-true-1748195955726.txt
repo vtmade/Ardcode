@@ -1,0 +1,123 @@
+import { useEffect, useRef } from 'react';
+
+// Themes: pure unknowing, freedom from stagnation, true wholeness
+// Visualization: Waves that continuously transform and interfere, showing how patterns emerge from openness to change
+
+const WaveInterferenceV3 = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const width = 550;
+    const height = 550;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Points of potential, open to infinite possibilities
+    const sources = [
+      { x: width/2, y: height/2 },      // Center of unknowing
+      { x: width/4, y: height/4 },      // Each point
+      { x: 3*width/4, y: height/4 },    // contributes
+      { x: width/4, y: 3*height/4 },    // to the
+      { x: 3*width/4, y: 3*height/4 },  // emerging
+      { x: width/2, y: height/5 },      // whole
+      { x: width/2, y: 4*height/5 },    // pattern
+    ];
+
+    const wavelength = 20;
+    let time = 0;
+    let animationFrameId = null;
+
+    const animate = () => {
+      // Fill with project background color
+      ctx.fillStyle = '#F0EEE6';
+      ctx.fillRect(0, 0, width, height);
+
+      // Create image data for pixel manipulation
+      const imageData = ctx.createImageData(width, height);
+      const data = imageData.data;
+
+      // Calculate wave interference for each pixel
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          let amplitude = 0;
+
+          // Sum waves from all sources
+          sources.forEach((source, i) => {
+            const dx = x - source.x;
+            const dy = y - source.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const phase = i * Math.PI / 3; // Different phase for each source
+            amplitude += Math.sin((distance / wavelength - time) * 2 * Math.PI + phase);
+          });
+
+          // Normalize and threshold
+          const normalized = amplitude / sources.length;
+          const threshold = 0.1;
+          
+          // Determine if this is a line point (where wave crosses threshold)
+          const isLine = Math.abs(normalized) < threshold;
+          
+          // Set pixel color
+          const index = (y * width + x) * 4;
+          if (isLine) {
+            // Dark lines
+            data[index] = 34;     // R
+            data[index + 1] = 34; // G
+            data[index + 2] = 34; // B
+            data[index + 3] = 255; // A
+          } else {
+            // Project background color
+            data[index] = 240;     // R
+            data[index + 1] = 238; // G
+            data[index + 2] = 230; // B
+            data[index + 3] = 255; // A
+          }
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      time += 0.015; // Reduced speed by 25%
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      // Cancel animation frame to prevent memory leaks
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+      
+      if (canvas && ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      
+      sources.length = 0;
+    };
+  }, []);
+
+  return (
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      width: '100vw', 
+      height: '100vh', 
+      backgroundColor: '#F0EEE6' 
+    }}>
+      <canvas 
+        ref={canvasRef} 
+        style={{ 
+          border: '1px solid #eee',
+          width: '550px',
+          height: '550px'
+        }} 
+      />
+    </div>
+  );
+};
+
+export default WaveInterferenceV3;

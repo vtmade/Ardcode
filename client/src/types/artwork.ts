@@ -671,10 +671,10 @@ function createKleinBottle(time) {
   {
     title: "The Void",
     type: "2D",
-    technique: "Conscious Emptiness",
-    philosophy: "In emptiness, all possibilities exist",
+    technique: "Wave Interference",
+    philosophy: "Pure unknowing, freedom from stagnation, true wholeness",
     description:
-      "The final artwork: a canvas that embraces nothingness, where the absence of content becomes the most profound presence.",
+      "Interactive waves continuously transform and interfere, showing how patterns emerge from openness to change and the void of pure potential.",
     codeSnippet: `class EmptyCanvas {
   constructor(width, height) {
     this.width = width;
