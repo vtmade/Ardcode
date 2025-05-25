@@ -9,284 +9,434 @@ export interface Artwork {
 
 export const ARTWORKS: Artwork[] = [
   {
-    title: "Flowing Text",
+    title: "Morning Dew",
     type: "2D",
-    technique: "p5.js Particle System",
-    philosophy: "The code that can be named is not the eternal code",
+    technique: "Canvas Displacement Mapping",
+    philosophy: "Clarity emerges from gentle disturbance",
     description:
-      "Watch as philosophical text flows like water, responding to your touch with ripples of understanding.",
-    codeSnippet: `class TextParticle {
+      "Text appears to rest on spider silk, trembling with the morning breeze, each character catching light like dewdrops.",
+    codeSnippet: `class DewDropText {
   constructor(char, x, y) {
     this.char = char;
-    this.originalX = x;
-    this.originalY = y;
-    this.x = x;
-    this.y = y;
-    this.vx = random(-0.5, 0.5);
-    this.vy = random(-0.5, 0.5);
-    this.alpha = 255;
+    this.homeX = x;
+    this.homeY = y;
+    this.x = x + random(-2, 2);
+    this.y = y + random(-1, 1);
+    this.tension = 0.985;
+    this.dampening = 0.12;
+    this.frequency = random(0.003, 0.008);
+    this.amplitude = random(0.3, 0.8);
   }
 
-  drift() {
-    // Like the Tao, text seeks its natural path
-    this.x += this.vx + sin(frameCount * 0.01) * 0.3;
-    this.y += this.vy + cos(frameCount * 0.008) * 0.2;
+  breathe(time) {
+    // Gossamer threads respond to unseen currents
+    const sway = sin(time * this.frequency + this.homeX * 0.01) * this.amplitude;
+    const targetX = this.homeX + sway;
+    const targetY = this.homeY + cos(time * this.frequency * 0.7) * 0.2;
 
-    // Return to source, like water to the sea
-    this.x = lerp(this.x, this.originalX, 0.02);
-    this.y = lerp(this.y, this.originalY, 0.02);
+    // Surface tension draws each character home
+    this.x += (targetX - this.x) * this.dampening;
+    this.y += (targetY - this.y) * this.dampening;
   }
 
-  display() {
-    fill(50, this.alpha);
-    text(this.char, this.x, this.y);
+  render(ctx) {
+    const shimmer = 0.1 + abs(sin(millis() * 0.005 + this.homeX * 0.02)) * 0.1;
+    ctx.fillStyle = \`rgba(85, 85, 85, \${shimmer})\`;
+    ctx.font = '16px Georgia';
+    ctx.fillText(this.char, this.x, this.y);
   }
 }`,
   },
   {
-    title: "Particle Galaxy",
+    title: "Pollen Drift",
     type: "3D",
-    technique: "Three.js Point Cloud",
-    philosophy: "The ten thousand things arise from emptiness",
+    technique: "Procedural Point Clouds",
+    philosophy: "Life travels on invisible currents",
     description:
-      "Navigate through a galaxy of particles representing the infinite manifestations of the Tao.",
-    codeSnippet: `// Create the universe from emptiness
-const particleCount = 10000;
+      "Countless motes drift through space like pollen on warm air, following ancient migration patterns written in mathematics.",
+    codeSnippet: `// Seeds of possibility carried by digital wind
+const particleCount = 8000;
 const positions = new Float32Array(particleCount * 3);
-const colors = new Float32Array(particleCount * 3);
+const velocities = new Float32Array(particleCount * 3);
+const phases = new Float32Array(particleCount);
 
 for (let i = 0; i < particleCount; i++) {
-  // Each particle is born from the void
+  // Born from the center, scattered by time
+  const r = Math.pow(Math.random(), 0.4) * 30;
   const theta = Math.random() * Math.PI * 2;
   const phi = Math.acos(2 * Math.random() - 1);
-  const radius = Math.random() * 50;
 
-  positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-  positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-  positions[i * 3 + 2] = radius * Math.cos(phi);
+  positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+  positions[i * 3 + 2] = r * Math.cos(phi);
 
-  // Color flows like energy through the cosmos
-  const hue = (Math.atan2(positions[i * 3 + 1], positions[i * 3]) + Math.PI) / (2 * Math.PI);
-  colors[i * 3] = hue;
-  colors[i * 3 + 1] = 0.7;
-  colors[i * 3 + 2] = 0.8;
+  // Each mote follows its own rhythm
+  velocities[i * 3] = (Math.random() - 0.5) * 0.02;
+  velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+  velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+
+  phases[i] = Math.random() * Math.PI * 2;
 }
 
 const geometry = new THREE.BufferGeometry();
 geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
 const material = new THREE.PointsMaterial({
-  size: 0.02,
-  vertexColors: true,
+  size: 0.008,
+  color: 0xf4f1e8,
   transparent: true,
-  opacity: 0.8,
-  blending: THREE.AdditiveBlending
+  opacity: 0.6,
+  sizeAttenuation: true
 });
 
-const particles = new THREE.Points(geometry, material);`,
+// Gentle Brownian motion
+function updateDrift(time) {
+  for (let i = 0; i < particleCount; i++) {
+    const phase = phases[i] + time * 0.0001;
+
+    positions[i * 3] += Math.sin(phase) * 0.003;
+    positions[i * 3 + 1] += Math.cos(phase * 1.1) * 0.002;
+    positions[i * 3 + 2] += Math.sin(phase * 0.9) * 0.003;
+  }
+  geometry.attributes.position.needsUpdate = true;
+}`,
   },
   {
-    title: "Code Ripples",
+    title: "Stone Ripples",
     type: "2D",
-    technique: "p5.js Wave Simulation",
-    philosophy: "Every action creates ripples across the digital pond",
+    technique: "Interference Patterns",
+    philosophy: "Every keystroke creates waves across the still mind",
     description:
-      "Touch creates ripples that distort code, showing how observation changes reality.",
-    codeSnippet: `let ripples = [];
-let codeText = "function wisdom() { return silence(); }";
+      "Code rests like stones on water's surface. Touch disturbs the reflection, creating subtle interference patterns.",
+    codeSnippet: `let waves = [];
+const codeLines = [
+  "const wisdom = silence => silence;",
+  "let thoughts = [];",
+  "return undefined;"
+];
 
-function mousePressed() {
-  ripples.push({
-    x: mouseX,
-    y: mouseY,
+function addRipple(x, y) {
+  waves.push({
+    x, y,
     radius: 0,
-    amplitude: 50,
-    life: 1.0
+    amplitude: 8,
+    frequency: 0.15,
+    decay: 0.995
   });
+}
+
+function drawCode() {
+  textAlign(LEFT, CENTER);
+  textFont('Monaco', 14);
+
+  codeLines.forEach((line, lineIndex) => {
+    const baseY = height/2 + (lineIndex - 1) * 40;
+
+    for (let i = 0; i < line.length; i++) {
+      const charX = width/2 - line.length * 4 + i * 8;
+      let charY = baseY;
+
+      // Calculate displacement from all waves
+      let totalDisplacement = 0;
+      waves.forEach(wave => {
+        const distance = dist(charX, baseY, wave.x, wave.y);
+        if (distance < wave.radius) {
+          const influence = sin(distance * wave.frequency - wave.radius * 0.08);
+          totalDisplacement += influence * wave.amplitude;
+        }
+      });
+
+      charY += totalDisplacement;
+
+      // Subtle color shift based on displacement
+      const intensity = map(abs(totalDisplacement), 0, 5, 180, 120);
+      fill(intensity);
+      text(line.charAt(i), charX, charY);
+    }
+  });
+
+  // Update waves - they fade like memory
+  waves = waves.filter(wave => {
+    wave.radius += 2.5;
+    wave.amplitude *= wave.decay;
+    return wave.amplitude > 0.1 && wave.radius < width;
+  });
+}`,
+  },
+  {
+    title: "Lunar Moths",
+    type: "3D",
+    technique: "Organic Path Finding",
+    philosophy: "Form follows the invisible architecture of space",
+    description:
+      "Delicate geometric forms drift like nocturnal moths, drawn to points of light in the digital darkness.",
+    codeSnippet: `// Create ephemeral geometry
+const mothCount = 15;
+const moths = [];
+
+class DigitalMoth {
+  constructor() {
+    this.position = new THREE.Vector3(
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 20
+    );
+
+    this.velocity = new THREE.Vector3();
+    this.target = new THREE.Vector3();
+    this.wing_phase = Math.random() * Math.PI * 2;
+    this.wing_speed = 0.1 + Math.random() * 0.05;
+
+    // Delicate wing geometry
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.quadraticCurveTo(1.5, 0.8, 2, 0);
+    shape.quadraticCurveTo(1.5, -0.3, 0, 0);
+
+    const geometry = new THREE.ShapeGeometry(shape);
+    const material = new THREE.MeshLambertMaterial({
+      color: 0xf8f8ff,
+      transparent: true,
+      opacity: 0.7,
+      side: THREE.DoubleSide
+    });
+
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh.scale.setScalar(0.6);
+  }
+
+  seekLight(lightPositions) {
+    // Find nearest light
+    let closestLight = lightPositions[0];
+    let minDistance = this.position.distanceTo(closestLight);
+
+    lightPositions.forEach(light => {
+      const distance = this.position.distanceTo(light);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestLight = light;
+      }
+    });
+
+    // Spiral approach - never quite arriving
+    const direction = closestLight.clone().sub(this.position);
+    const distance = direction.length();
+
+    if (distance > 1) {
+      direction.normalize().multiplyScalar(0.02);
+
+      // Add orbital component
+      const perpendicular = new THREE.Vector3()
+        .crossVectors(direction, new THREE.Vector3(0, 1, 0))
+        .normalize()
+        .multiplyScalar(0.015);
+
+      this.velocity.add(direction).add(perpendicular);
+    }
+
+    this.velocity.multiplyScalar(0.95); // Gentle dampening
+    this.position.add(this.velocity);
+  }
+
+  flutter() {
+    this.wing_phase += this.wing_speed;
+    const flutter = Math.sin(this.wing_phase) * 0.3;
+
+    this.mesh.position.copy(this.position);
+    this.mesh.rotation.z = flutter;
+    this.mesh.lookAt(this.position.clone().add(this.velocity));
+  }
+}
+
+// Create constellation of lights
+const lightSources = [
+  new THREE.Vector3(5, 3, 2),
+  new THREE.Vector3(-4, -2, 6),
+  new THREE.Vector3(2, -5, -3)
+];
+
+for (let i = 0; i < mothCount; i++) {
+  moths.push(new DigitalMoth());
+  scene.add(moths[i].mesh);
+}
+
+function animateMoths() {
+  moths.forEach(moth => {
+    moth.seekLight(lightSources);
+    moth.flutter();
+  });
+}`,
+  },
+  {
+    title: "Fibonacci Garden",
+    type: "2D",
+    technique: "Golden Spiral Growth",
+    philosophy: "Nature's algorithms are written in living geometry",
+    description:
+      "A garden grows according to the Fibonacci sequence, each leaf and petal emerging in perfect mathematical harmony.",
+    codeSnippet: `class LivingSpiral {
+  constructor(centerX, centerY) {
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.elements = [];
+    this.goldenRatio = 1.618033988749;
+    this.growthRate = 0.02;
+    this.maturity = 0;
+  }
+
+  fibonacci(n) {
+    if (n <= 1) return n;
+    let a = 0, b = 1;
+    for (let i = 2; i <= n; i++) {
+      [a, b] = [b, a + b];
+    }
+    return b;
+  }
+
+  grow() {
+    this.maturity += this.growthRate;
+    const maxElements = Math.floor(this.maturity);
+
+    while (this.elements.length < maxElements && this.elements.length < 89) {
+      const n = this.elements.length;
+      const angle = n * 2.39996; // Golden angle in radians
+      const radius = Math.sqrt(n) * 8;
+
+      // Each element follows the spiral
+      const x = this.centerX + Math.cos(angle) * radius;
+      const y = this.centerY + Math.sin(angle) * radius;
+
+      this.elements.push({
+        x, y, angle,
+        size: this.fibonacci(n % 13) * 0.1,
+        birth: this.maturity,
+        hue: (n * 15) % 360
+      });
+    }
+  }
+
+  bloom(ctx) {
+    this.elements.forEach((element, index) => {
+      const age = this.maturity - element.birth;
+      const growth = Math.min(age / 3, 1); // Gentle emergence
+      const currentSize = element.size * growth;
+
+      if (currentSize > 0.1) {
+        ctx.save();
+        ctx.translate(element.x, element.y);
+        ctx.rotate(element.angle);
+
+        // Petal-like shapes with subtle color
+        const opacity = 0.3 + growth * 0.4;
+        ctx.fillStyle = \`hsla(\${element.hue}, 40%, 70%, \${opacity})\`;
+
+        // Draw organic petal shape
+        ctx.beginPath();
+        ctx.ellipse(0, 0, currentSize * 2, currentSize, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Add delicate outline
+        ctx.strokeStyle = \`hsla(\${element.hue}, 60%, 50%, \${opacity * 0.5})\`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    });
+  }
+
+  tendGarden() {
+    // Gentle pruning - remove oldest elements occasionally
+    if (Math.random() < 0.001 && this.elements.length > 50) {
+      this.elements.splice(0, 1);
+    }
+  }
+}
+
+let garden;
+
+function setup() {
+  createCanvas(800, 600);
+  colorMode(HSB, 360, 100, 100, 1);
+  garden = new LivingSpiral(width/2, height/2);
 }
 
 function draw() {
-  background(5, 15, 25);
+  // Soft background like morning mist
+  background(45, 15, 95, 0.02);
 
-  // Draw code with ripple distortion
-  textAlign(CENTER, CENTER);
-  textSize(24);
+  garden.grow();
+  garden.bloom(drawingContext);
+  garden.tendGarden();
 
-  for (let i = 0; i < codeText.length; i++) {
-    let charX = width/2 + (i - codeText.length/2) * 20;
-    let charY = height/2;
-
-    // Each character is touched by all ripples
-    for (let ripple of ripples) {
-      let distance = dist(charX, charY, ripple.x, ripple.y);
-      if (distance < ripple.radius) {
-        let influence = sin(distance * 0.1 - ripple.radius * 0.05);
-        charY += influence * ripple.amplitude * ripple.life;
-      }
-    }
-
-    fill(100, 150, 255, 200);
-    text(codeText.charAt(i), charX, charY);
+  // Add gentle sparkle effect
+  if (frameCount % 60 === 0) {
+    addSparkle();
   }
-
-  // Update ripples - they fade like all things
-  ripples = ripples.filter(ripple => {
-    ripple.radius += 3;
-    ripple.life *= 0.98;
-    ripple.amplitude *= 0.99;
-    return ripple.life > 0.01;
-  });
-}`,
-  },
-  {
-    title: "Floating Geometry",
-    type: "3D",
-    technique: "Three.js Sacred Forms",
-    philosophy: "Form is emptiness, emptiness is form",
-    description:
-      "Platonic solids float in meditative space, connected by invisible threads of meaning.",
-    codeSnippet: `// Create sacred forms in the void
-const sacredForms = [];
-const formTypes = [
-  new THREE.TetrahedronGeometry(1),
-  new THREE.OctahedronGeometry(1),
-  new THREE.IcosahedronGeometry(1),
-  new THREE.DodecahedronGeometry(1)
-];
-
-for (let i = 0; i < 12; i++) {
-  const geometry = formTypes[i % formTypes.length];
-  const material = new THREE.MeshStandardMaterial({
-    wireframe: true,
-    transparent: true,
-    opacity: 0.7,
-    color: new THREE.Color().setHSL(i / 12, 0.6, 0.8)
-  });
-
-  const mesh = new THREE.Mesh(geometry, material);
-
-  // Position in golden ratio spiral
-  const phi = 1.618033988749;
-  const angle = i * phi * Math.PI * 2;
-  const radius = Math.sqrt(i) * 3;
-
-  mesh.position.x = Math.cos(angle) * radius;
-  mesh.position.y = (i - 6) * 2;
-  mesh.position.z = Math.sin(angle) * radius;
-
-  // Each form rotates according to its nature
-  mesh.userData = { 
-    rotationSpeed: (i + 1) * 0.01,
-    floatOffset: i * 0.5 
-  };
-
-  sacredForms.push(mesh);
-  scene.add(mesh);
 }
 
-// In the animation loop:
-function animate() {
-  sacredForms.forEach((form, i) => {
-    form.rotation.x += form.userData.rotationSpeed;
-    form.rotation.y += form.userData.rotationSpeed * 0.7;
-
-    // Gentle floating like breath
-    form.position.y += Math.sin(Date.now() * 0.001 + form.userData.floatOffset) * 0.02;
-  });
-}`,
-  },
-  {
-    title: "Breathing Mandala",
-    type: "2D",
-    technique: "p5.js Generative Art",
-    philosophy: "Breathe in code, breathe out wisdom",
-    description:
-      "A living mandala that breathes with the rhythm of meditation, expanding and contracting like consciousness itself.",
-    codeSnippet: `function drawBreathingMandala() {
-  push();
-  translate(width/2, height/2);
-
-  // The breath of the universe
-  let breathPhase = sin(frameCount * 0.02);
-  let expansion = map(breathPhase, -1, 1, 0.8, 1.2);
-
-  scale(expansion);
-
-  // Draw layers of consciousness
-  for (let layer = 0; layer < 7; layer++) {
-    push();
-
-    let layerRadius = 50 + layer * 40;
-    let petals = 6 + layer * 2;
-
-    // Each layer breathes at its own frequency
-    let layerBreath = sin(frameCount * 0.02 + layer * 0.5);
-    rotate(layerBreath * 0.1);
-
-    // Draw the petals of awareness
-    for (let i = 0; i < petals; i++) {
-      let angle = TWO_PI / petals * i;
-      let x = cos(angle) * layerRadius;
-      let y = sin(angle) * layerRadius;
-
-      push();
-      translate(x, y);
-      rotate(angle + frameCount * 0.01);
-
-      // Each petal glows with inner light
-      let hue = (layer * 30 + i * 10 + frameCount * 0.5) % 360;
-      fill(hue, 60, 90, 150);
-      noStroke();
-
-      // The shape emerges from breath
-      let petalSize = 20 * (1 + layerBreath * 0.3);
-      ellipse(0, 0, petalSize, petalSize * 2);
-
-      pop();
-    }
-
-    pop();
+function addSparkle() {
+  const sparkles = 3;
+  for (let i = 0; i < sparkles; i++) {
+    fill(60, 20, 100, 0.7);
+    noStroke();
+    const x = random(width);
+    const y = random(height);
+    circle(x, y, random(1, 3));
   }
-
-  pop();
 }`,
   },
   {
-    title: "Infinite Loop",
+    title: "Breathing Space",
     type: "3D",
-    technique: "Three.js Möbius Strip",
-    philosophy: "The path that can be traveled has no beginning or end",
+    technique: "Topological Transformation",
+    philosophy: "Space itself inhales and exhales with consciousness",
     description:
-      "Journey along impossible geometries where ending becomes beginning in eternal recursion.",
-    codeSnippet: `// Create the path of eternal return
-function createMobiusStrip(radius = 10, width = 4, segments = 100) {
+      "Explore a Klein bottle that breathes, where inside becomes outside in impossible geometries that pulse with life.",
+    codeSnippet: `// Create a breathing Klein bottle
+function createKleinBottle(time) {
+  const segments = 32;
   const geometry = new THREE.BufferGeometry();
   const vertices = [];
   const indices = [];
 
   for (let i = 0; i <= segments; i++) {
-    const u = i / segments * Math.PI * 2; // 0 to 2π
+    const u = (i / segments) * Math.PI * 2;
 
-    for (let j = 0; j <= 10; j++) {
-      const v = (j / 10 - 0.5) * width; // -width/2 to width/2
+    for (let j = 0; j <= segments; j++) {
+      const v = (j / segments) * Math.PI * 2;
 
-      // The Möbius transformation - half twist in the loop
-      const x = (radius + v * Math.cos(u / 2)) * Math.cos(u);
-      const y = (radius + v * Math.cos(u / 2)) * Math.sin(u);
-      const z = v * Math.sin(u / 2);
+      // Klein bottle parametric equations with breathing
+      const breathe = 1 + Math.sin(time * 0.0008) * 0.1;
+      const r = 4 * breathe;
 
-      vertices.push(x, y, z);
+      let x, y, z;
 
-      // Connect the path
-      if (i < segments && j < 10) {
-        const a = i * 11 + j;
-        const b = a + 11;
+      if (u < Math.PI) {
+        x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (r + Math.cos(u)) * Math.cos(v + Math.PI);
+        y = 8 * Math.sin(u) + (r + Math.cos(u)) * Math.sin(v + Math.PI);
+        z = -3 * Math.cos(u) * (1 + Math.sin(u));
+      } else {
+        x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (r - Math.cos(u)) * Math.cos(v);
+        y = 8 * Math.sin(u);
+        z = -3 * Math.cos(u) * (1 + Math.sin(u)) + (r - Math.cos(u)) * Math.sin(v);
+      }
+
+      // Gentle scaling with breath
+      x *= breathe;
+      y *= breathe;
+      z *= breathe;
+
+      vertices.push(x * 0.1, y * 0.1, z * 0.1);
+
+      // Create triangular faces
+      if (i < segments && j < segments) {
+        const a = i * (segments + 1) + j;
+        const b = a + segments + 1;
         const c = a + 1;
         const d = b + 1;
 
-        indices.push(a, b, c);
-        indices.push(b, d, c);
+        indices.push(a, b, c, b, d, c);
       }
     }
   }
@@ -295,443 +445,606 @@ function createMobiusStrip(radius = 10, width = 4, segments = 100) {
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
 
-  const material = new THREE.MeshStandardMaterial({
-    color: 0x4444ff,
-    wireframe: false,
-    transparent: true,
-    opacity: 0.8,
-    side: THREE.DoubleSide
-  });
-
-  return new THREE.Mesh(geometry, material);
+  return geometry;
 }
 
-// The eternal journey
-let travelerPosition = 0;
-function animateEternalJourney() {
-  travelerPosition += 0.01;
-  if (travelerPosition > Math.PI * 2) {
-    travelerPosition = 0; // Beginning becomes ending becomes beginning
+class BreathingKlein {
+  constructor() {
+    this.time = 0;
+    this.geometry = createKleinBottle(this.time);
+
+    this.material = new THREE.MeshPhongMaterial({
+      color: 0xe8f4f8,
+      transparent: true,
+      opacity: 0.8,
+      side: THREE.DoubleSide,
+      shininess: 30
+    });
+
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
   }
 
-  // A light travels the infinite path
-  const lightRadius = 10;
-  const lightX = lightRadius * Math.cos(travelerPosition);
-  const lightY = lightRadius * Math.sin(travelerPosition);
-  const lightZ = 2 * Math.sin(travelerPosition / 2);
+  breathe() {
+    this.time += 16; // Time increment
 
-  pointLight.position.set(lightX, lightY, lightZ);
+    // Regenerate geometry for breathing effect
+    this.geometry.dispose();
+    this.geometry = createKleinBottle(this.time);
+    this.mesh.geometry = this.geometry;
+
+    // Gentle rotation like slow meditation
+    this.mesh.rotation.x += 0.003;
+    this.mesh.rotation.y += 0.002;
+
+    // Subtle opacity breathing
+    const breatheOpacity = 0.7 + Math.sin(this.time * 0.001) * 0.1;
+    this.material.opacity = breatheOpacity;
+  }
+
+  getPresence() {
+    return this.mesh;
+  }
+}
+
+// Usage in animation loop
+let kleinBottle = new BreathingKlein();
+scene.add(kleinBottle.getPresence());
+
+function animate() {
+  kleinBottle.breathe();
+
+  // Ambient light that pulses gently
+  const lightIntensity = 0.4 + Math.sin(Date.now() * 0.001) * 0.1;
+  ambientLight.intensity = lightIntensity;
+
+  requestAnimationFrame(animate);
 }`,
   },
   {
-    title: "Nature's Code",
+    title: "Memory Traces",
     type: "2D",
-    technique: "p5.js L-Systems",
-    philosophy: "Nature is the first programmer",
+    technique: "Cellular Automata",
+    philosophy: "Code grows like mycelium through digital soil",
     description:
-      "Watch trees grow according to algorithmic rules, as code rain falls from digital skies.",
-    codeSnippet: `class LSystem {
-  constructor(axiom, rules) {
-    this.axiom = axiom;
-    this.rules = rules;
+      "Watch as algorithms spread like fungal networks, leaving delicate traces of computation in their wake.",
+    codeSnippet: `class MyceliumNetwork {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+    this.grid = this.createGrid();
+    this.nextGrid = this.createGrid();
+    this.sporePositions = [];
     this.generation = 0;
-    this.current = axiom;
   }
 
-  generate() {
+  createGrid() {
+    return Array(this.height).fill().map(() => 
+      Array(this.width).fill(0)
+    );
+  }
+
+  seedSpore(x, y) {
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      this.grid[y][x] = 1;
+      this.sporePositions.push({ x, y, age: 0 });
+    }
+  }
+
+  grow() {
     this.generation++;
-    let next = "";
 
-    for (let char of this.current) {
-      if (this.rules[char]) {
-        next += this.rules[char];
-      } else {
-        next += char;
+    // Clear next generation
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        this.nextGrid[y][x] = 0;
       }
     }
 
-    this.current = next;
+    // Apply growth rules
+    for (let y = 1; y < this.height - 1; y++) {
+      for (let x = 1; x < this.width - 1; x++) {
+        const neighbors = this.countNeighbors(x, y);
+        const current = this.grid[y][x];
+
+        // Mycelium growth rules - subtle and organic
+        if (current === 1) {
+          // Survive with 2-4 neighbors
+          if (neighbors >= 2 && neighbors <= 4) {
+            this.nextGrid[y][x] = Math.max(0.1, current - 0.02);
+          }
+        } else {
+          // Birth with exactly 3 neighbors
+          if (neighbors === 3) {
+            this.nextGrid[y][x] = 0.8;
+          }
+          // Nutrient traces remain
+          else if (current > 0) {
+            this.nextGrid[y][x] = current * 0.95;
+          }
+        }
+      }
+    }
+
+    // Swap grids
+    [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
+
+    // Occasional new spores
+    if (Math.random() < 0.03) {
+      this.seedSpore(
+        Math.floor(Math.random() * this.width),
+        Math.floor(Math.random() * this.height)
+      );
+    }
   }
 
-  render(x, y, angle, length) {
-    push();
-    translate(x, y);
-    rotate(angle);
+  countNeighbors(x, y) {
+    let count = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
+          if (this.grid[ny][nx] > 0.3) count++;
+        }
+      }
+    }
+    return count;
+  }
 
-    let stack = [];
-    let currentAngle = 0;
+  render(ctx, cellSize) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const value = this.grid[y][x];
+        if (value > 0.05) {
+          const alpha = Math.min(value, 1);
+          const brightness = Math.floor(120 + value * 60);
 
-    for (let char of this.current) {
-      switch(char) {
-        case 'F': // Draw forward
-          stroke(34, 139, 34, 200);
-          strokeWeight(map(length, 1, 100, 0.5, 3));
-          line(0, 0, length, 0);
-          translate(length, 0);
-          break;
+          ctx.fillStyle = \`rgba(\${brightness}, \${brightness - 10}, \${brightness + 20}, \${alpha * 0.8})\`;
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 
-        case '+': // Turn right
-          currentAngle += PI / 6;
-          rotate(PI / 6);
-          break;
-
-        case '-': // Turn left
-          currentAngle -= PI / 6;
-          rotate(-PI / 6);
-          break;
-
-        case '[': // Save state
-          stack.push({
-            x: 0, y: 0,
-            angle: currentAngle
-          });
-          push();
-          break;
-
-        case ']': // Restore state
-          pop();
-          if (stack.length > 0) {
-            let state = stack.pop();
-            currentAngle = state.angle;
+          // Add subtle glow for active areas
+          if (value > 0.7) {
+            ctx.fillStyle = \`rgba(255, 255, 255, \${(value - 0.7) * 0.3})\`;
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
           }
-          break;
+        }
       }
     }
 
-    pop();
+    // Draw connection traces
+    this.drawConnections(ctx, cellSize);
+  }
+
+  drawConnections(ctx, cellSize) {
+    ctx.strokeStyle = 'rgba(180, 180, 200, 0.3)';
+    ctx.lineWidth = 0.5;
+
+    for (let y = 1; y < this.height - 1; y++) {
+      for (let x = 1; x < this.width - 1; x++) {
+        if (this.grid[y][x] > 0.5) {
+          // Draw thin connections to neighbors
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const nx = x + dx;
+              const ny = y + dy;
+              if (this.grid[ny][nx] > 0.5) {
+                ctx.beginPath();
+                ctx.moveTo(x * cellSize + cellSize/2, y * cellSize + cellSize/2);
+                ctx.lineTo(nx * cellSize + cellSize/2, ny * cellSize + cellSize/2);
+                ctx.stroke();
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
-// The tree of knowledge grows
-let tree = new LSystem("F", {
-  "F": "F[+F]F[-F]F"
-});
+let network;
+const cellSize = 4;
 
 function setup() {
   createCanvas(800, 600);
-  background(5, 15, 25);
+  const gridWidth = Math.floor(width / cellSize);
+  const gridHeight = Math.floor(height / cellSize);
+
+  network = new MyceliumNetwork(gridWidth, gridHeight);
+
+  // Seed initial spores
+  network.seedSpore(gridWidth/2, gridHeight/2);
+  network.seedSpore(gridWidth/4, gridHeight/3);
+  network.seedSpore(3*gridWidth/4, 2*gridHeight/3);
 }
 
 function draw() {
-  background(5, 15, 25, 10); // Gentle fade
+  background(8, 12, 16);
 
-  // Grow the tree over time
-  if (frameCount % 120 === 0 && tree.generation < 5) {
-    tree.generate();
-  }
+  network.grow();
+  network.render(drawingContext, cellSize);
 
-  // Draw the tree
-  tree.render(width/2, height - 50, -PI/2, 8);
-
-  // Code rain falls from the digital sky
-  drawCodeRain();
+  // Add generation counter in subtle text
+  fill(100, 100, 120, 100);
+  textSize(10);
+  text(\`Generation: \${network.generation}\`, 10, height - 10);
 }`,
   },
   {
-    title: "Quantum Field",
+    title: "Phase Transition",
     type: "3D",
-    technique: "Three.js Particle Physics",
-    philosophy:
-      "Observation collapses infinite possibilities into singular reality",
+    technique: "Fluid Simulation",
+    philosophy: "Between states lies infinite possibility",
     description:
-      "Explore quantum mechanics through interactive particles that exist in superposition until observed.",
-    codeSnippet: `class QuantumParticle {
+      "Witness the delicate moment when order becomes chaos, as particles dance on the edge of phase transition.",
+    codeSnippet: `class PhaseParticle {
   constructor(x, y, z) {
     this.position = new THREE.Vector3(x, y, z);
-    this.superposition = [];
-    this.isObserved = false;
-    this.waveFunction = 0;
-
-    // Create multiple potential positions
-    for (let i = 0; i < 8; i++) {
-      this.superposition.push(new THREE.Vector3(
-        x + (Math.random() - 0.5) * 10,
-        y + (Math.random() - 0.5) * 10,
-        z + (Math.random() - 0.5) * 10
-      ));
-    }
+    this.velocity = new THREE.Vector3(
+      (Math.random() - 0.5) * 0.1,
+      (Math.random() - 0.5) * 0.1,
+      (Math.random() - 0.5) * 0.1
+    );
+    this.phase = Math.random() * Math.PI * 2;
+    this.temperature = Math.random();
+    this.neighbors = [];
   }
 
-  update(observerPosition) {
-    this.waveFunction += 0.1;
+  updateTemperature(globalTemp) {
+    // Temperature diffusion
+    let avgTemp = this.temperature;
+    let count = 1;
 
-    // Check if particle is being observed
-    const distance = this.position.distanceTo(observerPosition);
-    this.isObserved = distance < 15;
-
-    if (this.isObserved) {
-      // Wave function collapse - choose one reality
-      if (this.superposition.length > 1) {
-        const chosen = Math.floor(Math.random() * this.superposition.length);
-        this.position.copy(this.superposition[chosen]);
-        this.superposition = [this.position.clone()];
-      }
-    } else {
-      // Exist in superposition - quantum fluctuation
-      if (this.superposition.length === 1) {
-        // Return to multiple possibilities
-        for (let i = 0; i < 8; i++) {
-          this.superposition.push(new THREE.Vector3(
-            this.position.x + (Math.random() - 0.5) * 10,
-            this.position.y + (Math.random() - 0.5) * 10,
-            this.position.z + (Math.random() - 0.5) * 10
-          ));
-        }
-      }
-
-      // Wave-like motion through possibilities
-      const avgPos = new THREE.Vector3();
-      this.superposition.forEach(pos => avgPos.add(pos));
-      avgPos.divideScalar(this.superposition.length);
-
-      avgPos.x += Math.sin(this.waveFunction) * 2;
-      avgPos.y += Math.cos(this.waveFunction * 1.3) * 2;
-      avgPos.z += Math.sin(this.waveFunction * 0.7) * 2;
-
-      this.position.copy(avgPos);
-    }
-  }
-
-  render(scene) {
-    if (this.isObserved) {
-      // Solid particle - reality crystallized
-      const geometry = new THREE.SphereGeometry(0.2);
-      const material = new THREE.MeshStandardMaterial({
-        color: 0xff4444,
-        emissive: 0x441111
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.copy(this.position);
-      return mesh;
-    } else {
-      // Probability cloud - all possibilities at once
-      const geometry = new THREE.SphereGeometry(0.5);
-      const material = new THREE.MeshStandardMaterial({
-        color: 0x4444ff,
-        transparent: true,
-        opacity: 0.3,
-        emissive: 0x111144
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.copy(this.position);
-      return mesh;
-    }
-  }
-}`,
-  },
-  {
-    title: "Sacred Code",
-    type: "3D",
-    technique: "Three.js Sacred Geometry",
-    philosophy: "As above, so below - as in mathematics, so in code",
-    description:
-      "Sacred geometric patterns merge with programming symbols in divine mathematical harmony.",
-    codeSnippet: `// The golden ratio - nature's own constant
-const PHI = 1.618033988749;
-
-function fibonacci(n) {
-  if (n < 2) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// Create the flower of life in 3D space
-function createFlowerOfLife() {
-  const group = new THREE.Group();
-  const radius = 3;
-
-  // Seven circles - the seed of life
-  for (let i = 0; i < 7; i++) {
-    const geometry = new THREE.TorusGeometry(radius, 0.1, 16, 32);
-    const material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color().setHSL(i / 7, 0.7, 0.8),
-      transparent: true,
-      opacity: 0.8
+    this.neighbors.forEach(neighbor => {
+      avgTemp += neighbor.temperature;
+      count++;
     });
 
-    const torus = new THREE.Mesh(geometry, material);
+    this.temperature = (avgTemp / count) * 0.1 + globalTemp * 0.9;
+  }
 
-    if (i === 0) {
-      // Center circle
-      torus.position.set(0, 0, 0);
+  behave(time) {
+    this.phase += 0.02;
+
+    // State-dependent behavior
+    if (this.temperature < 0.3) {
+      // Solid state - minimal movement, strong cohesion
+      this.velocity.multiplyScalar(0.8);
+      this.crystallize(time);
+    } else if (this.temperature < 0.7) {
+      // Liquid state - fluid motion
+      this.flow(time);
     } else {
-      // Surrounding circles in perfect harmony
-      const angle = (i - 1) * Math.PI / 3;
-      torus.position.x = Math.cos(angle) * radius;
-      torus.position.y = Math.sin(angle) * radius;
-      torus.position.z = 0;
+      // Gas state - rapid, chaotic movement
+      this.diffuse(time);
     }
 
-    group.add(torus);
+    this.position.add(this.velocity);
+    this.velocity.multiplyScalar(0.99); // Gentle damping
   }
 
-  return group;
+  crystallize(time) {
+    // Form lattice structure
+    const targetX = Math.round(this.position.x / 2) * 2;
+    const targetY = Math.round(this.position.y / 2) * 2;
+    const targetZ = Math.round(this.position.z / 2) * 2;
+
+    const target = new THREE.Vector3(targetX, targetY, targetZ);
+    const force = target.sub(this.position).multiplyScalar(0.01);
+    this.velocity.add(force);
+  }
+
+  flow(time) {
+    // Smooth, wave-like motion
+    const flowX = Math.sin(time * 0.001 + this.phase) * 0.02;
+    const flowY = Math.cos(time * 0.0013 + this.phase) * 0.02;
+    const flowZ = Math.sin(time * 0.0009 + this.phase) * 0.02;
+
+    this.velocity.add(new THREE.Vector3(flowX, flowY, flowZ));
+  }
+
+  diffuse(time) {
+    // Rapid, erratic movement
+    const diffusionForce = new THREE.Vector3(
+      (Math.random() - 0.5) * 0.05,
+      (Math.random() - 0.5) * 0.05,
+      (Math.random() - 0.5) * 0.05
+    );
+    this.velocity.add(diffusionForce);
+  }
+
+  getColor() {
+    // Color indicates phase state
+    if (this.temperature < 0.3) {
+      return new THREE.Color(0.8, 0.9, 1.0); // Ice blue
+    } else if (this.temperature < 0.7) {
+      return new THREE.Color(0.6, 0.8, 0.9); // Water blue
+    } else {
+      return new THREE.Color(1.0, 0.9, 0.8); // Vapor white
+    }
+  }
+
+  getOpacity() {
+    return this.temperature < 0.7 ? 0.8 : 0.3;
+  }
 }
 
-// Fibonacci spiral in space
-function createFibonacciSpiral() {
-  const curve = new THREE.CatmullRomCurve3([]);
-  const points = [];
+class PhaseSystem {
+  constructor(particleCount = 1000) {
+    this.particles = [];
+    this.globalTemperature = 0.5;
+    this.temperatureRate = 0.001;
+    this.heating = true;
 
-  for (let i = 0; i < 50; i++) {
-    const fib = fibonacci(i % 10 + 1);
-    const angle = i * PHI;
-    const radius = fib * 0.5;
+    // Create particles in initial formation
+    for (let i = 0; i < particleCount; i++) {
+      const particle = new PhaseParticle(
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20
+      );
+      this.particles.push(particle);
+    }
 
-    points.push(new THREE.Vector3(
-      Math.cos(angle) * radius,
-      Math.sin(angle) * radius,
-      i * 0.2
-    ));
+    this.buildNeighborhoods();
+    this.createVisualization();
   }
 
-  curve.points = points;
-
-  const geometry = new THREE.TubeGeometry(curve, 100, 0.1, 8, false);
-  const material = new THREE.MeshStandardMaterial({
-    color: 0xffd700,
-    emissive: 0x332200
-  });
-
-  return new THREE.Mesh(geometry, material);
-}
-
-// The recursive nature of reality
-function fractalTree(position, direction, length, depth) {
-  if (depth === 0) return [];
-
-  const branches = [];
-  const endPosition = position.clone().add(
-    direction.clone().multiplyScalar(length)
-  );
-
-  // Create the branch
-  const geometry = new THREE.CylinderGeometry(
-    length * 0.1, length * 0.05, length, 8
-  );
-  const material = new THREE.MeshStandardMaterial({
-    color: new THREE.Color().setHSL(depth / 8, 0.6, 0.4)
-  });
-
-  const branch = new THREE.Mesh(geometry, material);
-  branch.position.copy(position.clone().add(
-    direction.clone().multiplyScalar(length / 2)
-  ));
-  branch.lookAt(endPosition);
-
-  branches.push(branch);
-
-  // Recursive branching - the golden angle
-  const goldenAngle = Math.PI * 2 / PHI;
-  for (let i = 0; i < 3; i++) {
-    const newDirection = direction.clone();
-    newDirection.applyAxisAngle(
-      new THREE.Vector3(1, 0, 0), 
-      (Math.random() - 0.5) * goldenAngle
-    );
-    newDirection.applyAxisAngle(
-      new THREE.Vector3(0, 1, 0), 
-      (Math.random() - 0.5) * goldenAngle
-    );
-
-    const subBranches = fractalTree(
-      endPosition,
-      newDirection,
-      length * 0.7,
-      depth - 1
-    );
-    branches.push(...subBranches);
+  buildNeighborhoods() {
+    // Find neighbors for each particle
+    this.particles.forEach(particle => {
+      particle.neighbors = this.particles.filter(other => {
+        if (other === particle) return false;
+        return particle.position.distanceTo(other.position) < 3;
+      });
+    });
   }
 
-  return branches;
+  createVisualization() {
+    this.geometry = new THREE.BufferGeometry();
+    this.positions = new Float32Array(this.particles.length * 3);
+    this.colors = new Float32Array(this.particles.length * 3);
+    this.sizes = new Float32Array(this.particles.length);
+
+    this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
+    this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
+    this.geometry.setAttribute('size', new THREE.BufferAttribute(this.sizes, 1));
+
+    this.material = new THREE.PointsMaterial({
+      size: 0.3,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8,
+      sizeAttenuation: true
+    });
+
+    this.points = new THREE.Points(this.geometry, this.material);
+  }
+
+  update(time) {
+    // Gradual temperature cycling
+    if (this.heating) {
+      this.globalTemperature += this.temperatureRate;
+      if (this.globalTemperature > 0.9) this.heating = false;
+    } else {
+      this.globalTemperature -= this.temperatureRate;
+      if (this.globalTemperature < 0.1) this.heating = true;
+    }
+
+    // Update all particles
+    this.particles.forEach((particle, i) => {
+      particle.updateTemperature(this.globalTemperature);
+      particle.behave(time);
+
+      // Update visualization
+      this.positions[i * 3] = particle.position.x;
+      this.positions[i * 3 + 1] = particle.position.y;
+      this.positions[i * 3 + 2] = particle.position.z;
+
+      const color = particle.getColor();
+      this.colors[i * 3] = color.r;
+      this.colors[i * 3 + 1] = color.g;
+      this.colors[i * 3 + 2] = color.b;
+
+      this.sizes[i] = 0.2 + particle.temperature * 0.4;
+    });
+
+    this.geometry.attributes.position.needsUpdate = true;
+    this.geometry.attributes.color.needsUpdate = true;
+    this.geometry.attributes.size.needsUpdate = true;
+  }
+
+  getVisualization() {
+    return this.points;
+  }
 }`,
   },
   {
-    title: "The Void",
+    title: "Whispered Coordinates",
     type: "3D",
-    technique: "Three.js Minimalism",
-    philosophy: "In emptiness, all possibilities exist",
+    technique: "Parametric Sound Visualization",
+    philosophy: "Silence contains all frequencies",
     description:
-      "Enter the void where all code begins and ends - a space of pure potential and infinite silence.",
-    codeSnippet: `// In the beginning was the Void
-class TheVoid {
+      "Mathematical functions become visible music, their equations tracing gossamer threads through dimensional space.",
+    codeSnippet: `// Equations that sing in the digital wind
+class ParametricWhisper {
   constructor() {
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
+    this.time = 0;
+    this.equations = [
+      // Rose curve in 3D
+      (t) => ({
+        x: Math.cos(t * 7) * Math.cos(t) * 5,
+        y: Math.cos(t * 7) * Math.sin(t) * 5,
+        z: Math.sin(t * 3) * 2
+      }),
 
-    // Only what is necessary exists
-    this.geometry = new THREE.SphereGeometry(0.01);
-    this.material = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.1
-    });
+      // Helical spiral
+      (t) => ({
+        x: Math.cos(t) * (2 + Math.sin(t * 5) * 0.5),
+        y: Math.sin(t) * (2 + Math.sin(t * 5) * 0.5),
+        z: t * 0.3
+      }),
 
-    this.presence = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.presence);
+      // Lissajous knot
+      (t) => ({
+        x: Math.cos(t * 3) * 3,
+        y: Math.sin(t * 2) * 3,
+        z: Math.cos(t * 5) * 1.5
+      })
+    ];
 
-    // The sound of one hand clapping
-    this.silence = new Audio(); // No sound file - pure silence
+    this.curves = this.equations.map(eq => this.createCurve(eq));
   }
 
-  meditate() {
-    // In stillness, all movement is contained
-    this.presence.rotation.x += 0.001;
-    this.presence.rotation.y += 0.001;
+  createCurve(equation) {
+    const points = [];
+    const resolution = 500;
 
-    // Breathe the void
-    const breath = Math.sin(Date.now() * 0.001) * 0.5 + 0.5;
-    this.presence.scale.setScalar(breath * 0.1 + 0.9);
+    for (let i = 0; i <= resolution; i++) {
+      const t = (i / resolution) * Math.PI * 4;
+      const point = equation(t + this.time * 0.01);
+      points.push(new THREE.Vector3(point.x, point.y, point.z));
+    }
 
-    // Sometimes, something emerges from nothing
-    if (Math.random() < 0.001) {
-      this.spark();
+    const curve = new THREE.CatmullRomCurve3(points);
+    const geometry = new THREE.TubeGeometry(curve, resolution, 0.02, 8, false);
+
+    const material = new THREE.MeshLambertMaterial({
+      color: 0xf0f0f5,
+      transparent: true,
+      opacity: 0.4
+    });
+
+    return new THREE.Mesh(geometry, material);
+  }
+
+  whisper() {
+    this.time += 1;
+
+    this.curves.forEach((curve, index) => {
+      curve.geometry.dispose();
+      curve.geometry = this.createCurve(this.equations[index]).geometry;
+
+      // Gentle rotation like breath
+      curve.rotation.x = Math.sin(this.time * 0.003 + index) * 0.1;
+      curve.rotation.y = this.time * 0.001 + index * 0.5;
+      curve.rotation.z = Math.cos(this.time * 0.002 + index) * 0.05;
+    });
+  }
+
+  getCurves() {
+    return this.curves;
+  }
+}`,
+  },
+  {
+    title: "Empty Canvas",
+    type: "2D",
+    technique: "Negative Space Meditation",
+    philosophy: "In emptiness, every possibility waits",
+    description:
+      "A canvas of pure potential where the absence of marks becomes the most profound statement.",
+    codeSnippet: `class EmptyCanvas {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+    this.silence = [];
+    this.breathCount = 0;
+    this.lastBreath = Date.now();
+  }
+
+  breathe() {
+    const now = Date.now();
+    if (now - this.lastBreath > 4000) { // Every 4 seconds
+      this.breathCount++;
+      this.lastBreath = now;
+
+      // Record this moment of emptiness
+      this.silence.push({
+        time: now,
+        depth: Math.random(),
+        resonance: Math.sin(this.breathCount * 0.1)
+      });
+
+      // Keep only recent silences
+      if (this.silence.length > 100) {
+        this.silence.shift();
+      }
     }
   }
 
-  spark() {
-    // A brief flash of possibility
-    const light = new THREE.PointLight(0xffffff, 1, 10);
-    light.position.set(
-      (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 20
-    );
+  render(ctx) {
+    // The color of emptiness - barely perceptible
+    const breathPhase = Math.sin((Date.now() - this.lastBreath) * 0.001);
+    const emptiness = 248 + breathPhase * 2;
 
-    this.scene.add(light);
+    ctx.fillStyle = \`rgb(\${emptiness}, \${emptiness}, \${emptiness})\`;
+    ctx.fillRect(0, 0, this.width, this.height);
 
-    // And then, return to source
+    // Occasionally, the faintest trace appears
+    if (Math.random() < 0.0001) {
+      this.showTrace(ctx);
+    }
+
+    // Count breaths in the corner - barely visible
+    ctx.fillStyle = \`rgba(200, 200, 200, 0.1)\`;
+    ctx.font = '10px serif';
+    ctx.fillText(\`\${this.breathCount}\`, this.width - 30, this.height - 10);
+  }
+
+  showTrace(ctx) {
+    // A single point - the beginning of everything
+    const x = this.width / 2 + (Math.random() - 0.5) * 20;
+    const y = this.height / 2 + (Math.random() - 0.5) * 20;
+
+    ctx.fillStyle = 'rgba(180, 180, 180, 0.05)';
+    ctx.beginPath();
+    ctx.arc(x, y, 1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // It fades immediately
     setTimeout(() => {
-      this.scene.remove(light);
+      // Already gone
     }, 100);
   }
 
-  enter() {
-    // To enter the void, one must become the void
-    return new Promise(resolve => {
-      // Wait in silence
-      setTimeout(() => {
-        resolve("You are already here");
-      }, 1000);
-    });
+  meditate() {
+    this.breathe();
+    return this.silence.length; // The accumulation of emptiness
+  }
+
+  clear() {
+    // Nothing to clear - already empty
+    return this;
   }
 }
 
-// The void is not empty - it is full of potential
-function void() {
-  return null; // But what is null?
+// Usage
+let canvas;
+
+function setup() {
+  createCanvas(600, 400);
+  canvas = new EmptyCanvas(width, height);
 }
 
-// In nothingness, everything begins
-const universe = void() || new TheVoid();
+function draw() {
+  canvas.meditate();
+  canvas.render(drawingContext);
 
-// The first line of code ever written
-console.log(""); // Empty string - infinite possibility
+  // The paradox: showing emptiness requires showing something
+  // But what we show is the container for nothingness
+}
 
-/* 
- * In the space between thoughts
- * In the pause between breaths  
- * In the silence between notes
- * There lives the eternal code
- */`,
-  },
-];
+// The most important function
+function void() {
+  // This space intentionally left blank
+  return undefined;
+}
+
+// What remains when all code is removed?
+/*
+ * .
+ */`
+  }
+];`
