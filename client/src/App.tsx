@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ErrorBoundary } from "react-error-boundary";
 import Navigation from "./components/Navigation";
@@ -17,24 +17,118 @@ function ErrorFallback({ error }: { error: Error }) {
   );
 }
 
-// Poem welcome screen
+// Poem welcome screen with water effect
 function PoemScreen({ onContinue }: { onContinue: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let time = 0;
+    const ripples: Array<{x: number, y: number, time: number, maxRadius: number}> = [];
+
+    const animate = () => {
+      time += 0.008;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw subtle water ripples
+      ctx.strokeStyle = 'rgba(139, 115, 85, 0.08)';
+      ctx.lineWidth = 1;
+      
+      // Gentle background waves
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        const amplitude = 12;
+        const frequency = 0.003;
+        const phase = i * 0.8 + time;
+        
+        for (let x = 0; x <= canvas.width; x += 3) {
+          const y = canvas.height / 2 + Math.sin(x * frequency + phase) * amplitude + i * 25 - 75;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      
+      // Draw interactive ripples
+      ripples.forEach((ripple, index) => {
+        const age = time - ripple.time;
+        if (age > 4) {
+          ripples.splice(index, 1);
+          return;
+        }
+        
+        const radius = (age / 4) * ripple.maxRadius;
+        const alpha = (1 - age / 4) * 0.2;
+        
+        ctx.strokeStyle = `rgba(139, 115, 85, ${alpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(ripple.x, ripple.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Inner ripple
+        if (radius > 15) {
+          ctx.strokeStyle = `rgba(180, 150, 100, ${alpha * 0.6})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(ripple.x, ripple.y, radius - 12, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      });
+      
+      requestAnimationFrame(animate);
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      ripples.push({
+        x: e.clientX,
+        y: e.clientY,
+        time: time,
+        maxRadius: 80 + Math.random() * 40
+      });
+    };
+
+    canvas.addEventListener('click', handleClick);
+    animate();
+
+    return () => {
+      canvas.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   return (
     <div 
       className="fixed inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center z-50 cursor-pointer"
       onClick={onContinue}
     >
-      <div className="text-center max-w-2xl px-8">
-        <h1 className="text-3xl zen-title text-stone-200 mb-8">When Code Meets Nature's Song</h1>
+      {/* Water effect canvas */}
+      <canvas 
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none"
+        style={{ zIndex: 1 }}
+      />
+      
+      <div className="text-center max-w-2xl px-8 relative z-10">
+        <h1 className="text-3xl zen-title text-stone-200 mb-8 drop-shadow-lg">When Code Meets Nature's Song</h1>
         
-        <div className="text-stone-300 text-lg leading-relaxed mb-8 zen-subtitle">
-          <p>The morning dew on spider's thread,</p>
-          <p>Like gentle code that softly spreads,</p>
-          <p>Each particle knows where to go,</p>
-          <p>Following patterns nature chose</p>
+        <div className="text-stone-300 text-lg leading-relaxed mb-8 zen-subtitle drop-shadow-md">
+          <p className="hover:text-stone-200 transition-colors duration-700">The morning dew on spider's thread,</p>
+          <p className="hover:text-stone-200 transition-colors duration-700">Like gentle code that softly spreads,</p>
+          <p className="hover:text-stone-200 transition-colors duration-700">Each particle knows where to go,</p>
+          <p className="hover:text-stone-200 transition-colors duration-700">Following patterns nature chose</p>
         </div>
         
-        <p className="text-stone-400 text-sm zen-subtitle mb-8">ard. by vinay thakur</p>
+        <p className="text-stone-400 text-sm zen-subtitle mb-8 drop-shadow-sm">ard. by vinay thakur</p>
         
         {/* Gentle indicator to continue */}
         <div className="text-stone-500 text-xs animate-pulse">

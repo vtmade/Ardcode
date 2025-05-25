@@ -51,21 +51,31 @@ export default function ArtworkContainer() {
         <div className="glass p-1 rounded fade-in">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <h2 className="zen-title mb-0" style={{fontSize: '9px'}}>{currentArtworkData.title}</h2>
-              <span className="zen-subtitle" style={{fontSize: '9px'}}>•</span>
-              <p className="zen-subtitle leading-none" style={{fontSize: '9px'}}>
+              <h2 className="zen-title mb-0" style={{ fontSize: "12px" }}>
+                {currentArtworkData.title}
+              </h2>
+              <span className="zen-subtitle" style={{ fontSize: "12px" }}>
+                -
+              </span>
+              <p
+                className="zen-subtitle leading-none"
+                style={{ fontSize: "12px" }}
+              >
                 {currentArtworkData.description}
               </p>
             </div>
             <div className="flex items-center space-x-1">
-              <span className={`px-1 py-0.5 rounded ${
-                currentArtworkData.type === '3D' 
-                  ? 'bg-blue-500/20 text-blue-300' 
-                  : 'bg-green-500/20 text-green-300'
-              }`} style={{fontSize: '9px'}}>
+              <span
+                className={`px-1 py-0.5 rounded ${
+                  currentArtworkData.type === "3D"
+                    ? "bg-blue-500/20 text-blue-300"
+                    : "bg-green-500/20 text-green-300"
+                }`}
+                style={{ fontSize: "10px" }}
+              >
                 {currentArtworkData.type}
               </span>
-              <span className="zen-subtitle" style={{fontSize: '9px'}}>
+              <span className="zen-subtitle" style={{ fontSize: "10px" }}>
                 {currentArtworkData.technique}
               </span>
             </div>
@@ -75,24 +85,24 @@ export default function ArtworkContainer() {
 
       {/* Artwork Content */}
       <div className="w-full h-full">
-        {currentArtworkData.type === '3D' ? (
+        {currentArtworkData.type === "3D" ? (
           <Canvas
             camera={{
               position: [0, 0, 10],
               fov: 45,
               near: 0.1,
-              far: 1000
+              far: 1000,
             }}
             gl={{
               antialias: true,
               alpha: true,
-              powerPreference: "high-performance"
+              powerPreference: "high-performance",
             }}
             dpr={Math.min(window.devicePixelRatio, 2)}
           >
             <color attach="background" args={["#0a0a0a"]} />
             <fog attach="fog" args={["#0a0a0a", 10, 100]} />
-            
+
             <Suspense fallback={null}>
               <ArtworkComponent />
             </Suspense>
@@ -103,8 +113,6 @@ export default function ArtworkContainer() {
           </Suspense>
         )}
       </div>
-
-
     </div>
   );
 }
