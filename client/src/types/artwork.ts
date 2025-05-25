@@ -14,7 +14,7 @@ export const ARTWORKS: Artwork[] = [
     technique: "Canvas Displacement Mapping",
     philosophy: "Clarity emerges from gentle disturbance",
     description:
-      "Text appears to rest on spider silk, trembling with the morning breeze, each character catching light like dewdrops.",
+      "Morning dew trembles on invisible silk threads, each droplet catching light as the digital web sways gently.",
     codeSnippet: `class DewDropText {
   constructor(char, x, y) {
     this.char = char;
@@ -48,7 +48,7 @@ export const ARTWORKS: Artwork[] = [
 }`,
   },
   {
-    title: "Pollen Drift",
+    title: "Liquid Geometry",
     type: "2D",
     technique: "Procedural Point Clouds",
     philosophy: "Life travels on invisible currents",
@@ -520,7 +520,8 @@ function createKleinBottle(time) {
     title: "Digital Zen Garden",
     type: "2D",
     technique: "Procedural Simplicity",
-    philosophy: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away",
+    philosophy:
+      "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away",
     description:
       "A minimal garden where each element appears through patient meditation, creating patterns of profound simplicity.",
     codeSnippet: `class ZenGarden {
@@ -773,5 +774,5 @@ function void() {
 /*
  * .
  */`,
-  }
+  },
 ];
