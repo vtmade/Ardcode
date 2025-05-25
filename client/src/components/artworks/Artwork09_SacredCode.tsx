@@ -1,392 +1,204 @@
-import { useFrame } from "@react-three/fiber";
-import { useRef, useMemo } from "react";
-import { Text, Line } from "@react-three/drei";
-import * as THREE from "three";
-
-function SacredGeometry() {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  // Generate sacred geometric patterns
-  const geometryData = useMemo(() => {
-    const patterns = [];
-    
-    // Flower of Life pattern
-    const flowerOfLife = [];
-    for (let i = 0; i < 6; i++) {
-      const angle = (i / 6) * Math.PI * 2;
-      const x = Math.cos(angle) * 2;
-      const y = Math.sin(angle) * 2;
-      
-      flowerOfLife.push({
-        position: [x, y, 0],
-        radius: 1,
-        segments: 32
-      });
-    }
-    patterns.push({ name: 'flowerOfLife', circles: flowerOfLife });
-    
-    // Metatron's Cube vertices
-    const metatronVertices = [
-      [0, 0, 0],
-      [2, 0, 0], [-2, 0, 0],
-      [1, 1.732, 0], [-1, 1.732, 0],
-      [1, -1.732, 0], [-1, -1.732, 0],
-      [0, 0, 2], [0, 0, -2],
-      [1.414, 0, 1.414], [-1.414, 0, 1.414],
-      [1.414, 0, -1.414], [-1.414, 0, -1.414],
-    ];
-    patterns.push({ name: 'metatron', vertices: metatronVertices });
-    
-    return patterns;
-  }, []);
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    groupRef.current.rotation.y = time * 0.1;
-    groupRef.current.rotation.x = Math.sin(time * 0.3) * 0.2;
-  });
-
-  return (
-    <group ref={groupRef}>
-      {/* Flower of Life circles */}
-      {geometryData[0].circles.map((circle, index) => (
-        <mesh key={`flower-${index}`} position={circle.position as [number, number, number]}>
-          <ringGeometry args={[0.9, 1.1, circle.segments]} />
-          <meshBasicMaterial 
-            color="#8b7355" 
-            transparent 
-            opacity={0.6}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-      
-      {/* Central circle */}
-      <mesh position={[0, 0, 0]}>
-        <ringGeometry args={[0.9, 1.1, 32]} />
-        <meshBasicMaterial 
-          color="#c4b59a" 
-          transparent 
-          opacity={0.8}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      
-      {/* Metatron's Cube connections */}
-      {geometryData[1].vertices.map((vertex, index) => (
-        <group key={`vertex-${index}`}>
-          <mesh position={vertex as [number, number, number]}>
-            <sphereGeometry args={[0.05, 8, 8]} />
-            <meshBasicMaterial color="#8b7355" />
-          </mesh>
-          
-          {/* Connect to other vertices */}
-          {geometryData[1].vertices.slice(index + 1).map((otherVertex, otherIndex) => (
-            <Line
-              key={`line-${index}-${otherIndex}`}
-              points={[vertex, otherVertex]}
-              color="#8b7355"
-              transparent
-              opacity={0.3}
-              lineWidth={1}
-            />
-          ))}
-        </group>
-      ))}
-    </group>
-  );
-}
-
-function FibonacciSpiral() {
-  const spiralRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (!spiralRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    spiralRef.current.rotation.z = time * 0.2;
-  });
-
-  // Generate Fibonacci spiral
-  const spiralPoints = useMemo(() => {
-    const points = [];
-    const fibonacci = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
-    
-    let angle = 0;
-    let radius = 0;
-    
-    for (let i = 0; i < fibonacci.length; i++) {
-      const fibValue = fibonacci[i];
-      
-      for (let j = 0; j < fibValue * 4; j++) {
-        angle += 0.1;
-        radius = angle * 0.1;
-        
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        const z = Math.sin(angle * 0.1) * 0.5;
-        
-        points.push(new THREE.Vector3(x, y, z));
-      }
-    }
-    
-    return points;
-  }, []);
-
-  return (
-    <group position={[6, 0, 0]}>
-      <Line
-        ref={spiralRef}
-        points={spiralPoints}
-        color="#c4b59a"
-        lineWidth={3}
-        transparent
-        opacity={0.8}
-      />
-      
-      {/* Golden ratio markers */}
-      {[1, 1, 2, 3, 5, 8].map((fib, index) => (
-        <Text
-          key={index}
-          position={[
-            Math.cos(index * 1.618) * (index + 1),
-            Math.sin(index * 1.618) * (index + 1),
-            0
-          ]}
-          fontSize={0.3}
-          color="#8b7355"
-          anchorX="center"
-          anchorY="middle"
-          
-        >
-          {fib.toString()}
-        </Text>
-      ))}
-    </group>
-  );
-}
-
-function CodeMandala() {
-  const mandalaRef = useRef<THREE.Group>(null);
-  
-  const codeSymbols = ['{}', '[]', '()', ';;', '//', '&&', '||', '==', '!=', '++'];
-  
-  useFrame((state) => {
-    if (!mandalaRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    mandalaRef.current.rotation.y = time * 0.15;
-    
-    // Breathing effect for individual symbols
-    mandalaRef.current.children.forEach((child, index) => {
-      if (child instanceof THREE.Group) {
-        const breathe = Math.sin(time * 0.5 + index * 0.5) * 0.1 + 1;
-        child.scale.setScalar(breathe);
-      }
-    });
-  });
-
-  return (
-    <group ref={mandalaRef} position={[-6, 0, 0]}>
-      {/* Inner ring of code symbols */}
-      {codeSymbols.slice(0, 5).map((symbol, index) => {
-        const angle = (index / 5) * Math.PI * 2;
-        const radius = 2;
-        
-        return (
-          <group 
-            key={`inner-${index}`}
-            position={[
-              Math.cos(angle) * radius,
-              Math.sin(angle) * radius,
-              0
-            ]}
-          >
-            <Text
-              fontSize={0.4}
-              color="#c4b59a"
-              anchorX="center"
-              anchorY="middle"
-              
-            >
-              {symbol}
-            </Text>
-          </group>
-        );
-      })}
-      
-      {/* Outer ring of code symbols */}
-      {codeSymbols.slice(5).map((symbol, index) => {
-        const angle = (index / 5) * Math.PI * 2 + Math.PI / 5;
-        const radius = 4;
-        
-        return (
-          <group 
-            key={`outer-${index}`}
-            position={[
-              Math.cos(angle) * radius,
-              Math.sin(angle) * radius,
-              0
-            ]}
-          >
-            <Text
-              fontSize={0.3}
-              color="#8b7355"
-              anchorX="center"
-              anchorY="middle"
-              
-            >
-              {symbol}
-            </Text>
-          </group>
-        );
-      })}
-      
-      {/* Center symbol */}
-      <Text
-        fontSize={0.6}
-        color="#d4c4a9"
-        anchorX="center"
-        anchorY="middle"
-        
-      >
-        ∞
-      </Text>
-    </group>
-  );
-}
-
-function GoldenRatioVisualization() {
-  const rectanglesRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    if (!rectanglesRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    rectanglesRef.current.rotation.z = time * 0.05;
-  });
-
-  // Generate golden ratio rectangles
-  const rectangles = useMemo(() => {
-    const phi = 1.618033988749;
-    const rects = [];
-    
-    let size = 3;
-    let rotation = 0;
-    
-    for (let i = 0; i < 8; i++) {
-      rects.push({
-        width: size,
-        height: size / phi,
-        rotation: rotation,
-        position: [0, 0, i * 0.1]
-      });
-      
-      size *= 0.618; // 1/phi
-      rotation += Math.PI / 2;
-    }
-    
-    return rects;
-  }, []);
-
-  return (
-    <group ref={rectanglesRef} position={[0, -6, 0]}>
-      {rectangles.map((rect, index) => (
-        <mesh 
-          key={index}
-          position={rect.position as [number, number, number]}
-          rotation={[0, 0, rect.rotation]}
-        >
-          <planeGeometry args={[rect.width, rect.height]} />
-          <meshBasicMaterial 
-            color="#8b7355" 
-            transparent 
-            opacity={0.3 - index * 0.03}
-            wireframe={true}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
+import { useEffect, useRef } from 'react';
 
 export default function Artwork09_SacredCode() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Digital Zen Garden - sacred geometry emerges from code
+    let time = 0;
+    const goldenRatio = 1.618033988749;
+    
+    // Sacred symbols and code fragments
+    const codeFragments = [
+      "const wisdom = () => silence;",
+      "let enlightenment = void 0;",
+      "return inner.peace();",
+      "// The recursive nature of consciousness",
+      "while(seeking) { find(); }"
+    ];
+
+    const animate = () => {
+      time += 0.01;
+
+      // Soft sand background
+      ctx.fillStyle = '#0f0f0f';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      // Draw sacred geometry patterns
+      drawFibonacciSpiral(ctx, centerX, centerY, time);
+      drawCodeMandala(ctx, centerX, centerY, time);
+      drawGoldenRatioVisualization(ctx, centerX, centerY, time);
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    function drawFibonacciSpiral(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, time: number) {
+      ctx.strokeStyle = 'rgba(180, 170, 160, 0.3)';
+      ctx.lineWidth = 1;
+      
+      // Generate fibonacci sequence
+      const fib = [1, 1];
+      for (let i = 2; i < 15; i++) {
+        fib[i] = fib[i-1] + fib[i-2];
+      }
+
+      let angle = time * 0.1;
+      let radius = 2;
+      
+      ctx.beginPath();
+      for (let i = 0; i < fib.length; i++) {
+        const scale = fib[i] * 0.5;
+        const x = centerX + Math.cos(angle) * radius * scale * 0.1;
+        const y = centerY + Math.sin(angle) * radius * scale * 0.1;
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+        
+        angle += goldenRatio;
+        radius *= 1.05;
+      }
+      ctx.stroke();
+    }
+
+    function drawCodeMandala(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, time: number) {
+      const layers = 8;
+      
+      for (let layer = 0; layer < layers; layer++) {
+        const radius = 50 + layer * 30;
+        const segments = 6 + layer * 2;
+        
+        for (let i = 0; i < segments; i++) {
+          const angle = (i / segments) * Math.PI * 2 + time * 0.2 + layer * 0.5;
+          const x = centerX + Math.cos(angle) * radius;
+          const y = centerY + Math.sin(angle) * radius;
+          
+          // Sacred geometric shapes
+          ctx.fillStyle = `rgba(200, 180, 140, ${0.1 + layer * 0.05})`;
+          ctx.beginPath();
+          
+          if (layer % 3 === 0) {
+            // Triangles
+            const size = 8;
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x - size, y + size);
+            ctx.lineTo(x + size, y + size);
+            ctx.closePath();
+          } else if (layer % 3 === 1) {
+            // Circles
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+          } else {
+            // Squares
+            const size = 6;
+            ctx.rect(x - size/2, y - size/2, size, size);
+          }
+          
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawGoldenRatioVisualization(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, time: number) {
+      // Golden ratio rectangles
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.lineWidth = 1;
+      
+      let width = 89;
+      let height = width / goldenRatio;
+      
+      for (let i = 0; i < 8; i++) {
+        const rotation = time * 0.1 + i * 0.2;
+        
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(rotation);
+        
+        ctx.strokeRect(-width/2, -height/2, width, height);
+        
+        // Draw the spiral curve
+        ctx.beginPath();
+        ctx.arc(width/2 - height, height/2 - height, height, 0, Math.PI/2);
+        ctx.stroke();
+        
+        ctx.restore();
+        
+        // Prepare for next iteration
+        const newWidth = height;
+        height = width - height;
+        width = newWidth;
+        
+        if (width < 1) break;
+      }
+
+      // Floating code fragments
+      codeFragments.forEach((fragment, index) => {
+        const angle = time * 0.05 + index * (Math.PI * 2 / codeFragments.length);
+        const radius = 150 + Math.sin(time * 0.3 + index) * 20;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        ctx.fillStyle = `rgba(160, 160, 160, ${0.3 + Math.sin(time + index) * 0.2})`;
+        ctx.font = '12px monospace';
+        ctx.textAlign = 'center';
+        
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle + Math.PI/2);
+        ctx.fillText(fragment, 0, 0);
+        ctx.restore();
+      });
+    }
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <>
-      {/* Sacred lighting */}
-      <ambientLight intensity={0.3} color="#4a3f35" />
-      
-      <pointLight 
-        position={[0, 10, 5]} 
-        intensity={0.8} 
-        color="#c4b59a"
-        castShadow
+    <div style={{ 
+      width: '100%', 
+      height: '100%', 
+      backgroundColor: '#0f0f0f',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative'
+    }}>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%'
+        }}
       />
-      
-      <pointLight 
-        position={[-5, -5, 5]} 
-        intensity={0.4} 
-        color="#8b7355"
-      />
-
-      {/* Sacred geometry components */}
-      <SacredGeometry />
-      <FibonacciSpiral />
-      <CodeMandala />
-      <GoldenRatioVisualization />
-
-      {/* Central wisdom text */}
-      <Text
-        position={[0, 8, 0]}
-        fontSize={0.4}
-        color="#d4c4a9"
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={12}
-        textAlign="center"
-        
-      >
-        {"As above, so below\nAs in mathematics, so in code\nAs in nature, so in algorithm"}
-      </Text>
-
-      {/* Mathematical constants */}
-      <group position={[0, -8, 0]}>
-        <Text
-          position={[-3, 0, 0]}
-          fontSize={0.3}
-          color="#8b7355"
-          anchorX="center"
-          anchorY="middle"
-          
-        >
-          π = 3.14159...
-        </Text>
-        
-        <Text
-          position={[0, 0, 0]}
-          fontSize={0.3}
-          color="#8b7355"
-          anchorX="center"
-          anchorY="middle"
-          
-        >
-          φ = 1.618...
-        </Text>
-        
-        <Text
-          position={[3, 0, 0]}
-          fontSize={0.3}
-          color="#8b7355"
-          anchorX="center"
-          anchorY="middle"
-          
-        >
-          e = 2.71828...
-        </Text>
-      </group>
-    </>
+    </div>
   );
 }

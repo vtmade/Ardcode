@@ -405,7 +405,7 @@ function createKleinBottle(time) {
   },
   {
     title: "Memory Palace",
-    type: "3D",
+    type: "2D",
     technique: "Recursive Architecture",
     philosophy: "Every thought builds a room in the infinite library of mind",
     description:
