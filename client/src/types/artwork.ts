@@ -9,285 +9,327 @@ export interface Artwork {
 
 export const ARTWORKS: Artwork[] = [
   {
-    title: "Flowing Text",
+    title: "Morning Dew",
     type: "2D",
-    technique: "p5.js Particle System",
-    philosophy: "The code that can be named is not the eternal code",
+    technique: "Canvas Displacement Mapping",
+    philosophy: "Clarity emerges from gentle disturbance",
     description:
-      "Watch as philosophical text flows like water, responding to your touch with ripples of understanding.",
-    codeSnippet: `class TextParticle {
+      "Text appears to rest on spider silk, trembling with the morning breeze, each character catching light like dewdrops.",
+    codeSnippet: `class DewDropText {
   constructor(char, x, y) {
     this.char = char;
-    this.originalX = x;
-    this.originalY = y;
-    this.x = x;
-    this.y = y;
-    this.vx = random(-0.5, 0.5);
-    this.vy = random(-0.5, 0.5);
-    this.alpha = 255;
+    this.homeX = x;
+    this.homeY = y;
+    this.x = x + random(-2, 2);
+    this.y = y + random(-1, 1);
+    this.tension = 0.985;
+    this.dampening = 0.12;
+    this.frequency = random(0.003, 0.008);
+    this.amplitude = random(0.3, 0.8);
   }
 
-  drift() {
-    // Like the Tao, text seeks its natural path
-    this.x += this.vx + sin(frameCount * 0.01) * 0.3;
-    this.y += this.vy + cos(frameCount * 0.008) * 0.2;
-
-    // Return to source, like water to the sea
-    this.x = lerp(this.x, this.originalX, 0.02);
-    this.y = lerp(this.y, this.originalY, 0.02);
+  breathe(time) {
+    // Gossamer threads respond to unseen currents
+    const sway = sin(time * this.frequency + this.homeX * 0.01) * this.amplitude;
+    const targetX = this.homeX + sway;
+    const targetY = this.homeY + cos(time * this.frequency * 0.7) * 0.2;
+    
+    // Surface tension draws each character home
+    this.x += (targetX - this.x) * this.dampening;
+    this.y += (targetY - this.y) * this.dampening;
   }
 
-  display() {
-    fill(50, this.alpha);
-    text(this.char, this.x, this.y);
+  render(ctx) {
+    const shimmer = 0.1 + abs(sin(millis() * 0.005 + this.homeX * 0.02)) * 0.1;
+    ctx.fillStyle = \`rgba(85, 85, 85, \${shimmer})\`;
+    ctx.font = '16px Georgia';
+    ctx.fillText(this.char, this.x, this.y);
   }
 }`,
   },
   {
-    title: "Particle Galaxy",
+    title: "Pollen Drift",
     type: "3D",
-    technique: "Three.js Point Cloud",
-    philosophy: "The ten thousand things arise from emptiness",
+    technique: "Procedural Point Clouds",
+    philosophy: "Life travels on invisible currents",
     description:
-      "Navigate through a galaxy of particles representing the infinite manifestations of the Tao.",
-    codeSnippet: `// Create the universe from emptiness
-const particleCount = 10000;
+      "Countless motes drift through space like pollen on warm air, following ancient migration patterns written in mathematics.",
+    codeSnippet: `// Seeds of possibility carried by digital wind
+const particleCount = 8000;
 const positions = new Float32Array(particleCount * 3);
-const colors = new Float32Array(particleCount * 3);
+const velocities = new Float32Array(particleCount * 3);
+const phases = new Float32Array(particleCount);
 
 for (let i = 0; i < particleCount; i++) {
-  // Each particle is born from the void
+  // Born from the center, scattered by time
+  const r = Math.pow(Math.random(), 0.4) * 30;
   const theta = Math.random() * Math.PI * 2;
   const phi = Math.acos(2 * Math.random() - 1);
-  const radius = Math.random() * 50;
 
-  positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-  positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-  positions[i * 3 + 2] = radius * Math.cos(phi);
+  positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+  positions[i * 3 + 2] = r * Math.cos(phi);
 
-  // Color flows like energy through the cosmos
-  const hue = (Math.atan2(positions[i * 3 + 1], positions[i * 3]) + Math.PI) / (2 * Math.PI);
-  colors[i * 3] = hue;
-  colors[i * 3 + 1] = 0.7;
-  colors[i * 3 + 2] = 0.8;
-}
-
-const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-const material = new THREE.PointsMaterial({
-  size: 0.02,
-  vertexColors: true,
-  transparent: true,
-  opacity: 0.8,
-  blending: THREE.AdditiveBlending
-});
-
-const particles = new THREE.Points(geometry, material);`,
-  },
-  {
-    title: "Code Ripples",
-    type: "2D",
-    technique: "p5.js Wave Simulation",
-    philosophy: "Every action creates ripples across the digital pond",
-    description:
-      "Touch creates ripples that distort code, showing how observation changes reality.",
-    codeSnippet: `let ripples = [];
-let codeText = "function wisdom() { return silence(); }";
-
-function mousePressed() {
-  ripples.push({
-    x: mouseX,
-    y: mouseY,
-    radius: 0,
-    amplitude: 50,
-    life: 1.0
-  });
-}
-
-function draw() {
-  background(5, 15, 25);
-
-  // Draw code with ripple distortion
-  textAlign(CENTER, CENTER);
-  textSize(24);
-
-  for (let i = 0; i < codeText.length; i++) {
-    let charX = width/2 + (i - codeText.length/2) * 20;
-    let charY = height/2;
-
-    // Each character is touched by all ripples
-    for (let ripple of ripples) {
-      let distance = dist(charX, charY, ripple.x, ripple.y);
-      if (distance < ripple.radius) {
-        let influence = sin(distance * 0.1 - ripple.radius * 0.05);
-        charY += influence * ripple.amplitude * ripple.life;
-      }
-    }
-
-    fill(100, 150, 255, 200);
-    text(codeText.charAt(i), charX, charY);
-  }
-
-  // Update ripples - they fade like all things
-  ripples = ripples.filter(ripple => {
-    ripple.radius += 3;
-    ripple.life *= 0.98;
-    ripple.amplitude *= 0.99;
-    return ripple.life > 0.01;
-  });
+  // Each mote follows its own rhythm
+  velocities[i * 3] = (Math.random() - 0.5) * 0.02;
+  velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+  velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+  
+  phases[i] = Math.random() * Math.PI * 2;
 }`,
   },
   {
-    title: "Floating Geometry",
-    type: "3D",
-    technique: "Three.js Sacred Forms",
-    philosophy: "Form is emptiness, emptiness is form",
+    title: "Stone Ripples",
+    type: "2D",
+    technique: "Interference Patterns",
+    philosophy: "Every keystroke creates waves across the still mind",
     description:
-      "Platonic solids float in meditative space, connected by invisible threads of meaning.",
-    codeSnippet: `// Create sacred forms in the void
-const sacredForms = [];
-const formTypes = [
-  new THREE.TetrahedronGeometry(1),
-  new THREE.OctahedronGeometry(1),
-  new THREE.IcosahedronGeometry(1),
-  new THREE.DodecahedronGeometry(1)
+      "Code rests like stones on water's surface. Touch disturbs the reflection, creating subtle interference patterns.",
+    codeSnippet: `let waves = [];
+const codeLines = [
+  "const wisdom = silence => silence;",
+  "let thoughts = [];",
+  "return undefined;"
 ];
 
-for (let i = 0; i < 12; i++) {
-  const geometry = formTypes[i % formTypes.length];
-  const material = new THREE.MeshStandardMaterial({
-    wireframe: true,
-    transparent: true,
-    opacity: 0.7,
-    color: new THREE.Color().setHSL(i / 12, 0.6, 0.8)
+function addRipple(x, y) {
+  waves.push({
+    x, y,
+    radius: 0,
+    amplitude: 8,
+    frequency: 0.15,
+    decay: 0.995
   });
-
-  const mesh = new THREE.Mesh(geometry, material);
-
-  // Position in golden ratio spiral
-  const phi = 1.618033988749;
-  const angle = i * phi * Math.PI * 2;
-  const radius = Math.sqrt(i) * 3;
-
-  mesh.position.x = Math.cos(angle) * radius;
-  mesh.position.y = (i - 6) * 2;
-  mesh.position.z = Math.sin(angle) * radius;
-
-  // Each form rotates according to its nature
-  mesh.userData = { 
-    rotationSpeed: (i + 1) * 0.01,
-    floatOffset: i * 0.5 
-  };
-
-  sacredForms.push(mesh);
-  scene.add(mesh);
 }
 
-// In the animation loop:
-function animate() {
-  sacredForms.forEach((form, i) => {
-    form.rotation.x += form.userData.rotationSpeed;
-    form.rotation.y += form.userData.rotationSpeed * 0.7;
+function drawCode() {
+  textAlign(LEFT, CENTER);
+  textFont('Monaco', 14);
 
-    // Gentle floating like breath
-    form.position.y += Math.sin(Date.now() * 0.001 + form.userData.floatOffset) * 0.02;
+  codeLines.forEach((line, lineIndex) => {
+    const baseY = height/2 + (lineIndex - 1) * 40;
+    
+    for (let i = 0; i < line.length; i++) {
+      const charX = width/2 - line.length * 4 + i * 8;
+      let charY = baseY;
+
+      // Calculate displacement from all waves
+      let totalDisplacement = 0;
+      waves.forEach(wave => {
+        const distance = dist(charX, baseY, wave.x, wave.y);
+        if (distance < wave.radius) {
+          const influence = sin(distance * wave.frequency - wave.radius * 0.08);
+          totalDisplacement += influence * wave.amplitude;
+        }
+      });
+
+      charY += totalDisplacement;
+      text(line.charAt(i), charX, charY);
+    }
   });
 }`,
   },
   {
-    title: "Breathing Mandala",
-    type: "2D",
-    technique: "p5.js Generative Art",
-    philosophy: "Breathe in code, breathe out wisdom",
+    title: "Lunar Moths",
+    type: "3D",
+    technique: "Organic Path Finding",
+    philosophy: "Form follows the invisible architecture of space",
     description:
-      "A living mandala that breathes with the rhythm of meditation, expanding and contracting like consciousness itself.",
-    codeSnippet: `function drawBreathingMandala() {
-  push();
-  translate(width/2, height/2);
+      "Delicate geometric forms drift like nocturnal moths, drawn to points of light in the digital darkness.",
+    codeSnippet: `// Create ephemeral geometry
+const mothCount = 15;
+const moths = [];
 
-  // The breath of the universe
-  let breathPhase = sin(frameCount * 0.02);
-  let expansion = map(breathPhase, -1, 1, 0.8, 1.2);
-
-  scale(expansion);
-
-  // Draw layers of consciousness
-  for (let layer = 0; layer < 7; layer++) {
-    push();
-
-    let layerRadius = 50 + layer * 40;
-    let petals = 6 + layer * 2;
-
-    // Each layer breathes at its own frequency
-    let layerBreath = sin(frameCount * 0.02 + layer * 0.5);
-    rotate(layerBreath * 0.1);
-
-    // Draw the petals of awareness
-    for (let i = 0; i < petals; i++) {
-      let angle = TWO_PI / petals * i;
-      let x = cos(angle) * layerRadius;
-      let y = sin(angle) * layerRadius;
-
-      push();
-      translate(x, y);
-      rotate(angle + frameCount * 0.01);
-
-      // Each petal glows with inner light
-      let hue = (layer * 30 + i * 10 + frameCount * 0.5) % 360;
-      fill(hue, 60, 90, 150);
-      noStroke();
-
-      // The shape emerges from breath
-      let petalSize = 20 * (1 + layerBreath * 0.3);
-      ellipse(0, 0, petalSize, petalSize * 2);
-
-      pop();
-    }
-
-    pop();
+class DigitalMoth {
+  constructor() {
+    this.position = new THREE.Vector3(
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 20
+    );
+    
+    this.velocity = new THREE.Vector3();
+    this.target = new THREE.Vector3();
+    this.wing_phase = Math.random() * Math.PI * 2;
+    this.wing_speed = 0.1 + Math.random() * 0.05;
+    
+    // Delicate wing geometry
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.quadraticCurveTo(1.5, 0.8, 2, 0);
+    shape.quadraticCurveTo(1.5, -0.3, 0, 0);
+    
+    const geometry = new THREE.ShapeGeometry(shape);
+    const material = new THREE.MeshLambertMaterial({
+      color: 0xf8f8ff,
+      transparent: true,
+      opacity: 0.7,
+      side: THREE.DoubleSide
+    });
+    
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh.scale.setScalar(0.6);
   }
 
-  pop();
+  seekLight(lightPositions) {
+    // Find nearest light
+    let closestLight = lightPositions[0];
+    let minDistance = this.position.distanceTo(closestLight);
+    
+    lightPositions.forEach(light => {
+      const distance = this.position.distanceTo(light);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestLight = light;
+      }
+    });
+
+    // Spiral approach - never quite arriving
+    const direction = closestLight.clone().sub(this.position);
+    const distance = direction.length();
+    
+    if (distance > 1) {
+      direction.normalize().multiplyScalar(0.02);
+      
+      // Add orbital component
+      const perpendicular = new THREE.Vector3()
+        .crossVectors(direction, new THREE.Vector3(0, 1, 0))
+        .normalize()
+        .multiplyScalar(0.015);
+      
+      this.velocity.add(direction).add(perpendicular);
+    }
+    
+    this.velocity.multiplyScalar(0.95); // Gentle dampening
+    this.position.add(this.velocity);
+  }
+
+  flutter() {
+    this.wing_phase += this.wing_speed;
+    const flutter = Math.sin(this.wing_phase) * 0.3;
+    
+    this.mesh.position.copy(this.position);
+    this.mesh.rotation.z = flutter;
+    this.mesh.lookAt(this.position.clone().add(this.velocity));
+  }
 }`,
   },
   {
-    title: "Infinite Loop",
-    type: "3D",
-    technique: "Three.js Möbius Strip",
-    philosophy: "The path that can be traveled has no beginning or end",
+    title: "Fibonacci Garden",
+    type: "2D",
+    technique: "Golden Spiral Growth",
+    philosophy: "Nature's algorithms are written in living geometry",
     description:
-      "Journey along impossible geometries where ending becomes beginning in eternal recursion.",
-    codeSnippet: `// Create the path of eternal return
-function createMobiusStrip(radius = 10, width = 4, segments = 100) {
+      "A garden grows according to the Fibonacci sequence, each leaf and petal emerging in perfect mathematical harmony.",
+    codeSnippet: `class LivingSpiral {
+  constructor(centerX, centerY) {
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.elements = [];
+    this.goldenRatio = 1.618033988749;
+    this.growthRate = 0.02;
+    this.maturity = 0;
+  }
+
+  fibonacci(n) {
+    if (n <= 1) return n;
+    let a = 0, b = 1;
+    for (let i = 2; i <= n; i++) {
+      [a, b] = [b, a + b];
+    }
+    return b;
+  }
+
+  grow() {
+    this.maturity += this.growthRate;
+    const maxElements = Math.floor(this.maturity);
+    
+    while (this.elements.length < maxElements && this.elements.length < 89) {
+      const n = this.elements.length;
+      const angle = n * 2.39996; // Golden angle in radians
+      const radius = Math.sqrt(n) * 8;
+      
+      // Each element follows the spiral
+      const x = this.centerX + Math.cos(angle) * radius;
+      const y = this.centerY + Math.sin(angle) * radius;
+      
+      this.elements.push({
+        x, y, angle,
+        size: this.fibonacci(n % 13) * 0.1,
+        birth: this.maturity,
+        hue: (n * 15) % 360
+      });
+    }
+  }
+
+  bloom(ctx) {
+    this.elements.forEach((element, index) => {
+      const age = this.maturity - element.birth;
+      const growth = Math.min(age / 3, 1); // Gentle emergence
+      const currentSize = element.size * growth;
+      
+      if (currentSize > 0.1) {
+        ctx.save();
+        ctx.translate(element.x, element.y);
+        ctx.rotate(element.angle);
+        
+        // Petal-like shapes with subtle color
+        const opacity = 0.3 + growth * 0.4;
+        ctx.fillStyle = \`hsla(\${element.hue}, 40%, 70%, \${opacity})\`;
+        
+        // Draw organic petal shape
+        ctx.beginPath();
+        ctx.ellipse(0, 0, currentSize * 2, currentSize, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
+      }
+    });
+  }
+}`,
+  },
+  {
+    title: "Breathing Space",
+    type: "3D",
+    technique: "Topological Transformation",
+    philosophy: "Space itself inhales and exhales with consciousness",
+    description:
+      "Explore a Klein bottle that breathes, where inside becomes outside in impossible geometries that pulse with life.",
+    codeSnippet: `// Create a breathing Klein bottle
+function createKleinBottle(time) {
+  const segments = 32;
   const geometry = new THREE.BufferGeometry();
   const vertices = [];
   const indices = [];
 
   for (let i = 0; i <= segments; i++) {
-    const u = i / segments * Math.PI * 2; // 0 to 2π
-
-    for (let j = 0; j <= 10; j++) {
-      const v = (j / 10 - 0.5) * width; // -width/2 to width/2
-
-      // The Möbius transformation - half twist in the loop
-      const x = (radius + v * Math.cos(u / 2)) * Math.cos(u);
-      const y = (radius + v * Math.cos(u / 2)) * Math.sin(u);
-      const z = v * Math.sin(u / 2);
-
-      vertices.push(x, y, z);
-
-      // Connect the path
-      if (i < segments && j < 10) {
-        const a = i * 11 + j;
-        const b = a + 11;
-        const c = a + 1;
-        const d = b + 1;
-
-        indices.push(a, b, c);
-        indices.push(b, d, c);
+    const u = (i / segments) * Math.PI * 2;
+    
+    for (let j = 0; j <= segments; j++) {
+      const v = (j / segments) * Math.PI * 2;
+      
+      // Klein bottle parametric equations with breathing
+      const breathe = 1 + Math.sin(time * 0.0008) * 0.1;
+      const r = 4 * breathe;
+      
+      let x, y, z;
+      
+      if (u < Math.PI) {
+        x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (r + Math.cos(u)) * Math.cos(v + Math.PI);
+        y = 8 * Math.sin(u) + (r + Math.cos(u)) * Math.sin(v + Math.PI);
+        z = -3 * Math.cos(u) * (1 + Math.sin(u));
+      } else {
+        x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (r - Math.cos(u)) * Math.cos(v);
+        y = 8 * Math.sin(u);
+        z = -3 * Math.cos(u) * (1 + Math.sin(u)) + (r - Math.cos(u)) * Math.sin(v);
       }
+      
+      // Gentle scaling with breath
+      x *= breathe;
+      y *= breathe;
+      z *= breathe;
+      
+      vertices.push(x * 0.1, y * 0.1, z * 0.1);
     }
   }
 
@@ -295,443 +337,441 @@ function createMobiusStrip(radius = 10, width = 4, segments = 100) {
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
 
-  const material = new THREE.MeshStandardMaterial({
-    color: 0x4444ff,
-    wireframe: false,
-    transparent: true,
-    opacity: 0.8,
-    side: THREE.DoubleSide
-  });
-
-  return new THREE.Mesh(geometry, material);
-}
-
-// The eternal journey
-let travelerPosition = 0;
-function animateEternalJourney() {
-  travelerPosition += 0.01;
-  if (travelerPosition > Math.PI * 2) {
-    travelerPosition = 0; // Beginning becomes ending becomes beginning
-  }
-
-  // A light travels the infinite path
-  const lightRadius = 10;
-  const lightX = lightRadius * Math.cos(travelerPosition);
-  const lightY = lightRadius * Math.sin(travelerPosition);
-  const lightZ = 2 * Math.sin(travelerPosition / 2);
-
-  pointLight.position.set(lightX, lightY, lightZ);
+  return geometry;
 }`,
   },
   {
-    title: "Nature's Code",
+    title: "Whisper Threads",
     type: "2D",
-    technique: "p5.js L-Systems",
-    philosophy: "Nature is the first programmer",
+    technique: "Emergent Typography",
+    philosophy: "Words form themselves from the silence between thoughts",
     description:
-      "Watch trees grow according to algorithmic rules, as code rain falls from digital skies.",
-    codeSnippet: `class LSystem {
-  constructor(axiom, rules) {
-    this.axiom = axiom;
-    this.rules = rules;
-    this.generation = 0;
-    this.current = axiom;
-  }
-
-  generate() {
-    this.generation++;
-    let next = "";
-
-    for (let char of this.current) {
-      if (this.rules[char]) {
-        next += this.rules[char];
-      } else {
-        next += char;
-      }
+      "Watch as text emerges from invisible threads, weaving meaning from the spaces between letters.",
+    codeSnippet: `class WhisperThread {
+  constructor(startChar, endChar, message) {
+    this.message = message;
+    this.progress = 0;
+    this.speed = 0.008;
+    this.threads = [];
+    
+    // Create invisible threads between characters
+    for (let i = 0; i < this.message.length; i++) {
+      this.threads.push({
+        char: this.message[i],
+        x: startChar.x + (endChar.x - startChar.x) * (i / this.message.length),
+        y: startChar.y + (endChar.y - startChar.y) * (i / this.message.length),
+        alpha: 0,
+        emergence: i * 0.1,
+        vibration: random(0.5, 1.5)
+      });
     }
-
-    this.current = next;
   }
 
-  render(x, y, angle, length) {
-    push();
-    translate(x, y);
-    rotate(angle);
-
-    let stack = [];
-    let currentAngle = 0;
-
-    for (let char of this.current) {
-      switch(char) {
-        case 'F': // Draw forward
-          stroke(34, 139, 34, 200);
-          strokeWeight(map(length, 1, 100, 0.5, 3));
-          line(0, 0, length, 0);
-          translate(length, 0);
-          break;
-
-        case '+': // Turn right
-          currentAngle += PI / 6;
-          rotate(PI / 6);
-          break;
-
-        case '-': // Turn left
-          currentAngle -= PI / 6;
-          rotate(-PI / 6);
-          break;
-
-        case '[': // Save state
-          stack.push({
-            x: 0, y: 0,
-            angle: currentAngle
-          });
-          push();
-          break;
-
-        case ']': // Restore state
-          pop();
-          if (stack.length > 0) {
-            let state = stack.pop();
-            currentAngle = state.angle;
-          }
-          break;
+  weave() {
+    this.progress += this.speed;
+    
+    this.threads.forEach((thread, index) => {
+      const localProgress = this.progress - thread.emergence;
+      
+      if (localProgress > 0) {
+        thread.alpha = Math.min(localProgress * 2, 1) * 
+                      (0.7 + Math.sin(millis() * 0.01 * thread.vibration) * 0.3);
+        
+        // Gentle floating motion
+        thread.y += Math.sin(millis() * 0.003 + index) * 0.1;
       }
-    }
-
-    pop();
-  }
-}
-
-// The tree of knowledge grows
-let tree = new LSystem("F", {
-  "F": "F[+F]F[-F]F"
-});
-
-function setup() {
-  createCanvas(800, 600);
-  background(5, 15, 25);
-}
-
-function draw() {
-  background(5, 15, 25, 10); // Gentle fade
-
-  // Grow the tree over time
-  if (frameCount % 120 === 0 && tree.generation < 5) {
-    tree.generate();
+    });
   }
 
-  // Draw the tree
-  tree.render(width/2, height - 50, -PI/2, 8);
+  whisper(ctx) {
+    ctx.font = '14px Times';
+    
+    this.threads.forEach(thread => {
+      if (thread.alpha > 0) {
+        ctx.fillStyle = \`rgba(120, 120, 120, \${thread.alpha})\`;
+        ctx.fillText(thread.char, thread.x, thread.y);
+        
+        // Add subtle glow
+        ctx.fillStyle = \`rgba(180, 180, 180, \${thread.alpha * 0.3})\`;
+        ctx.fillText(thread.char, thread.x + 0.5, thread.y + 0.5);
+      }
+    });
+  }
 
-  // Code rain falls from the digital sky
-  drawCodeRain();
+  isComplete() {
+    return this.progress > this.threads.length * 0.1 + 1;
+  }
 }`,
   },
   {
-    title: "Quantum Field",
+    title: "Memory Palace",
     type: "3D",
-    technique: "Three.js Particle Physics",
-    philosophy:
-      "Observation collapses infinite possibilities into singular reality",
+    technique: "Recursive Architecture",
+    philosophy: "Every thought builds a room in the infinite library of mind",
     description:
-      "Explore quantum mechanics through interactive particles that exist in superposition until observed.",
-    codeSnippet: `class QuantumParticle {
-  constructor(x, y, z) {
-    this.position = new THREE.Vector3(x, y, z);
-    this.superposition = [];
-    this.isObserved = false;
-    this.waveFunction = 0;
-
-    // Create multiple potential positions
-    for (let i = 0; i < 8; i++) {
-      this.superposition.push(new THREE.Vector3(
-        x + (Math.random() - 0.5) * 10,
-        y + (Math.random() - 0.5) * 10,
-        z + (Math.random() - 0.5) * 10
-      ));
+      "Navigate through impossible architectural spaces where memories take the form of floating geometric structures.",
+    codeSnippet: `class MemoryRoom {
+  constructor(depth = 0, maxDepth = 4) {
+    this.depth = depth;
+    this.maxDepth = maxDepth;
+    this.memories = [];
+    this.portals = [];
+    this.ambient = new THREE.Group();
+    
+    this.createArchitecture();
+    
+    if (depth < maxDepth) {
+      this.createPortals();
     }
   }
 
-  update(observerPosition) {
-    this.waveFunction += 0.1;
+  createArchitecture() {
+    // Each room has unique proportions based on depth
+    const scale = Math.pow(0.7, this.depth);
+    const hue = (this.depth * 60) % 360;
+    
+    // Floating memory fragments
+    for (let i = 0; i < 8 - this.depth; i++) {
+      const memory = this.createMemoryFragment(scale, hue);
+      this.memories.push(memory);
+      this.ambient.add(memory.mesh);
+    }
+    
+    // Ethereal walls that fade with depth
+    const wallMaterial = new THREE.MeshPhongMaterial({
+      color: new THREE.Color().setHSL(hue / 360, 0.3, 0.8),
+      transparent: true,
+      opacity: 0.1 / (this.depth + 1),
+      side: THREE.DoubleSide
+    });
+    
+    // Create room boundaries
+    const roomSize = 20 * scale;
+    
+    [-1, 1].forEach(side => {
+      const wall = new THREE.Mesh(
+        new THREE.PlaneGeometry(roomSize, roomSize),
+        wallMaterial
+      );
+      wall.position.set(side * roomSize/2, 0, 0);
+      wall.rotation.y = side > 0 ? Math.PI/2 : -Math.PI/2;
+      this.ambient.add(wall);
+    });
+  }
 
-    // Check if particle is being observed
-    const distance = this.position.distanceTo(observerPosition);
-    this.isObserved = distance < 15;
+  createMemoryFragment(scale, hue) {
+    const shapes = [
+      new THREE.DodecahedronGeometry(1),
+      new THREE.OctahedronGeometry(1),
+      new THREE.TetrahedronGeometry(1),
+      new THREE.IcosahedronGeometry(1)
+    ];
+    
+    const geometry = shapes[Math.floor(Math.random() * shapes.length)];
+    const material = new THREE.MeshPhongMaterial({
+      color: new THREE.Color().setHSL((hue + Math.random() * 60) / 360, 0.6, 0.7),
+      transparent: true,
+      opacity: 0.7,
+      shininess: 100
+    });
+    
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(
+      (Math.random() - 0.5) * 15 * scale,
+      (Math.random() - 0.5) * 10 * scale,
+      (Math.random() - 0.5) * 15 * scale
+    );
+    
+    mesh.scale.setScalar(0.3 * scale);
+    
+    return {
+      mesh,
+      rotationSpeed: {
+        x: (Math.random() - 0.5) * 0.02,
+        y: (Math.random() - 0.5) * 0.02,
+        z: (Math.random() - 0.5) * 0.02
+      },
+      floatPhase: Math.random() * Math.PI * 2,
+      floatSpeed: 0.005 + Math.random() * 0.005,
+      originalY: mesh.position.y
+    };
+  }
 
-    if (this.isObserved) {
-      // Wave function collapse - choose one reality
-      if (this.superposition.length > 1) {
-        const chosen = Math.floor(Math.random() * this.superposition.length);
-        this.position.copy(this.superposition[chosen]);
-        this.superposition = [this.position.clone()];
-      }
-    } else {
-      // Exist in superposition - quantum fluctuation
-      if (this.superposition.length === 1) {
-        // Return to multiple possibilities
-        for (let i = 0; i < 8; i++) {
-          this.superposition.push(new THREE.Vector3(
-            this.position.x + (Math.random() - 0.5) * 10,
-            this.position.y + (Math.random() - 0.5) * 10,
-            this.position.z + (Math.random() - 0.5) * 10
-          ));
+  animate() {
+    this.memories.forEach(memory => {
+      // Gentle rotation
+      memory.mesh.rotation.x += memory.rotationSpeed.x;
+      memory.mesh.rotation.y += memory.rotationSpeed.y;
+      memory.mesh.rotation.z += memory.rotationSpeed.z;
+      
+      // Floating motion
+      memory.floatPhase += memory.floatSpeed;
+      memory.mesh.position.y = memory.originalY + 
+        Math.sin(memory.floatPhase) * 0.5;
+    });
+  }
+
+  getPresence() {
+    return this.ambient;
+  }
+}`,
+  },
+  {
+    title: "Digital Zen Garden",
+    type: "2D",
+    technique: "Procedural Simplicity",
+    philosophy: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away",
+    description:
+      "A minimal garden where each element appears through patient meditation, creating patterns of profound simplicity.",
+    codeSnippet: `class ZenGarden {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+    this.stones = [];
+    this.raked_lines = [];
+    this.meditation_time = 0;
+    this.last_placement = 0;
+    this.patience_required = 3000; // milliseconds
+  }
+
+  meditate() {
+    this.meditation_time += 16; // delta time
+    
+    // Stones appear through patience
+    if (this.meditation_time - this.last_placement > this.patience_required) {
+      this.placeStone();
+      this.last_placement = this.meditation_time;
+      this.patience_required *= 1.2; // Each stone requires more patience
+    }
+    
+    // Rake lines flow around stones
+    this.updateRaking();
+  }
+
+  placeStone() {
+    if (this.stones.length < 7) { // Sacred number of stones
+      const attempts = 50;
+      let placed = false;
+      
+      for (let i = 0; i < attempts && !placed; i++) {
+        const x = random(this.width * 0.2, this.width * 0.8);
+        const y = random(this.height * 0.2, this.height * 0.8);
+        
+        // Check minimum distance from other stones
+        let validPlacement = true;
+        this.stones.forEach(stone => {
+          if (dist(x, y, stone.x, stone.y) < 80) {
+            validPlacement = false;
+          }
+        });
+        
+        if (validPlacement) {
+          this.stones.push({
+            x, y,
+            size: random(15, 35),
+            birth: this.meditation_time,
+            settled: false
+          });
+          placed = true;
         }
       }
-
-      // Wave-like motion through possibilities
-      const avgPos = new THREE.Vector3();
-      this.superposition.forEach(pos => avgPos.add(pos));
-      avgPos.divideScalar(this.superposition.length);
-
-      avgPos.x += Math.sin(this.waveFunction) * 2;
-      avgPos.y += Math.cos(this.waveFunction * 1.3) * 2;
-      avgPos.z += Math.sin(this.waveFunction * 0.7) * 2;
-
-      this.position.copy(avgPos);
     }
   }
 
-  render(scene) {
-    if (this.isObserved) {
-      // Solid particle - reality crystallized
-      const geometry = new THREE.SphereGeometry(0.2);
-      const material = new THREE.MeshStandardMaterial({
-        color: 0xff4444,
-        emissive: 0x441111
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.copy(this.position);
-      return mesh;
-    } else {
-      // Probability cloud - all possibilities at once
-      const geometry = new THREE.SphereGeometry(0.5);
-      const material = new THREE.MeshStandardMaterial({
-        color: 0x4444ff,
-        transparent: true,
-        opacity: 0.3,
-        emissive: 0x111144
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.copy(this.position);
-      return mesh;
+  updateRaking() {
+    this.raked_lines = [];
+    
+    // Create flowing lines that respect the stones
+    for (let y = 50; y < this.height - 50; y += 8) {
+      const line = [];
+      
+      for (let x = 30; x < this.width - 30; x += 3) {
+        let rake_y = y;
+        
+        // Lines curve around stones
+        this.stones.forEach(stone => {
+          const distance = dist(x, y, stone.x, stone.y);
+          const influence = stone.size + 20;
+          
+          if (distance < influence) {
+            const angle = atan2(y - stone.y, x - stone.x);
+            const deflection = map(distance, 0, influence, 15, 0);
+            rake_y += sin(angle + PI/2) * deflection;
+          }
+        });
+        
+        line.push({x, y: rake_y});
+      }
+      
+      this.raked_lines.push(line);
     }
   }
-}`,
-  },
-  {
-    title: "Sacred Code",
-    type: "3D",
-    technique: "Three.js Sacred Geometry",
-    philosophy: "As above, so below - as in mathematics, so in code",
-    description:
-      "Sacred geometric patterns merge with programming symbols in divine mathematical harmony.",
-    codeSnippet: `// The golden ratio - nature's own constant
-const PHI = 1.618033988749;
 
-function fibonacci(n) {
-  if (n < 2) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// Create the flower of life in 3D space
-function createFlowerOfLife() {
-  const group = new THREE.Group();
-  const radius = 3;
-
-  // Seven circles - the seed of life
-  for (let i = 0; i < 7; i++) {
-    const geometry = new THREE.TorusGeometry(radius, 0.1, 16, 32);
-    const material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color().setHSL(i / 7, 0.7, 0.8),
-      transparent: true,
-      opacity: 0.8
+  contemplate(ctx) {
+    // Soft sand background
+    ctx.fillStyle = '#f8f6f0';
+    ctx.fillRect(0, 0, this.width, this.height);
+    
+    // Draw raked patterns
+    ctx.strokeStyle = 'rgba(180, 170, 160, 0.6)';
+    ctx.lineWidth = 1;
+    
+    this.raked_lines.forEach(line => {
+      ctx.beginPath();
+      line.forEach((point, index) => {
+        if (index === 0) {
+          ctx.moveTo(point.x, point.y);
+        } else {
+          ctx.lineTo(point.x, point.y);
+        }
+      });
+      ctx.stroke();
     });
-
-    const torus = new THREE.Mesh(geometry, material);
-
-    if (i === 0) {
-      // Center circle
-      torus.position.set(0, 0, 0);
-    } else {
-      // Surrounding circles in perfect harmony
-      const angle = (i - 1) * Math.PI / 3;
-      torus.position.x = Math.cos(angle) * radius;
-      torus.position.y = Math.sin(angle) * radius;
-      torus.position.z = 0;
-    }
-
-    group.add(torus);
+    
+    // Draw stones with gentle shadows
+    this.stones.forEach(stone => {
+      const age = this.meditation_time - stone.birth;
+      const emergence = Math.min(age / 2000, 1); // Slow emergence
+      
+      if (emergence > 0) {
+        // Stone shadow
+        ctx.fillStyle = \`rgba(140, 130, 120, \${emergence * 0.3})\`;
+        ctx.beginPath();
+        ctx.ellipse(
+          stone.x + 2, stone.y + 2,
+          stone.size * emergence, stone.size * emergence * 0.7,
+          0, 0, Math.PI * 2
+        );
+        ctx.fill();
+        
+        // Stone itself
+        ctx.fillStyle = \`rgba(90, 85, 80, \${emergence})\`;
+        ctx.beginPath();
+        ctx.ellipse(
+          stone.x, stone.y,
+          stone.size * emergence, stone.size * emergence * 0.8,
+          0, 0, Math.PI * 2
+        );
+        ctx.fill();
+      }
+    });
   }
 
-  return group;
-}
-
-// Fibonacci spiral in space
-function createFibonacciSpiral() {
-  const curve = new THREE.CatmullRomCurve3([]);
-  const points = [];
-
-  for (let i = 0; i < 50; i++) {
-    const fib = fibonacci(i % 10 + 1);
-    const angle = i * PHI;
-    const radius = fib * 0.5;
-
-    points.push(new THREE.Vector3(
-      Math.cos(angle) * radius,
-      Math.sin(angle) * radius,
-      i * 0.2
-    ));
+  isEmpty() {
+    return this.stones.length === 0;
   }
 
-  curve.points = points;
-
-  const geometry = new THREE.TubeGeometry(curve, 100, 0.1, 8, false);
-  const material = new THREE.MeshStandardMaterial({
-    color: 0xffd700,
-    emissive: 0x332200
-  });
-
-  return new THREE.Mesh(geometry, material);
-}
-
-// The recursive nature of reality
-function fractalTree(position, direction, length, depth) {
-  if (depth === 0) return [];
-
-  const branches = [];
-  const endPosition = position.clone().add(
-    direction.clone().multiplyScalar(length)
-  );
-
-  // Create the branch
-  const geometry = new THREE.CylinderGeometry(
-    length * 0.1, length * 0.05, length, 8
-  );
-  const material = new THREE.MeshStandardMaterial({
-    color: new THREE.Color().setHSL(depth / 8, 0.6, 0.4)
-  });
-
-  const branch = new THREE.Mesh(geometry, material);
-  branch.position.copy(position.clone().add(
-    direction.clone().multiplyScalar(length / 2)
-  ));
-  branch.lookAt(endPosition);
-
-  branches.push(branch);
-
-  // Recursive branching - the golden angle
-  const goldenAngle = Math.PI * 2 / PHI;
-  for (let i = 0; i < 3; i++) {
-    const newDirection = direction.clone();
-    newDirection.applyAxisAngle(
-      new THREE.Vector3(1, 0, 0), 
-      (Math.random() - 0.5) * goldenAngle
-    );
-    newDirection.applyAxisAngle(
-      new THREE.Vector3(0, 1, 0), 
-      (Math.random() - 0.5) * goldenAngle
-    );
-
-    const subBranches = fractalTree(
-      endPosition,
-      newDirection,
-      length * 0.7,
-      depth - 1
-    );
-    branches.push(...subBranches);
+  achieveSatori() {
+    return this.stones.length >= 7 && 
+           this.meditation_time > 30000; // 30 seconds of patience
   }
-
-  return branches;
 }`,
   },
   {
     title: "The Void",
-    type: "3D",
-    technique: "Three.js Minimalism",
+    type: "2D",
+    technique: "Conscious Emptiness",
     philosophy: "In emptiness, all possibilities exist",
     description:
-      "Enter the void where all code begins and ends - a space of pure potential and infinite silence.",
-    codeSnippet: `// In the beginning was the Void
-class TheVoid {
-  constructor() {
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
-
-    // Only what is necessary exists
-    this.geometry = new THREE.SphereGeometry(0.01);
-    this.material = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.1
-    });
-
-    this.presence = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.presence);
-
-    // The sound of one hand clapping
-    this.silence = new Audio(); // No sound file - pure silence
+      "The final artwork: a canvas that embraces nothingness, where the absence of content becomes the most profound presence.",
+    codeSnippet: `class EmptyCanvas {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+    this.silence = [];
+    this.void_depth = 0;
+    this.presence_absence = true;
   }
 
-  meditate() {
-    // In stillness, all movement is contained
-    this.presence.rotation.x += 0.001;
-    this.presence.rotation.y += 0.001;
-
-    // Breathe the void
-    const breath = Math.sin(Date.now() * 0.001) * 0.5 + 0.5;
-    this.presence.scale.setScalar(breath * 0.1 + 0.9);
-
-    // Sometimes, something emerges from nothing
-    if (Math.random() < 0.001) {
-      this.spark();
+  breathe() {
+    // Even emptiness has rhythm
+    this.void_depth += 0.001;
+    
+    // Occasionally, the faintest suggestion of something
+    if (Math.random() < 0.0001) {
+      this.addWhisper();
     }
   }
 
-  spark() {
-    // A brief flash of possibility
-    const light = new THREE.PointLight(0xffffff, 1, 10);
-    light.position.set(
-      (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 20
-    );
+  render(ctx) {
+    // The color of deep space
+    const depth_alpha = Math.sin(this.void_depth) * 0.02 + 0.98;
+    ctx.fillStyle = \`rgba(8, 8, 8, \${depth_alpha})\`;
+    ctx.fillRect(0, 0, this.width, this.height);
+    
+    // Render accumulated silence
+    this.silence.forEach((whisper, index) => {
+      this.renderNothing(ctx, whisper, index);
+    });
+  }
 
-    this.scene.add(light);
+  addWhisper() {
+    // Something that is almost nothing
+    this.silence.push({
+      x: Math.random() * this.width,
+      y: Math.random() * this.height,
+      existence: 0.001,
+      meaning: undefined
+    });
+    
+    // Keep only the most recent absences
+    if (this.silence.length > 3) {
+      this.silence.shift();
+    }
+  }
 
-    // And then, return to source
+  renderNothing(ctx, whisper, index) {
+    // The visual representation of absence
+    const x = whisper.x;
+    const y = whisper.y;
+    
+    ctx.fillStyle = 'rgba(180, 180, 180, 0.05)';
+    ctx.beginPath();
+    ctx.arc(x, y, 1, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // It fades immediately
     setTimeout(() => {
-      this.scene.remove(light);
+      // Already gone
     }, 100);
   }
 
-  enter() {
-    // To enter the void, one must become the void
-    return new Promise(resolve => {
-      // Wait in silence
-      setTimeout(() => {
-        resolve("You are already here");
-      }, 1000);
-    });
+  meditate() {
+    this.breathe();
+    return this.silence.length; // The accumulation of emptiness
+  }
+
+  clear() {
+    // Nothing to clear - already empty
+    return this;
   }
 }
 
-// The void is not empty - it is full of potential
-function void() {
-  return null; // But what is null?
+// Usage
+let canvas;
+
+function setup() {
+  createCanvas(600, 400);
+  canvas = new EmptyCanvas(width, height);
 }
 
-// In nothingness, everything begins
-const universe = void() || new TheVoid();
+function draw() {
+  canvas.meditate();
+  canvas.render(drawingContext);
+  
+  // The paradox: showing emptiness requires showing something
+  // But what we show is the container for nothingness
+}
 
-// The first line of code ever written
-console.log(""); // Empty string - infinite possibility
+// The most important function
+function void() {
+  // This space intentionally left blank
+  return undefined;
+}
 
-/* 
- * In the space between thoughts
- * In the pause between breaths  
- * In the silence between notes
- * There lives the eternal code
+// What remains when all code is removed?
+/*
+ * .
  */`,
-  },
+  }
 ];
