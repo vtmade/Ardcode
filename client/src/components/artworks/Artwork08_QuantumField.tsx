@@ -1,312 +1,172 @@
-import { useFrame } from "@react-three/fiber";
-import { useRef, useMemo, useState } from "react";
-import { Points, PointMaterial, Text } from "@react-three/drei";
-import * as THREE from "three";
-
-function QuantumParticles() {
-  const pointsRef = useRef<THREE.Points>(null);
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  // Generate quantum field particles
-  const { positions, colors, velocities } = useMemo(() => {
-    const count = 2000;
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const velocities = new Float32Array(count * 3);
-    
-    for (let i = 0; i < count; i++) {
-      // Quantum field distribution
-      positions[i * 3] = (Math.random() - 0.5) * 20;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
-      
-      // Quantum state colors (probability amplitudes)
-      const quantum = Math.random();
-      colors[i * 3] = quantum; // Red - excited state
-      colors[i * 3 + 1] = 1 - quantum; // Green - ground state  
-      colors[i * 3 + 2] = Math.sin(quantum * Math.PI); // Blue - superposition
-      
-      // Quantum fluctuations
-      velocities[i * 3] = (Math.random() - 0.5) * 0.02;
-      velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
-    }
-    
-    return { positions, colors, velocities };
-  }, []);
-
-  useFrame((state) => {
-    if (!pointsRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    const positionsAttribute = pointsRef.current.geometry.attributes.position;
-    const colorsAttribute = pointsRef.current.geometry.attributes.color;
-    
-    // Observer effect - mouse interaction collapses wave function
-    const observerX = state.mouse.x * 10;
-    const observerY = state.mouse.y * 10;
-    
-    for (let i = 0; i < 2000; i++) {
-      const i3 = i * 3;
-      
-      // Current position
-      let x = positionsAttribute.array[i3];
-      let y = positionsAttribute.array[i3 + 1];
-      let z = positionsAttribute.array[i3 + 2];
-      
-      // Quantum wave function
-      const waveX = Math.sin(time * 0.5 + x * 0.1) * 0.5;
-      const waveY = Math.cos(time * 0.3 + y * 0.1) * 0.5;
-      const waveZ = Math.sin(time * 0.7 + z * 0.1) * 0.5;
-      
-      // Observer effect - collapse wave function near mouse
-      const distanceToObserver = Math.sqrt(
-        (x - observerX) ** 2 + (y - observerY) ** 2
-      );
-      
-      const collapseRadius = 3;
-      const collapseStrength = Math.max(0, 1 - distanceToObserver / collapseRadius);
-      
-      // Apply quantum effects
-      x += velocities[i3] + waveX * (1 - collapseStrength);
-      y += velocities[i3 + 1] + waveY * (1 - collapseStrength);
-      z += velocities[i3 + 2] + waveZ * (1 - collapseStrength);
-      
-      // Quantum tunneling - particles can teleport
-      if (Math.random() < 0.001) {
-        x = (Math.random() - 0.5) * 20;
-        y = (Math.random() - 0.5) * 20;
-        z = (Math.random() - 0.5) * 20;
-      }
-      
-      // Boundary conditions
-      if (Math.abs(x) > 10) x *= -0.9;
-      if (Math.abs(y) > 10) y *= -0.9;
-      if (Math.abs(z) > 10) z *= -0.9;
-      
-      positionsAttribute.array[i3] = x;
-      positionsAttribute.array[i3 + 1] = y;
-      positionsAttribute.array[i3 + 2] = z;
-      
-      // Update color based on quantum state
-      const energyLevel = Math.sin(time + distanceToObserver) * 0.5 + 0.5;
-      colorsAttribute.array[i3] = energyLevel * 0.8 + 0.2; // R
-      colorsAttribute.array[i3 + 1] = (1 - energyLevel) * 0.6 + 0.4; // G
-      colorsAttribute.array[i3 + 2] = collapseStrength * 0.9 + 0.1; // B
-    }
-    
-    positionsAttribute.needsUpdate = true;
-    colorsAttribute.needsUpdate = true;
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={2000}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={2000}
-          array={colors}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.03}
-        vertexColors={true}
-        transparent={true}
-        opacity={0.8}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
-  );
-}
-
-function WaveFunction() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    const geometry = meshRef.current.geometry as THREE.PlaneGeometry;
-    const positionAttribute = geometry.attributes.position;
-    
-    // Update wave function vertices
-    for (let i = 0; i < positionAttribute.count; i++) {
-      const x = positionAttribute.getX(i);
-      const y = positionAttribute.getY(i);
-      
-      const wave1 = Math.sin(x * 0.5 + time) * 0.5;
-      const wave2 = Math.cos(y * 0.3 + time * 0.7) * 0.3;
-      const interference = Math.sin(x * 0.2 + y * 0.2 + time * 0.5) * 0.2;
-      
-      positionAttribute.setZ(i, wave1 + wave2 + interference);
-    }
-    
-    positionAttribute.needsUpdate = true;
-    geometry.computeVertexNormals();
-  });
-
-  return (
-    <mesh ref={meshRef} position={[0, -5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[20, 20, 50, 50]} />
-      <meshStandardMaterial
-        color="#8b7355"
-        transparent
-        opacity={0.3}
-        wireframe={true}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
-  );
-}
-
-function ProbabilityDensity() {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    
-    const time = state.clock.elapsedTime;
-    groupRef.current.rotation.y = time * 0.1;
-    
-    // Update probability clouds
-    groupRef.current.children.forEach((child, index) => {
-      if (child instanceof THREE.Mesh) {
-        const scale = Math.abs(Math.sin(time * 0.5 + index)) * 0.5 + 0.5;
-        child.scale.setScalar(scale);
-        
-        // Quantum superposition
-        child.material.opacity = scale * 0.3;
-      }
-    });
-  });
-
-  // Create probability density clouds
-  const orbitalShapes = useMemo(() => {
-    const shapes = [];
-    
-    // S orbital
-    shapes.push({
-      geometry: new THREE.SphereGeometry(1, 16, 16),
-      position: [0, 2, 0],
-      color: "#8b7355"
-    });
-    
-    // P orbitals
-    for (let i = 0; i < 3; i++) {
-      shapes.push({
-        geometry: new THREE.CapsuleGeometry(0.3, 2, 8, 16),
-        position: [
-          Math.cos(i * Math.PI * 2 / 3) * 3,
-          0,
-          Math.sin(i * Math.PI * 2 / 3) * 3
-        ],
-        color: "#a68b5b",
-        rotation: [0, i * Math.PI * 2 / 3, Math.PI / 2]
-      });
-    }
-    
-    return shapes;
-  }, []);
-
-  return (
-    <group ref={groupRef}>
-      {orbitalShapes.map((shape, index) => (
-        <mesh
-          key={index}
-          geometry={shape.geometry}
-          position={shape.position as [number, number, number]}
-          rotation={shape.rotation as [number, number, number] || [0, 0, 0]}
-        >
-          <meshStandardMaterial
-            color={shape.color}
-            transparent
-            opacity={0.2}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-function QuantumEquations() {
-  const equations = [
-    "Ψ(x,t) = A e^(i(kx-ωt))",
-    "ΔxΔp ≥ ℏ/2",
-    "Ĥ|ψ⟩ = E|ψ⟩",
-    "|ψ⟩ = α|0⟩ + β|1⟩"
-  ];
-
-  return (
-    <group>
-      {equations.map((equation, index) => (
-        <Text
-          key={index}
-          position={[
-            Math.sin(index * Math.PI / 2) * 8,
-            4 + Math.cos(index * Math.PI / 3) * 2,
-            Math.cos(index * Math.PI / 2) * 8
-          ]}
-          fontSize={0.3}
-          color="#c4b59a"
-          anchorX="center"
-          anchorY="middle"
-
-        >
-          {equation}
-        </Text>
-      ))}
-    </group>
-  );
-}
+import { useEffect, useRef } from 'react';
 
 export default function Artwork08_QuantumField() {
-  return (
-    <>
-      {/* Quantum lighting */}
-      <ambientLight intensity={0.1} color="#2a2a4a" />
-      
-      <pointLight 
-        position={[0, 0, 0]} 
-        intensity={0.5} 
-        color="#8b7355"
-        distance={15}
-      />
-      
-      <spotLight
-        position={[10, 10, 10]}
-        angle={0.3}
-        penumbra={1}
-        intensity={0.3}
-        color="#a68b5b"
-      />
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>();
 
-      {/* Quantum field components */}
-      <QuantumParticles />
-      <WaveFunction />
-      <ProbabilityDensity />
-      <QuantumEquations />
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-      {/* Observer consciousness */}
-      <Text
-        position={[0, 8, 0]}
-        fontSize={0.4}
-        color="#c4b59a"
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={10}
-        textAlign="center"
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Whisper Threads - text emerges from invisible threads
+    let time = 0;
+    const whispers: Array<{
+      message: string;
+      progress: number;
+      speed: number;
+      threads: Array<{
+        char: string;
+        x: number;
+        y: number;
+        alpha: number;
+        emergence: number;
+        vibration: number;
+      }>;
+    }> = [];
+
+    const messages = [
+      "consciousness flows like code",
+      "thoughts weave reality",
+      "silence speaks volumes",
+      "between the lines",
+      "invisible architectures"
+    ];
+
+    // Initialize whisper threads
+    messages.forEach((message, index) => {
+      const whisper = {
+        message,
+        progress: 0,
+        speed: 0.008,
+        threads: [] as any[]
+      };
+
+      // Create invisible threads between characters
+      for (let i = 0; i < message.length; i++) {
+        const startX = canvas.width * 0.2;
+        const endX = canvas.width * 0.8;
+        const baseY = canvas.height * 0.3 + index * 60;
+
+        whisper.threads.push({
+          char: message[i],
+          x: startX + (endX - startX) * (i / message.length),
+          y: baseY + Math.sin(i * 0.5) * 20,
+          alpha: 0,
+          emergence: i * 0.1,
+          vibration: 0.5 + Math.random()
+        });
+      }
+
+      whispers.push(whisper);
+    });
+
+    const animate = () => {
+      time += 0.016;
+
+      // Deep space background
+      ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Update and render whisper threads
+      whispers.forEach((whisper, whisperIndex) => {
+        whisper.progress += whisper.speed;
+
+        whisper.threads.forEach((thread, threadIndex) => {
+          const localProgress = whisper.progress - thread.emergence;
+
+          if (localProgress > 0) {
+            thread.alpha = Math.min(localProgress * 2, 1) * 
+                          (0.7 + Math.sin(time * 0.01 * thread.vibration) * 0.3);
+
+            // Gentle floating motion
+            thread.y += Math.sin(time * 0.003 + threadIndex) * 0.1;
+          }
+
+          // Render the character
+          if (thread.alpha > 0) {
+            ctx.fillStyle = `rgba(160, 180, 200, ${thread.alpha})`;
+            ctx.font = '16px Georgia';
+            ctx.textAlign = 'center';
+            ctx.fillText(thread.char, thread.x, thread.y);
+
+            // Add subtle glow
+            ctx.fillStyle = `rgba(200, 220, 240, ${thread.alpha * 0.3})`;
+            ctx.fillText(thread.char, thread.x + 0.5, thread.y + 0.5);
+
+            // Draw connecting threads between characters
+            if (threadIndex > 0 && whisper.threads[threadIndex - 1].alpha > 0) {
+              const prevThread = whisper.threads[threadIndex - 1];
+              ctx.strokeStyle = `rgba(120, 140, 160, ${Math.min(thread.alpha, prevThread.alpha) * 0.2})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(prevThread.x, prevThread.y);
+              ctx.lineTo(thread.x, thread.y);
+              ctx.stroke();
+            }
+          }
+        });
+
+        // Reset whisper when complete
+        if (whisper.progress > whisper.threads.length * 0.1 + 2) {
+          whisper.progress = -Math.random() * 2; // Random delay before restarting
+        }
+      });
+
+      // Add quantum field effects - subtle particle whispers
+      if (Math.random() < 0.02) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
         
-      >
-        {"The act of observation\ncollapses infinite possibilities\ninto singular reality"}
-      </Text>
-    </>
+        ctx.fillStyle = `rgba(100, 120, 140, ${Math.random() * 0.3})`;
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 2 + 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div style={{ 
+      width: '100%', 
+      height: '100%', 
+      backgroundColor: '#0a0a0f',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative'
+    }}>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%'
+        }}
+      />
+    </div>
   );
 }
