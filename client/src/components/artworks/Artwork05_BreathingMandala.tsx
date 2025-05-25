@@ -87,14 +87,18 @@ export default function Artwork05_BreathingMandala() {
         // Each shape has its own phase and movement
         const shapePhase = time + shapeIndex * Math.PI * 2 / numShapes;
         
-        // Shape center offsets with gentle mouse influence
+        // Enhanced mouse influence with multiple layers
         const mouseDx = mouseX - centerX;
         const mouseDy = mouseY - centerY;
         const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
-        const mouseEffect = mouseInfluence * 0.3 * (1 - Math.min(mouseDistance / 300, 1));
+        const mouseEffect = mouseInfluence * 0.5 * (1 - Math.min(mouseDistance / 400, 1));
         
-        const offsetX = Math.sin(shapePhase * 0.2) * 40 * scaleFactor + mouseDx * mouseEffect * 0.1;
-        const offsetY = Math.cos(shapePhase * 0.3) * 40 * scaleFactor + mouseDy * mouseEffect * 0.1;
+        // Gentle attraction plus mouse-following spiral
+        const mouseAngle = Math.atan2(mouseDy, mouseDx);
+        const spiralEffect = Math.sin(time * 2 + mouseAngle * 3) * mouseEffect * 20;
+        
+        const offsetX = Math.sin(shapePhase * 0.2) * 40 * scaleFactor + mouseDx * mouseEffect * 0.15 + Math.cos(mouseAngle) * spiralEffect;
+        const offsetY = Math.cos(shapePhase * 0.3) * 40 * scaleFactor + mouseDy * mouseEffect * 0.15 + Math.sin(mouseAngle) * spiralEffect;
         
         // Draw contour lines for this shape
         for (let contour = 0; contour < contoursPerShape; contour++) {
@@ -119,10 +123,15 @@ export default function Artwork05_BreathingMandala() {
             // Base radius with noise - now 50% larger
             let radius = scale;
             
-            // Add complexity with multiple sine waves at different frequencies
+            // Enhanced complexity with mouse-reactive waves
+            const angleToMouse = Math.atan2(mouseY - (centerY + offsetY), mouseX - (centerX + offsetX));
+            const angleDiff = angle - angleToMouse;
+            const mouseWave = mouseInfluence * 0.3 * Math.sin(angleDiff * 4 + time * 3) * 25;
+            
             radius += 15 * Math.sin(angle * 3 + shapePhase * 2) * scaleFactor;
             radius += 10 * Math.cos(angle * 5 - shapePhase) * scaleFactor;
             radius += 5 * Math.sin(angle * 8 + contour * 0.1) * scaleFactor;
+            radius += mouseWave; // Mouse-reactive ripples
             
             // Calculate point position with gentle mouse influence
             const baseX = centerX + offsetX + contourOffsetX + Math.cos(angle) * radius;
@@ -131,10 +140,25 @@ export default function Artwork05_BreathingMandala() {
             const pointDx = baseX - mouseX;
             const pointDy = baseY - mouseY;
             const pointDistance = Math.sqrt(pointDx * pointDx + pointDy * pointDy);
-            const pointMouseEffect = mouseInfluence * 0.08 * Math.exp(-pointDistance / 120);
             
-            const x = baseX + pointDx * pointMouseEffect;
-            const y = baseY + pointDy * pointMouseEffect;
+            // Enhanced point-level interactions
+            const proximityEffect = Math.exp(-pointDistance / 150);
+            const pointMouseEffect = mouseInfluence * 0.12 * proximityEffect;
+            
+            // Add breathing oscillation that responds to mouse
+            const breathingPhase = time * 4 + pointDistance * 0.02;
+            const breathingIntensity = mouseInfluence * 0.3 * proximityEffect;
+            const breathingOffset = Math.sin(breathingPhase) * breathingIntensity * 8;
+            
+            // Combine all effects
+            const mouseDirection = Math.atan2(pointDy, pointDx);
+            const repelX = Math.cos(mouseDirection) * pointMouseEffect * 15;
+            const repelY = Math.sin(mouseDirection) * pointMouseEffect * 15;
+            const breatheX = Math.cos(mouseDirection) * breathingOffset;
+            const breatheY = Math.sin(mouseDirection) * breathingOffset;
+            
+            const x = baseX + repelX + breatheX;
+            const y = baseY + repelY + breatheY;
             
             if (i === 0) {
               ctx.moveTo(x, y);
@@ -147,6 +171,28 @@ export default function Artwork05_BreathingMandala() {
           ctx.closePath();
           ctx.stroke();
         }
+      }
+      
+      // Draw interactive ripple effect when clicked/tapped
+      if (mouseInfluence > 0.1) {
+        const rippleAlpha = mouseInfluence * 0.4;
+        const rippleRadius = (1 - mouseInfluence) * 150 + 30;
+        
+        // Primary ripple
+        ctx.strokeStyle = `rgba(180, 150, 100, ${rippleAlpha})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, rippleRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Secondary ripple for depth
+        const secondaryAlpha = mouseInfluence * 0.2;
+        const secondaryRadius = rippleRadius * 0.6;
+        ctx.strokeStyle = `rgba(139, 115, 85, ${secondaryAlpha})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, secondaryRadius, 0, Math.PI * 2);
+        ctx.stroke();
       }
       
       animationId = requestAnimationFrame(draw);
