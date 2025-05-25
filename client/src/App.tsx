@@ -38,7 +38,7 @@ function PoemScreen({ onContinue }: { onContinue: () => void }) {
         
         {/* Gentle indicator to continue */}
         <div className="text-stone-500 text-xs animate-pulse">
-          <p>Click anywhere or wait to enter the gallery...</p>
+          <p>Click anywhere to enter the gallery...</p>
         </div>
       </div>
     </div>
@@ -58,14 +58,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const { currentArtwork } = useArtwork();
 
-  useEffect(() => {
-    // Simulate loading time for smoother experience
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  // Removed automatic timer - user must click to continue
 
   if (isLoading) {
     return <PoemScreen onContinue={() => setIsLoading(false)} />;
