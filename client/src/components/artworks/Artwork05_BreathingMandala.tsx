@@ -23,8 +23,8 @@ export default function Artwork05_BreathingMandala() {
     const scaleFactor = 1.5;
     
     // Project colors
-    const backgroundColor = '#F0EEE6'; // Cream background
-    const lineColor = 'rgba(50, 50, 50, 0.4)'; // Dark gray with transparency
+    const backgroundColor = '#0a0a0a'; // Dark background to match gallery
+    const lineColor = 'rgba(139, 115, 85, 0.4)'; // Warm ochre with transparency
     
     let animationId: number | null = null;
     
@@ -116,7 +116,12 @@ export default function Artwork05_BreathingMandala() {
   }, []);
   
   return (
-    <div className="flex justify-center items-center h-full w-full bg-[#F0EEE6]">
+    <div 
+      className="w-full h-full cursor-crosshair"
+      style={{ 
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)'
+      }}
+    >
       <canvas 
         ref={canvasRef} 
         style={{ 
