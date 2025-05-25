@@ -1,73 +1,51 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function Artwork07_NatureCode() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+// Themes: silent wisdom, primal union, profound impartiality
+// Visualization: Waves that interfere and merge without resistance, showing how patterns emerge from silence
+
+const WaveInterferenceV4 = () => {
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = canvas.width = window.innerWidth;
-    const height = canvas.height = window.innerHeight;
+    const width = 550;
+    const height = 550;
+    canvas.width = width;
+    canvas.height = height;
 
     // Points of origin from which patterns emerge
-    const sources: Array<{
-      x: number;
-      y: number;
-      wavelength: number;
-      phase: number;
-      driftX: number;
-      driftY: number;
-      driftSpeed: number;
-    }> = [];
-    const gridSize = 4;
+    const sources = [];
+    const gridSize = 4;  // Balance in all directions
     
     for (let i = 0; i < gridSize; i++) {
       for (let j = 0; j < gridSize; j++) {
         sources.push({
           x: width * (i + 0.5) / gridSize,
           y: height * (j + 0.5) / gridSize,
-          wavelength: 15 + Math.random() * 10,
-          phase: Math.random() * Math.PI * 2,
-          driftX: (Math.random() - 0.5) * 2,
-          driftY: (Math.random() - 0.5) * 2,
-          driftSpeed: 0.0002 + Math.random() * 0.0003
+          wavelength: 15 + Math.random() * 10,  // Each source finds its rhythm
+          phase: Math.random() * Math.PI * 2    // Beginning in natural harmony
         });
       }
     }
 
     let time = 0;
-    let animationFrameId: number | null = null;
+    let animationFrameId = null;
 
     const animate = () => {
-      // Dark background to match gallery
-      ctx.fillStyle = '#0a0a0a';
+      // Fill with project background color
+      ctx.fillStyle = '#F0EEE6';
       ctx.fillRect(0, 0, width, height);
 
-      // Warm ochre lines
-      ctx.strokeStyle = 'rgba(139, 115, 85, 0.6)';
-      ctx.lineWidth = 0.8;
+      // Create overlay for smoother lines
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 0.5;
 
       // Sample points for marching squares algorithm
-      const resolution = 3;
+      const resolution = 2;
       const rows = Math.floor(height / resolution);
       const cols = Math.floor(width / resolution);
       const field = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
-
-      // Update source positions with subtle drift
-      sources.forEach(source => {
-        source.x += Math.sin(time * source.driftSpeed + source.phase) * source.driftX;
-        source.y += Math.cos(time * source.driftSpeed * 0.7 + source.phase) * source.driftY;
-        
-        // Keep sources within bounds with gentle wrapping
-        if (source.x < 0) source.x = width;
-        if (source.x > width) source.x = 0;
-        if (source.y < 0) source.y = height;
-        if (source.y > height) source.y = 0;
-      });
 
       // Calculate wave field
       for (let i = 0; i < rows; i++) {
@@ -90,10 +68,7 @@ export default function Artwork07_NatureCode() {
       // Draw contour lines using marching squares
       const contourLevels = [-0.6, -0.3, 0, 0.3, 0.6];
       
-      contourLevels.forEach((level, levelIndex) => {
-        // Vary opacity by contour level for depth
-        const opacity = 0.3 + (levelIndex / contourLevels.length) * 0.4;
-        ctx.strokeStyle = `rgba(139, 115, 85, ${opacity})`;
+      contourLevels.forEach(level => {
         ctx.beginPath();
         
         for (let i = 0; i < rows - 1; i++) {
@@ -147,30 +122,14 @@ export default function Artwork07_NatureCode() {
         ctx.stroke();
       });
 
-      // Add subtle source indicators
-      sources.forEach(source => {
-        const pulseSize = 3 + Math.sin(time * 2 + source.phase) * 1;
-        ctx.fillStyle = 'rgba(139, 115, 85, 0.2)';
-        ctx.beginPath();
-        ctx.arc(source.x, source.y, pulseSize, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      time += 0.004; // Slightly faster for more visible movement
+      time += 0.003; // Further reduced from 0.005 to 0.001
       animationFrameId = requestAnimationFrame(animate);
     };
-
-    // Handle window resize
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
 
     animate();
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      // Cancel animation frame to prevent memory leaks
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
@@ -178,20 +137,24 @@ export default function Artwork07_NatureCode() {
   }, []);
 
   return (
-    <div 
-      className="w-full h-full cursor-crosshair"
-      style={{ 
-        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)'
-      }}
-    >
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      width: '100vw', 
+      height: '100vh', 
+      backgroundColor: '#F0EEE6' 
+    }}>
       <canvas 
-        ref={canvasRef}
+        ref={canvasRef} 
         style={{ 
-          display: 'block',
-          width: '100%',
-          height: '100%'
-        }}
+          border: '1px solid #eee',
+          width: '550px',
+          height: '550px'
+        }} 
       />
     </div>
   );
-}
+};
+
+export default WaveInterferenceV4;
