@@ -39,28 +39,28 @@ export default function Artwork09_SacredCode() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     
-    // Initialize particles in a much smaller, controlled area
+    // Initialize particles spread across the screen
     for (let i = 0; i < numParticles; i++) {
       const angle = (i / numParticles) * Math.PI * 2;
-      const radius = Math.random() * 60 + 30; // Much smaller radius
+      const radius = Math.random() * Math.min(canvas.width, canvas.height) * 0.35 + 100; // Spread across screen
       const clusterChance = Math.random();
-      const clusterOffset = clusterChance < 0.3 ? 15 : (clusterChance > 0.7 ? -15 : 0);
+      const clusterOffset = clusterChance < 0.2 ? 80 : (clusterChance > 0.8 ? -80 : 0);
       
       particles.push({
         x: centerX + Math.cos(angle) * (radius + clusterOffset),
         y: centerY + Math.sin(angle) * (radius + clusterOffset),
-        speedX: (Math.random() - 0.5) * 0.01, // Much slower initial speed
-        speedY: (Math.random() - 0.5) * 0.01,
-        size: Math.random() * 1.2 + 0.6,
+        speedX: (Math.random() - 0.5) * 0.02,
+        speedY: (Math.random() - 0.5) * 0.02,
+        size: Math.random() * 2 + 1,
         connections: [],
         noiseOffset: Math.random() * 1000,
-        idealSpace: 35 + Math.random() * 15, // Smaller ideal spacing
-        allowClustering: clusterChance < 0.4
+        idealSpace: 80 + Math.random() * 40,
+        allowClustering: clusterChance < 0.3
       });
     }
     
-    const maxConnectionDistance = 120; // Smaller connection distance
-    const fadeZoneWidth = 30;
+    const maxConnectionDistance = 180;
+    const fadeZoneWidth = 40;
     
     const animate = () => {
       time += 0.0025;
@@ -110,23 +110,23 @@ export default function Artwork09_SacredCode() {
         particle.speedX += Math.cos(noiseVal * Math.PI * 2) * 0.0005; // Much gentler noise
         particle.speedY += Math.sin(noiseVal * Math.PI * 2) * 0.0005;
         
-        // Very gentle attraction to center - giving and receiving cycle
+        // Gentle attraction to center - giving and receiving cycle
         const dx = centerX - particle.x;
         const dy = centerY - particle.y;
         const distanceToCenter = Math.sqrt(dx * dx + dy * dy);
         
-        const centerRange = particle.allowClustering ? 80 : 120; // Smaller ranges
-        const minDistance = particle.allowClustering ? 30 : 50;
+        const centerRange = particle.allowClustering ? 200 : 300;
+        const minDistance = particle.allowClustering ? 100 : 150;
         
         if (distanceToCenter > centerRange) {
-          particle.speedX += dx / distanceToCenter * 0.0008; // Much gentler forces
-          particle.speedY += dy / distanceToCenter * 0.0008;
+          particle.speedX += dx / distanceToCenter * 0.001;
+          particle.speedY += dy / distanceToCenter * 0.001;
         } else if (distanceToCenter < minDistance) {
-          particle.speedX -= dx / distanceToCenter * 0.001;
-          particle.speedY -= dy / distanceToCenter * 0.001;
+          particle.speedX -= dx / distanceToCenter * 0.0012;
+          particle.speedY -= dy / distanceToCenter * 0.0012;
         }
         
-        // Gentle particle interactions - natural abundance
+        // Particle interactions - natural abundance
         particles.forEach(other => {
           if (other === particle) return;
           
@@ -136,7 +136,7 @@ export default function Artwork09_SacredCode() {
           
           if (distance < particle.idealSpace) {
             const force = particle.allowClustering && other.allowClustering ? 
-              0.002 : 0.006; // Much gentler forces
+              0.004 : 0.008;
             
             if (distance < particle.idealSpace * 0.7) {
               particle.speedX += dx / distance * force;
@@ -145,25 +145,25 @@ export default function Artwork09_SacredCode() {
           }
         });
         
-        particle.speedX *= 0.95; // More damping for stability
-        particle.speedY *= 0.95;
+        particle.speedX *= 0.98;
+        particle.speedY *= 0.98;
         
         particle.x += particle.speedX;
         particle.y += particle.speedY;
         
-        // Soft boundaries to keep particles in a small central area
-        const boundaryForce = 0.01;
-        const boundarySize = 150; // Small contained area
+        // Soft boundaries to keep particles on screen
+        const boundaryForce = 0.005;
+        const margin = 50;
         
-        if (particle.x < centerX - boundarySize) {
+        if (particle.x < margin) {
           particle.speedX += boundaryForce;
-        } else if (particle.x > centerX + boundarySize) {
+        } else if (particle.x > canvas.width - margin) {
           particle.speedX -= boundaryForce;
         }
         
-        if (particle.y < centerY - boundarySize) {
+        if (particle.y < margin) {
           particle.speedY += boundaryForce;
-        } else if (particle.y > centerY + boundarySize) {
+        } else if (particle.y > canvas.height - margin) {
           particle.speedY -= boundaryForce;
         }
       });

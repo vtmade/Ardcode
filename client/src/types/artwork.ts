@@ -519,11 +519,11 @@ function createKleinBottle(time) {
   {
     title: "Digital Zen Garden",
     type: "2D",
-    technique: "Natural Abundance",
+    technique: "Connected Abundance",
     philosophy:
       "Giving without expectation, endless abundance, natural success",
     description:
-      "Particles continuously give and receive in perfect cycles, showing the flow of natural abundance through gentle interactions.",
+      "Interconnected particles spread across the digital landscape, sharing gentle connections that demonstrate the flow of abundance throughout the entire space.",
     codeSnippet: `class ZenGarden {
   constructor(width, height) {
     this.width = width;
