@@ -139,67 +139,58 @@ export default function Navigation() {
       <nav className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
       }`}>
-        <div className="glass p-3 m-4 rounded-lg">
-          {/* Compact Instructions Row */}
-          <div className="flex items-center justify-center space-x-4 zen-subtitle text-xs mb-3">
-            <span>Interact • Scroll • Menu</span>
-          </div>
-
+        <div className="glass p-2 m-2 rounded-lg">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center space-x-4">
-              <h1 className="zen-title text-2xl tracking-widest">ard.</h1>
-              <div className="hidden md:block w-px h-6 bg-stone-600" />
-              <span className="hidden md:block zen-subtitle text-sm">
-                Code Art by Vinay Thakur
-              </span>
+            {/* Left: Logo */}
+            <div className="flex items-center space-x-2">
+              <h1 className="zen-title text-lg tracking-widest">ard.</h1>
+              <span className="zen-subtitle text-xs">Code Art</span>
             </div>
 
-            {/* Current Artwork Info */}
-            <div className="flex-1 text-center mx-8">
-              <h2 className="zen-title text-lg mb-1">{currentArtworkData.title}</h2>
-              <p className="zen-subtitle text-xs">{currentArtworkData.philosophy}</p>
-              <div className="flex justify-center mt-2">
-                <div className="text-xs zen-subtitle">
-                  {String(currentArtwork + 1).padStart(2, '0')} / {String(ARTWORKS.length).padStart(2, '0')}
-                </div>
+            {/* Center: Current Info + Progress */}
+            <div className="flex-1 mx-6">
+              <div className="flex items-center justify-center space-x-4 text-xs zen-subtitle mb-1">
+                <span>{currentArtworkData.title}</span>
+                <span>•</span>
+                <span>{String(currentArtwork + 1).padStart(2, '0')} / {String(ARTWORKS.length).padStart(2, '0')}</span>
+                <span>•</span>
+                <span>Scroll • Interact</span>
+              </div>
+              {/* Compact Progress Bar */}
+              <div className="h-0.5 bg-stone-800 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${((currentArtwork + 1) / ARTWORKS.length) * 100}%` }}
+                />
               </div>
             </div>
 
-            {/* Controls */}
-            <div className="flex items-center space-x-2">
+            {/* Right: Controls */}
+            <div className="flex items-center space-x-1">
               <button
                 onClick={previousArtwork}
-                className="p-2 rounded-lg glass hover:bg-stone-700/20 transition-colors"
-                title="Previous artwork (←)"
+                className="p-1.5 rounded glass hover:bg-stone-700/20 transition-colors"
+                title="Previous (←)"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
               
               <button
                 onClick={nextArtwork}
-                className="p-2 rounded-lg glass hover:bg-stone-700/20 transition-colors"
-                title="Next artwork (→)"
+                className="p-1.5 rounded glass hover:bg-stone-700/20 transition-colors"
+                title="Next (→)"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
 
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-lg glass hover:bg-stone-700/20 transition-colors ml-2"
+                className="p-1.5 rounded glass hover:bg-stone-700/20 transition-colors"
                 title="Menu"
               >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {isMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
             </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="mt-4 h-1 bg-stone-800 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${((currentArtwork + 1) / ARTWORKS.length) * 100}%` }}
-            />
           </div>
         </div>
       </nav>
