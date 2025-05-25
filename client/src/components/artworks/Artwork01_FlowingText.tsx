@@ -5,36 +5,31 @@ export default function Artwork01_FlowingText() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const sketch = (p: any) => {
-    let particles: any[] = [];
-    let font: any;
-    let textPoints: any[] = [];
-    let mouseInfluence = 50;
-
-    p.preload = () => {
-      // We'll create text without loading a font for simplicity
-    };
+    let dewDrops: any[] = [];
+    let mouseInfluence = 80;
 
     p.setup = () => {
       p.createCanvas(p.windowWidth, p.windowHeight);
       
-      // Create text particles for "The code that can be named is not the eternal code"
-      const text = "The code that can be named\nis not the eternal code";
+      // Create dewdrop text - "Morning whispers on silk threads"
+      const text = "Morning whispers\non silk threads\ntremble with light";
       const lines = text.split('\n');
       
       lines.forEach((line, lineIndex) => {
         for (let i = 0; i < line.length; i++) {
           if (line[i] !== ' ') {
-            particles.push({
+            dewDrops.push({
               char: line[i],
-              originalX: 100 + i * 20,
-              originalY: p.height / 2 - 20 + lineIndex * 40,
-              x: 100 + i * 20,
-              y: p.height / 2 - 20 + lineIndex * 40,
-              vx: 0,
-              vy: 0,
-              size: p.random(12, 24),
-              alpha: p.random(0.6, 1),
-              drift: p.random(-0.5, 0.5)
+              homeX: p.width / 2 - line.length * 10 + i * 20,
+              homeY: p.height / 2 - 30 + lineIndex * 40,
+              x: p.width / 2 - line.length * 10 + i * 20 + p.random(-2, 2),
+              y: p.height / 2 - 30 + lineIndex * 40 + p.random(-1, 1),
+              tension: 0.985,
+              dampening: 0.12,
+              frequency: p.random(0.003, 0.008),
+              amplitude: p.random(0.3, 0.8),
+              size: p.random(14, 18),
+              shimmer: p.random(0.7, 1.0)
             });
           }
         }
@@ -42,48 +37,65 @@ export default function Artwork01_FlowingText() {
     };
 
     p.draw = () => {
-      p.background(10, 10, 10, 50); // Trailing effect
+      // Soft morning mist background
+      p.background(248, 246, 240, 30);
       
-      particles.forEach(particle => {
-        // Mouse interaction
-        let mouseDistance = p.dist(p.mouseX, p.mouseY, particle.x, particle.y);
+      dewDrops.forEach(drop => {
+        // Gentle breathing motion like morning breeze
+        const time = p.frameCount * 0.01;
+        const sway = p.sin(time * drop.frequency + drop.homeX * 0.01) * drop.amplitude;
+        const targetX = drop.homeX + sway;
+        const targetY = drop.homeY + p.cos(time * drop.frequency * 0.7) * 0.2;
+        
+        // Mouse interaction - gentle disturbance
+        let mouseDistance = p.dist(p.mouseX, p.mouseY, drop.x, drop.y);
         if (mouseDistance < mouseInfluence) {
-          let angle = p.atan2(particle.y - p.mouseY, particle.x - p.mouseX);
+          let angle = p.atan2(drop.y - p.mouseY, drop.x - p.mouseX);
           let force = (mouseInfluence - mouseDistance) / mouseInfluence;
-          particle.vx += p.cos(angle) * force * 0.5;
-          particle.vy += p.sin(angle) * force * 0.5;
+          drop.x += p.cos(angle) * force * 2;
+          drop.y += p.sin(angle) * force * 2;
         }
         
-        // Return to original position
-        particle.vx += (particle.originalX - particle.x) * 0.01;
-        particle.vy += (particle.originalY - particle.y) * 0.01;
+        // Surface tension draws each character home
+        drop.x += (targetX - drop.x) * drop.dampening;
+        drop.y += (targetY - drop.y) * drop.dampening;
         
-        // Add gentle drift
-        particle.vx += particle.drift * 0.1;
-        particle.vy += p.sin(p.frameCount * 0.01 + particle.originalX * 0.01) * 0.2;
+        // Render dewdrop character with shimmer
+        const shimmer = 0.1 + p.abs(p.sin(time * 0.005 + drop.homeX * 0.02)) * 0.1;
+        const alpha = drop.shimmer * (0.8 + shimmer);
         
-        // Apply velocity with damping
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        particle.vx *= 0.95;
-        particle.vy *= 0.95;
-        
-        // Render character
-        p.fill(139, 115, 85, particle.alpha * 255);
-        p.textSize(particle.size);
+        // Main character
+        p.fill(85, 85, 85, alpha * 200);
+        p.textSize(drop.size);
         p.textAlign(p.CENTER, p.CENTER);
-        p.text(particle.char, particle.x, particle.y);
+        p.text(drop.char, drop.x, drop.y);
         
-        // Add glow effect
-        p.fill(139, 115, 85, particle.alpha * 50);
-        p.textSize(particle.size + 4);
-        p.text(particle.char, particle.x, particle.y);
+        // Dewdrop highlight
+        p.fill(220, 220, 220, alpha * 100);
+        p.textSize(drop.size * 0.8);
+        p.text(drop.char, drop.x + 1, drop.y - 1);
+        
+        // Subtle glow like morning light
+        p.fill(255, 255, 240, alpha * 30);
+        p.textSize(drop.size + 2);
+        p.text(drop.char, drop.x, drop.y);
       });
       
-      // Add breathing effect overlay
-      let breathe = p.sin(p.frameCount * 0.02) * 0.1 + 0.9;
-      p.fill(139, 115, 85, 10 * breathe);
-      p.rect(0, 0, p.width, p.height);
+      // Add floating sparkles like dew catching light
+      if (p.frameCount % 120 === 0) {
+        for (let i = 0; i < 3; i++) {
+          let sparkle = {
+            x: p.random(p.width),
+            y: p.random(p.height),
+            life: 60
+          };
+          
+          // Draw tiny sparkle
+          p.fill(255, 255, 255, 150);
+          p.noStroke();
+          p.circle(sparkle.x, sparkle.y, 2);
+        }
+      }
     };
 
     p.windowResized = () => {
@@ -91,19 +103,20 @@ export default function Artwork01_FlowingText() {
     };
 
     p.mousePressed = () => {
-      // Create ripple effect
-      for (let i = 0; i < 10; i++) {
-        particles.push({
-          char: ['∞', '∅', '≈', '∴', '∵'][Math.floor(Math.random() * 5)],
-          originalX: p.mouseX,
-          originalY: p.mouseY,
-          x: p.mouseX + p.random(-20, 20),
-          y: p.mouseY + p.random(-20, 20),
-          vx: p.random(-2, 2),
-          vy: p.random(-2, 2),
-          size: p.random(8, 16),
-          alpha: 1,
-          drift: 0
+      // Create gentle dewdrop ripple
+      for (let i = 0; i < 5; i++) {
+        dewDrops.push({
+          char: ['∘', '·', '◦', '•', '○'][Math.floor(Math.random() * 5)],
+          homeX: p.mouseX + p.random(-30, 30),
+          homeY: p.mouseY + p.random(-30, 30),
+          x: p.mouseX + p.random(-10, 10),
+          y: p.mouseY + p.random(-10, 10),
+          tension: 0.98,
+          dampening: 0.08,
+          frequency: p.random(0.005, 0.01),
+          amplitude: p.random(0.5, 1.2),
+          size: p.random(8, 12),
+          shimmer: 1.0
         });
       }
     };
