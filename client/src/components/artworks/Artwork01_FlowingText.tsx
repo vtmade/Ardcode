@@ -82,23 +82,14 @@ export default function Artwork01_FlowingText() {
     }
 
     p.draw = () => {
-      // Dawn gradient background
-      for (let i = 0; i <= p.height; i++) {
-        const inter = p.map(i, 0, p.height, 0, 1);
-        const c = p.lerpColor(
-          p.color(15, 25, 35), // Dark blue dawn
-          p.color(45, 65, 85), // Lighter dawn
-          inter
-        );
-        p.stroke(c);
-        p.line(0, i, p.width, i);
-      }
+      // Dark background like other artworks
+      p.background(10, 10, 10);
       
-      // Draw spider web with subtle shimmer
-      p.strokeWeight(0.8);
+      // Draw spider web very subtly
+      p.strokeWeight(0.3);
       spiderWeb.forEach(thread => {
-        const shimmer = p.sin(p.frameCount * 0.02) * 0.1 + 0.8;
-        p.stroke(80, 100, 120, 60 * shimmer);
+        const shimmer = p.sin(p.frameCount * 0.015) * 0.05 + 0.1;
+        p.stroke(40, 50, 60, 20 * shimmer);
         p.line(thread.x1, thread.y1, thread.x2, thread.y2);
       });
       
@@ -140,38 +131,41 @@ export default function Artwork01_FlowingText() {
         // Update shimmer
         drop.shimmer += 0.02;
         
-        // Draw dewdrop with multiple layers for realism
+        // Draw dewdrop with twinkling effect
         p.push();
         p.translate(drop.x, drop.y);
         
-        // Main dewdrop body
-        const currentAlpha = drop.alpha * (0.7 + 0.3 * p.sin(drop.shimmer));
-        p.fill(200, 220, 240, currentAlpha * 150);
+        // Twinkling intensity - some drops twinkle more than others
+        const twinkle = p.sin(drop.shimmer * 2) * 0.5 + 0.5;
+        const sparkle = p.sin(drop.shimmer * 3.7) * 0.3 + 0.7;
+        const currentAlpha = drop.alpha * twinkle * 0.8;
+        
+        // Very subtle main dewdrop body
+        p.fill(100, 120, 140, currentAlpha * 60);
         p.noStroke();
-        p.ellipse(0, 0, drop.size * 2, drop.size * 2);
+        p.ellipse(0, 0, drop.size * 1.5, drop.size * 1.5);
         
-        // Bright highlight (refraction)
-        p.fill(255, 255, 255, currentAlpha * 200);
-        p.ellipse(-drop.size * 0.3, -drop.size * 0.3, drop.size * 0.6, drop.size * 0.6);
+        // Bright twinkling center
+        const centerBrightness = twinkle * sparkle;
+        p.fill(200, 220, 255, centerBrightness * 180);
+        p.ellipse(-drop.size * 0.2, -drop.size * 0.2, drop.size * 0.4, drop.size * 0.4);
         
-        // Subtle reflection
-        p.fill(150, 200, 255, currentAlpha * 80);
-        p.ellipse(drop.size * 0.2, drop.size * 0.2, drop.size * 0.4, drop.size * 0.4);
+        // Occasional bright flash for extra twinkle
+        if (twinkle > 0.8) {
+          p.fill(255, 255, 255, (twinkle - 0.8) * 5 * 255);
+          p.ellipse(0, 0, drop.size * 0.3, drop.size * 0.3);
+        }
         
-        // Edge highlight
-        p.noFill();
-        p.stroke(255, 255, 255, currentAlpha * 100);
-        p.strokeWeight(0.5);
-        p.ellipse(0, 0, drop.size * 2, drop.size * 2);
+        // Subtle outer glow when twinkling
+        if (sparkle > 0.6) {
+          p.fill(150, 180, 220, (sparkle - 0.6) * 2.5 * 40);
+          p.ellipse(0, 0, drop.size * 3, drop.size * 3);
+        }
         
         p.pop();
       });
       
-      // Add morning mist effect
-      const mistIntensity = p.sin(p.frameCount * 0.01) * 0.05 + 0.03;
-      p.fill(255, 255, 255, mistIntensity * 255);
-      p.noStroke();
-      p.rect(0, 0, p.width, p.height);
+      // Remove morning mist for darker aesthetic
     };
 
     p.windowResized = () => {
@@ -230,7 +224,7 @@ export default function Artwork01_FlowingText() {
       ref={containerRef} 
       className="w-full h-full cursor-none"
       style={{ 
-        background: 'linear-gradient(135deg, #0f1923 0%, #2d4356 50%, #1a2836 100%)'
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)'
       }}
     />
   );
