@@ -32,22 +32,7 @@ export default function Artwork05_BreathingMandala() {
     };
 
     p.draw = () => {
-      // Vibrant rainbow background with breathing effect
-      p.colorMode(p.HSB, 360, 100, 100, 255);
-      let bgHue = (p.frameCount * 0.5) % 360;
-      let breathBg = Math.sin(breathPhase) * 10 + 95;
-      
-      for (let r = 0; r < p.width; r += 20) {
-        for (let angle = 0; angle < 360; angle += 10) {
-          let x = centerX + Math.cos(p.radians(angle)) * r;
-          let y = centerY + Math.sin(p.radians(angle)) * r;
-          let hue = (bgHue + angle + r * 0.5) % 360;
-          p.fill(hue, 30, breathBg, 50);
-          p.noStroke();
-          p.circle(x, y, 15);
-        }
-      }
-      p.colorMode(p.RGB, 255);
+      p.background(10, 10, 10, 30); // Trailing effect
       
       centerX = p.width / 2;
       centerY = p.height / 2;
@@ -93,24 +78,17 @@ export default function Artwork05_BreathingMandala() {
           let petalSize = 15 + layerIndex * 3;
           petalSize *= breathMultiplier;
           
-          // Vibrant rainbow petals
-          p.colorMode(p.HSB, 360, 100, 100, 255);
-          let petalHue = (p.frameCount * 2 + layerIndex * 30 + petal * 45) % 360;
-          let saturation = 80 + Math.sin(breathPhase + layerIndex) * 20;
-          let brightness = 85 + Math.sin(breathPhase * 2) * 15;
+          // Color with breathing intensity
           let alpha = (p.sin(breathPhase + layerIndex * 0.5) + 1) * 60 + 50;
-          
-          p.fill(petalHue, saturation, brightness, alpha);
+          p.fill(layer.color.r, layer.color.g, layer.color.b, alpha);
           p.noStroke();
           
           // Draw petal as ellipse
           p.ellipse(currentRadius, 0, petalSize, petalSize * 0.6);
           
-          // Add rainbow inner glow
-          p.fill((petalHue + 60) % 360, saturation * 0.8, brightness + 10, alpha * 0.3);
+          // Add inner glow
+          p.fill(layer.color.r + 20, layer.color.g + 20, layer.color.b + 20, alpha * 0.3);
           p.ellipse(currentRadius, 0, petalSize * 0.6, petalSize * 0.4);
-          
-          p.colorMode(p.RGB, 255);
           
           // Sacred geometry lines
           if (layerIndex % 2 === 0) {
