@@ -17,14 +17,31 @@ function ErrorFallback({ error }: { error: Error }) {
   );
 }
 
-// Loading component
-function Loading() {
+// Welcome screen component
+function WelcomeScreen() {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center z-50">
-      <div className="text-center">
-        <h1 className="text-4xl font-serif text-stone-300 mb-4 animate-pulse">ARD</h1>
-        <p className="text-stone-500 text-sm">Loading interactive art...</p>
+      <div className="text-center max-w-2xl px-8">
+        <h1 className="text-3xl zen-title text-stone-200 mb-8">When Code Meets Nature's Song</h1>
+        
+        <div className="text-stone-300 text-lg leading-relaxed mb-8 zen-subtitle">
+          <p>The morning dew on spider's thread,</p>
+          <p>Like gentle code that softly spreads,</p>
+          <p>Each particle knows where to go,</p>
+          <p>Following patterns nature chose</p>
+        </div>
+        
+        <p className="text-stone-400 text-sm zen-subtitle">ard. by vinay thakur</p>
       </div>
+    </div>
+  );
+}
+
+// Simple loading fallback
+function Loading() {
+  return (
+    <div className="flex items-center justify-center w-full h-full">
+      <div className="text-stone-400 text-sm">Loading...</div>
     </div>
   );
 }
@@ -43,7 +60,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <Loading />;
+    return <WelcomeScreen />;
   }
 
   return (
