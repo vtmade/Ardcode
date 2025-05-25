@@ -1,17 +1,16 @@
 import { useRef, useEffect } from 'react';
 
-export default function Artwork05_BreathingMandala() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+// themes: emptying of everything, return to source, peace through stillness
+// visualization: Organic forms continuously empty and return to their source in peaceful cycles
+
+const MorphingContours = () => {
+  const canvasRef = useRef(null);
   
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = canvas.width = window.innerWidth;
-    const height = canvas.height = window.innerHeight;
+    const width = canvas.width;
+    const height = canvas.height;
     
     // Parameters
     const numShapes = 3;
@@ -26,7 +25,7 @@ export default function Artwork05_BreathingMandala() {
     const backgroundColor = '#F0EEE6'; // Cream background
     const lineColor = 'rgba(50, 50, 50, 0.4)'; // Dark gray with transparency
     
-    let animationId: number | null = null;
+    let animationId = null;
     
     function draw() {
       // Clear canvas with cream background
@@ -97,18 +96,10 @@ export default function Artwork05_BreathingMandala() {
       animationId = requestAnimationFrame(draw);
     }
     
-    // Handle window resize
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-    
     // Animation loop
     animationId = requestAnimationFrame(draw);
     
     return () => {
-      window.removeEventListener('resize', handleResize);
       if (animationId) {
         cancelAnimationFrame(animationId);
       }
@@ -119,12 +110,12 @@ export default function Artwork05_BreathingMandala() {
     <div className="flex justify-center items-center h-full w-full bg-[#F0EEE6]">
       <canvas 
         ref={canvasRef} 
-        style={{ 
-          display: 'block',
-          width: '100%',
-          height: '100%'
-        }}
+        width={550} 
+        height={550} 
+        className="shadow-lg"
       />
     </div>
   );
-}
+};
+
+export default MorphingContours;
