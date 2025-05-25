@@ -519,11 +519,11 @@ function createKleinBottle(time) {
   {
     title: "Digital Zen Garden",
     type: "2D",
-    technique: "Procedural Simplicity",
+    technique: "Natural Abundance",
     philosophy:
-      "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away",
+      "Giving without expectation, endless abundance, natural success",
     description:
-      "A minimal garden where each element appears through patient meditation, creating patterns of profound simplicity.",
+      "Particles continuously give and receive in perfect cycles, showing the flow of natural abundance through gentle interactions.",
     codeSnippet: `class ZenGarden {
   constructor(width, height) {
     this.width = width;
