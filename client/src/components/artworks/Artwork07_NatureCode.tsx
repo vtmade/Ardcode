@@ -166,9 +166,12 @@ export default function Artwork07_NatureCode() {
         
         // Create temporary generation for drawing
         let drawGeneration = tree.system.generation.substring(0, Math.floor(tree.growth));
-        let tempSystem = { ...tree.system, generation: drawGeneration };
+        let originalGeneration = tree.system.generation;
         
-        tempSystem.draw(tree.x, tree.y, tree.scale);
+        // Temporarily change the generation and draw
+        tree.system.generation = drawGeneration;
+        tree.system.draw(tree.x, tree.y, tree.scale);
+        tree.system.generation = originalGeneration;
       });
 
       // Update and draw particles (leaves, spores)
