@@ -17,8 +17,8 @@ function ErrorFallback({ error }: { error: Error }) {
   );
 }
 
-// Welcome screen component
-function WelcomeScreen() {
+// Poem welcome screen
+function PoemScreen() {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center z-50">
       <div className="text-center max-w-2xl px-8">
@@ -60,7 +60,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <WelcomeScreen />;
+    return <PoemScreen />;
   }
 
   return (
