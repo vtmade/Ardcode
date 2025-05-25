@@ -214,6 +214,59 @@ const HankiesInTheWind: React.FC<HankiesInTheWindProps> = ({ initialZoom = 6 }) 
     const mainGroup = new THREE.Group()
     scene.add(mainGroup)
 
+    // Interactive wave sources controlled by mouse/touch
+    const interactiveWaves: WaveSourceProps[] = []
+    const mouse = new THREE.Vector2()
+    const raycaster = new THREE.Raycaster()
+    
+    // Mouse/touch interaction handlers
+    function onPointerMove(event: PointerEvent) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+      
+      // Update raycaster
+      raycaster.setFromCamera(mouse, camera)
+      const intersectPoint = raycaster.ray.at(5, new THREE.Vector3())
+      
+      // Add or update interactive wave at mouse position
+      if (interactiveWaves.length > 0) {
+        interactiveWaves[0].position = [intersectPoint.x, 0, intersectPoint.z]
+      } else {
+        interactiveWaves.push({
+          position: [intersectPoint.x, 0, intersectPoint.z],
+          frequency: 4,
+          amplitude: 0.5,
+          phase: 0
+        })
+      }
+    }
+
+    function onPointerClick(event: PointerEvent) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+      
+      raycaster.setFromCamera(mouse, camera)
+      const intersectPoint = raycaster.ray.at(5, new THREE.Vector3())
+      
+      // Add new persistent wave at click position
+      interactiveWaves.push({
+        position: [intersectPoint.x, 0, intersectPoint.z],
+        frequency: 2 + Math.random() * 3,
+        amplitude: 0.3 + Math.random() * 0.3,
+        phase: Math.random() * Math.PI * 2
+      })
+      
+      // Limit number of interactive waves
+      if (interactiveWaves.length > 8) {
+        interactiveWaves.shift()
+      }
+    }
+
+    // Add event listeners
+    renderer.domElement.addEventListener('pointermove', onPointerMove)
+    renderer.domElement.addEventListener('pointerdown', onPointerClick)
+    renderer.domElement.style.cursor = 'crosshair'
+
     // Animation loop
     let time = 0
 
@@ -234,18 +287,18 @@ const HankiesInTheWind: React.FC<HankiesInTheWindProps> = ({ initialZoom = 6 }) 
       })
       lineGroups = []
 
-      // Create and add new interference fields
-      const sources1 = createWaveSources(time, 1.5)
+      // Create and add new interference fields with interactive waves
+      const sources1 = [...createWaveSources(time, 1.5), ...interactiveWaves]
       const field1 = createInterferenceField(sources1, 1.5 * 4, 32, time)
       mainGroup.add(field1)
 
-      const sources2 = createWaveSources(time + 0.33, 0.8)
+      const sources2 = [...createWaveSources(time + 0.33, 0.8), ...interactiveWaves]
       const field2 = createInterferenceField(sources2, 0.8 * 4, 32, time + 0.33)
       field2.position.set(0, 1.5, 0)
       field2.rotation.set(Math.PI/6, 0, Math.PI/4)
       mainGroup.add(field2)
 
-      const sources3 = createWaveSources(time + 0.66, 0.8)
+      const sources3 = [...createWaveSources(time + 0.66, 0.8), ...interactiveWaves]
       const field3 = createInterferenceField(sources3, 0.8 * 4, 32, time + 0.66)
       field3.position.set(0, -1.5, 0)
       field3.rotation.set(-Math.PI/6, 0, -Math.PI/4)
@@ -279,6 +332,10 @@ const HankiesInTheWind: React.FC<HankiesInTheWindProps> = ({ initialZoom = 6 }) 
     // Cleanup function
     return () => {
       window.removeEventListener('resize', handleResize)
+      
+      // Remove interaction event listeners
+      renderer.domElement.removeEventListener('pointermove', onPointerMove)
+      renderer.domElement.removeEventListener('pointerdown', onPointerClick)
 
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId)
