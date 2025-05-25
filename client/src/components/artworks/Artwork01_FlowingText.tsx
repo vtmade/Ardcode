@@ -23,63 +23,55 @@ export default function Artwork01_FlowingText() {
 
     function createSpiderWeb() {
       spiderWeb = [];
-      const centerX = p.width / 2 + p.random(-50, 50);
-      const centerY = p.height / 2 + p.random(-50, 50);
-      const maxRadius = Math.min(p.width, p.height) * 0.35;
+      const centerX = p.width / 2;
+      const centerY = p.height / 2;
+      const maxRadius = Math.min(p.width, p.height) * 0.3;
       
-      // Radial threads - slightly irregular
-      const numRadials = 6 + Math.floor(p.random(3));
+      // Store radial anchor points for connecting rings
+      const radialPoints = [];
+      const numRadials = 8;
+      
+      // Create radial threads from center outward
       for (let i = 0; i < numRadials; i++) {
-        const angle = (i / numRadials) * p.TWO_PI + p.random(-0.2, 0.2);
-        const radiusVariation = maxRadius * (0.8 + p.random(0.4));
+        const angle = (i / numRadials) * p.TWO_PI;
+        const endX = centerX + p.cos(angle) * maxRadius;
+        const endY = centerY + p.sin(angle) * maxRadius;
+        
         spiderWeb.push({
           type: 'radial',
           x1: centerX,
           y1: centerY,
-          x2: centerX + p.cos(angle) * radiusVariation,
-          y2: centerY + p.sin(angle) * radiusVariation
+          x2: endX,
+          y2: endY
         });
-      }
-      
-      // Organic spiral instead of concentric circles
-      const spiralTurns = 4;
-      const spiralSteps = 200;
-      for (let i = 0; i < spiralSteps - 1; i++) {
-        const t1 = i / spiralSteps;
-        const t2 = (i + 1) / spiralSteps;
         
-        const r1 = (t1 * maxRadius * 0.8) + p.random(-15, 15);
-        const r2 = (t2 * maxRadius * 0.8) + p.random(-15, 15);
-        
-        const angle1 = t1 * spiralTurns * p.TWO_PI + p.random(-0.1, 0.1);
-        const angle2 = t2 * spiralTurns * p.TWO_PI + p.random(-0.1, 0.1);
-        
-        // Only add some segments to make it look more natural
-        if (p.random() < 0.7) {
-          spiderWeb.push({
-            type: 'spiral',
-            x1: centerX + p.cos(angle1) * r1,
-            y1: centerY + p.sin(angle1) * r1,
-            x2: centerX + p.cos(angle2) * r2,
-            y2: centerY + p.sin(angle2) * r2
+        // Store points at different distances for rings
+        for (let r = 0.2; r <= 1; r += 0.2) {
+          radialPoints.push({
+            x: centerX + p.cos(angle) * (maxRadius * r),
+            y: centerY + p.sin(angle) * (maxRadius * r),
+            ring: r,
+            angle: angle
           });
         }
       }
       
-      // Add some connecting strands for realism
-      for (let i = 0; i < 15; i++) {
-        const angle1 = p.random(0, p.TWO_PI);
-        const angle2 = angle1 + p.random(-1, 1);
-        const r1 = p.random(30, maxRadius * 0.9);
-        const r2 = p.random(30, maxRadius * 0.9);
+      // Create connecting rings between radial threads
+      for (let ring = 0.2; ring <= 1; ring += 0.2) {
+        const ringPoints = radialPoints.filter(point => point.ring === ring);
         
-        spiderWeb.push({
-          type: 'connecting',
-          x1: centerX + p.cos(angle1) * r1,
-          y1: centerY + p.sin(angle1) * r1,
-          x2: centerX + p.cos(angle2) * r2,
-          y2: centerY + p.sin(angle2) * r2
-        });
+        for (let i = 0; i < ringPoints.length; i++) {
+          const currentPoint = ringPoints[i];
+          const nextPoint = ringPoints[(i + 1) % ringPoints.length];
+          
+          spiderWeb.push({
+            type: 'ring',
+            x1: currentPoint.x,
+            y1: currentPoint.y,
+            x2: nextPoint.x,
+            y2: nextPoint.y
+          });
+        }
       }
     }
 
