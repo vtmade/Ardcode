@@ -53,6 +53,74 @@ export default function Navigation() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentArtwork]);
 
+  // Scroll navigation
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout;
+    let lastScrollTime = 0;
+    const scrollCooldown = 800; // Prevent rapid scrolling
+
+    const handleScroll = (e: WheelEvent) => {
+      e.preventDefault();
+      
+      const now = Date.now();
+      if (now - lastScrollTime < scrollCooldown) {
+        return;
+      }
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (e.deltaY > 0) {
+          // Scrolling down - next artwork
+          nextArtwork();
+        } else if (e.deltaY < 0) {
+          // Scrolling up - previous artwork
+          previousArtwork();
+        }
+        lastScrollTime = Date.now();
+      }, 50);
+    };
+
+    // Also handle touch swipe for mobile
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.changedTouches[0].screenY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      touchEndY = e.changedTouches[0].screenY;
+      const diff = touchStartY - touchEndY;
+      
+      const now = Date.now();
+      if (now - lastScrollTime < scrollCooldown) {
+        return;
+      }
+
+      if (Math.abs(diff) > 50) { // Minimum swipe distance
+        if (diff > 0) {
+          // Swipe up - next artwork
+          nextArtwork();
+        } else {
+          // Swipe down - previous artwork
+          previousArtwork();
+        }
+        lastScrollTime = Date.now();
+      }
+    };
+
+    window.addEventListener('wheel', handleScroll, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      clearTimeout(scrollTimeout);
+      window.removeEventListener('wheel', handleScroll);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [currentArtwork]);
+
   const nextArtwork = () => {
     const nextIndex = (currentArtwork + 1) % ARTWORKS.length;
     setCurrentArtwork(nextIndex);
@@ -177,8 +245,9 @@ export default function Navigation() {
           <div className="mt-8 pt-6 border-t border-stone-700">
             <div className="zen-subtitle text-xs space-y-2">
               <p><strong>Controls:</strong></p>
-              <p>← → or A/D: Navigate</p>
-              <p>Mouse/Touch: Interact</p>
+              <p>Scroll/Swipe: Navigate artworks</p>
+              <p>← → or A/D: Also navigate</p>
+              <p>Mouse/Touch: Interact with art</p>
               <p>ESC: Close menu</p>
             </div>
           </div>
@@ -201,7 +270,7 @@ export default function Navigation() {
           <div className="flex items-center justify-center space-x-6 zen-subtitle text-xs">
             <span>Use mouse/touch to interact with the artwork</span>
             <span>•</span>
-            <span>← → to navigate</span>
+            <span>Scroll to navigate</span>
             <span>•</span>
             <span>Menu for artwork list</span>
           </div>
