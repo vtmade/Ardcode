@@ -49,7 +49,7 @@ export const ARTWORKS: Artwork[] = [
   },
   {
     title: "Pollen Drift",
-    type: "3D",
+    type: "2D",
     technique: "Procedural Point Clouds",
     philosophy: "Life travels on invisible currents",
     description:

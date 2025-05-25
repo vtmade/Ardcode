@@ -18,7 +18,7 @@ export default function Artwork01_FlowingText() {
       p.createCanvas(p.windowWidth, p.windowHeight);
       
       // Create text particles for "The code that can be named is not the eternal code"
-      const text = "The code that can be named\nis not the eternal code";
+      const text = "Simple rules create complex beauty,\n in code as in coral reefs";
       const lines = text.split('\n');
       
       lines.forEach((line, lineIndex) => {
