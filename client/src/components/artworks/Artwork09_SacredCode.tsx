@@ -12,6 +12,9 @@ export default function Artwork09_SacredCode() {
     
     let animationFrameId: number;
     let time = 0;
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    let mouseInfluence = 0;
    
     // Set canvas size
     const resizeCanvas = () => {
@@ -21,6 +24,42 @@ export default function Artwork09_SacredCode() {
     
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    
+    // Mouse and touch interaction handlers
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+    
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      mouseInfluence = 1.0; // Create strong attraction burst
+    };
+    
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+    };
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+      mouseInfluence = 1.0; // Create strong attraction burst
+    };
+    
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('click', handleClick);
+    canvas.addEventListener('touchmove', handleTouchMove);
+    canvas.addEventListener('touchstart', handleTouchStart);
     
     // Much smaller, centered space
     const particles: Array<{
@@ -64,6 +103,9 @@ export default function Artwork09_SacredCode() {
     
     const animate = () => {
       time += 0.0025;
+      
+      // Gradually reduce mouse influence
+      mouseInfluence *= 0.95;
       
       // Dark background to match gallery
       ctx.fillStyle = '#0a0a0a';
@@ -109,6 +151,17 @@ export default function Artwork09_SacredCode() {
         
         particle.speedX += Math.cos(noiseVal * Math.PI * 2) * 0.0005; // Much gentler noise
         particle.speedY += Math.sin(noiseVal * Math.PI * 2) * 0.0005;
+        
+        // Mouse/touch interaction - particles are attracted to cursor
+        const mouseDx = mouseX - particle.x;
+        const mouseDy = mouseY - particle.y;
+        const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
+        
+        if (mouseDistance < 200 && mouseInfluence > 0.1) {
+          const force = (mouseInfluence * 0.003) / (mouseDistance + 1);
+          particle.speedX += mouseDx * force;
+          particle.speedY += mouseDy * force;
+        }
         
         // Gentle attraction to center - giving and receiving cycle
         const dx = centerX - particle.x;
@@ -182,7 +235,7 @@ export default function Artwork09_SacredCode() {
         });
       });
       
-      // Draw particles with warm ochre colors
+      // Draw particles with warm ochre colors and mouse interaction effects
       particles.forEach(particle => {
         const distanceToCenter = Math.sqrt(
           Math.pow(particle.x - centerX, 2) +
@@ -190,19 +243,42 @@ export default function Artwork09_SacredCode() {
         );
         const alpha = Math.max(0.4, Math.min(0.8, 1 - distanceToCenter / 600));
         
-        ctx.fillStyle = `rgba(139, 115, 85, ${alpha})`;
+        // Calculate distance to mouse for interaction effects
+        const mouseDx = mouseX - particle.x;
+        const mouseDy = mouseY - particle.y;
+        const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
+        
+        // Enhanced glow when near mouse
+        const mouseGlow = mouseDistance < 150 ? (1 - mouseDistance / 150) * mouseInfluence : 0;
+        const enhancedAlpha = Math.min(1, alpha + mouseGlow * 0.4);
+        const enhancedSize = particle.size * (1 + mouseGlow * 0.5);
+        
+        ctx.fillStyle = `rgba(139, 115, 85, ${enhancedAlpha})`;
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.arc(particle.x, particle.y, enhancedSize, 0, Math.PI * 2);
         ctx.fill();
         
-        // Add subtle glow for central particles
-        if (distanceToCenter < 100) {
-          ctx.fillStyle = `rgba(180, 150, 100, ${alpha * 0.3})`;
+        // Add glow effects
+        if (distanceToCenter < 100 || mouseGlow > 0.2) {
+          const glowAlpha = Math.max(alpha * 0.3, mouseGlow * 0.6);
+          ctx.fillStyle = `rgba(180, 150, 100, ${glowAlpha})`;
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.size * 1.5, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, enhancedSize * 1.5, 0, Math.PI * 2);
           ctx.fill();
         }
       });
+      
+      // Draw subtle mouse influence ripple
+      if (mouseInfluence > 0.1) {
+        const rippleAlpha = mouseInfluence * 0.15;
+        const rippleRadius = (1 - mouseInfluence) * 100 + 20;
+        
+        ctx.strokeStyle = `rgba(180, 150, 100, ${rippleAlpha})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, rippleRadius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
       
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -212,6 +288,10 @@ export default function Artwork09_SacredCode() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', resizeCanvas);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('click', handleClick);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchstart', handleTouchStart);
       
       if (canvas && ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
