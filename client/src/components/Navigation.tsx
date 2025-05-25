@@ -139,14 +139,10 @@ export default function Navigation() {
       <nav className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
       }`}>
-        <div className="glass p-4 m-4 rounded-lg">
-          {/* Instructions Row */}
-          <div className="flex items-center justify-center space-x-6 zen-subtitle text-xs mb-4">
-            <span>Use mouse/touch to interact with the artwork</span>
-            <span>•</span>
-            <span>Scroll to navigate</span>
-            <span>•</span>
-            <span>Menu for artwork list</span>
+        <div className="glass p-3 m-4 rounded-lg">
+          {/* Compact Instructions Row */}
+          <div className="flex items-center justify-center space-x-4 zen-subtitle text-xs mb-3">
+            <span>Interact • Scroll • Menu</span>
           </div>
 
           <div className="flex items-center justify-between">
