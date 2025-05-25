@@ -18,9 +18,12 @@ function ErrorFallback({ error }: { error: Error }) {
 }
 
 // Poem welcome screen
-function PoemScreen() {
+function PoemScreen({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center z-50">
+    <div 
+      className="fixed inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center z-50 cursor-pointer"
+      onClick={onContinue}
+    >
       <div className="text-center max-w-2xl px-8">
         <h1 className="text-3xl zen-title text-stone-200 mb-8">When Code Meets Nature's Song</h1>
         
@@ -31,7 +34,12 @@ function PoemScreen() {
           <p>Following patterns nature chose</p>
         </div>
         
-        <p className="text-stone-400 text-sm zen-subtitle">ard. by vinay thakur</p>
+        <p className="text-stone-400 text-sm zen-subtitle mb-8">ard. by vinay thakur</p>
+        
+        {/* Gentle indicator to continue */}
+        <div className="text-stone-500 text-xs animate-pulse">
+          <p>Click anywhere or wait to enter the gallery...</p>
+        </div>
       </div>
     </div>
   );
@@ -60,7 +68,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <PoemScreen />;
+    return <PoemScreen onContinue={() => setIsLoading(false)} />;
   }
 
   return (
