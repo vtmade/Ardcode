@@ -159,7 +159,7 @@ function FibonacciSpiral() {
           color="#8b7355"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.json"
+          
         >
           {fib.toString()}
         </Text>
@@ -209,7 +209,7 @@ function CodeMandala() {
               color="#c4b59a"
               anchorX="center"
               anchorY="middle"
-              font="/fonts/inter.json"
+              
             >
               {symbol}
             </Text>
@@ -236,7 +236,7 @@ function CodeMandala() {
               color="#8b7355"
               anchorX="center"
               anchorY="middle"
-              font="/fonts/inter.json"
+              
             >
               {symbol}
             </Text>
@@ -250,7 +250,7 @@ function CodeMandala() {
         color="#d4c4a9"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/inter.json"
+        
       >
         ∞
       </Text>
@@ -347,7 +347,7 @@ export default function Artwork09_SacredCode() {
         anchorY="middle"
         maxWidth={12}
         textAlign="center"
-        font="/fonts/inter.json"
+        
       >
         {"As above, so below\nAs in mathematics, so in code\nAs in nature, so in algorithm"}
       </Text>
@@ -360,7 +360,7 @@ export default function Artwork09_SacredCode() {
           color="#8b7355"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.json"
+          
         >
           π = 3.14159...
         </Text>
@@ -371,7 +371,7 @@ export default function Artwork09_SacredCode() {
           color="#8b7355"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.json"
+          
         >
           φ = 1.618...
         </Text>
@@ -382,7 +382,7 @@ export default function Artwork09_SacredCode() {
           color="#8b7355"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.json"
+          
         >
           e = 2.71828...
         </Text>

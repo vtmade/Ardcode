@@ -303,7 +303,7 @@ export default function Artwork08_QuantumField() {
         anchorY="middle"
         maxWidth={10}
         textAlign="center"
-        font="/fonts/inter.json"
+        
       >
         {"The act of observation\ncollapses infinite possibilities\ninto singular reality"}
       </Text>

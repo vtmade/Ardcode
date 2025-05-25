@@ -134,7 +134,7 @@ function VoidText() {
         anchorY="middle"
         maxWidth={8}
         textAlign="center"
-        font="/fonts/inter.json"
+        
       >
         {"In emptiness,\nall possibilities exist"}
       </Text>
@@ -148,7 +148,7 @@ function VoidText() {
         anchorY="middle"
         maxWidth={10}
         textAlign="center"
-        font="/fonts/inter.json"
+        
       >
         {"function void() {\n  return null;\n}\n\n// In nothingness,\n// everything begins"}
       </Text>
@@ -311,7 +311,7 @@ export default function Artwork10_TheVoid() {
         anchorY="middle"
         maxWidth={12}
         textAlign="center"
-        font="/fonts/inter.json"
+        
         transparent
         opacity={0.6}
       >
@@ -325,7 +325,7 @@ export default function Artwork10_TheVoid() {
         color="#8b7355"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/inter.json"
+        
         transparent
         opacity={0.2}
       >
