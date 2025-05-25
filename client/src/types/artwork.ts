@@ -131,7 +131,7 @@ function drawCode() {
   },
   {
     title: "Lunar Moths",
-    type: "3D",
+    type: "2D",
     technique: "Organic Path Finding",
     philosophy: "Form follows the invisible architecture of space",
     description:
