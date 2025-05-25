@@ -18,6 +18,9 @@ export default function Artwork05_BreathingMandala() {
     const contoursPerShape = 25;
     const points = 100;
     let time = 0;
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let mouseInfluence = 0;
     
     // Scale factor - 50% larger
     const scaleFactor = 1.5;
@@ -28,6 +31,42 @@ export default function Artwork05_BreathingMandala() {
     
     let animationId: number | null = null;
     
+    // Mouse and touch interaction handlers
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+    
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      mouseInfluence = 1.0;
+    };
+    
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+    };
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+      mouseInfluence = 1.0;
+    };
+    
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('click', handleClick);
+    canvas.addEventListener('touchmove', handleTouchMove);
+    canvas.addEventListener('touchstart', handleTouchStart);
+    
     function draw() {
       // Clear canvas with cream background
       ctx.fillStyle = backgroundColor;
@@ -35,6 +74,9 @@ export default function Artwork05_BreathingMandala() {
       
       // Increment time (slowed down)
       time += 0.001;
+      
+      // Gradually reduce mouse influence
+      mouseInfluence *= 0.94;
       
       // Central point
       const centerX = width / 2;
@@ -45,9 +87,14 @@ export default function Artwork05_BreathingMandala() {
         // Each shape has its own phase and movement
         const shapePhase = time + shapeIndex * Math.PI * 2 / numShapes;
         
-        // Shape center offsets (moves shapes relative to each other, slowed down)
-        const offsetX = Math.sin(shapePhase * 0.2) * 40 * scaleFactor;
-        const offsetY = Math.cos(shapePhase * 0.3) * 40 * scaleFactor;
+        // Shape center offsets with gentle mouse influence
+        const mouseDx = mouseX - centerX;
+        const mouseDy = mouseY - centerY;
+        const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
+        const mouseEffect = mouseInfluence * 0.3 * (1 - Math.min(mouseDistance / 300, 1));
+        
+        const offsetX = Math.sin(shapePhase * 0.2) * 40 * scaleFactor + mouseDx * mouseEffect * 0.1;
+        const offsetY = Math.cos(shapePhase * 0.3) * 40 * scaleFactor + mouseDy * mouseEffect * 0.1;
         
         // Draw contour lines for this shape
         for (let contour = 0; contour < contoursPerShape; contour++) {
@@ -77,9 +124,17 @@ export default function Artwork05_BreathingMandala() {
             radius += 10 * Math.cos(angle * 5 - shapePhase) * scaleFactor;
             radius += 5 * Math.sin(angle * 8 + contour * 0.1) * scaleFactor;
             
-            // Calculate point position
-            const x = centerX + offsetX + contourOffsetX + Math.cos(angle) * radius;
-            const y = centerY + offsetY + contourOffsetY + Math.sin(angle) * radius;
+            // Calculate point position with gentle mouse influence
+            const baseX = centerX + offsetX + contourOffsetX + Math.cos(angle) * radius;
+            const baseY = centerY + offsetY + contourOffsetY + Math.sin(angle) * radius;
+            
+            const pointDx = baseX - mouseX;
+            const pointDy = baseY - mouseY;
+            const pointDistance = Math.sqrt(pointDx * pointDx + pointDy * pointDy);
+            const pointMouseEffect = mouseInfluence * 0.08 * Math.exp(-pointDistance / 120);
+            
+            const x = baseX + pointDx * pointMouseEffect;
+            const y = baseY + pointDy * pointMouseEffect;
             
             if (i === 0) {
               ctx.moveTo(x, y);
@@ -109,6 +164,10 @@ export default function Artwork05_BreathingMandala() {
     
     return () => {
       window.removeEventListener('resize', handleResize);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('click', handleClick);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchstart', handleTouchStart);
       if (animationId) {
         cancelAnimationFrame(animationId);
       }

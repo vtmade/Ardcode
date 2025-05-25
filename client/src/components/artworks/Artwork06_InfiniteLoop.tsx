@@ -16,6 +16,9 @@ export default function Artwork06_InfiniteLoop() {
     let time = 0;
     let crystals: Crystal[] = [];
     const numCrystals = 4;
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    let mouseInfluence = 0;
 
     class Crystal {
       x: number;
