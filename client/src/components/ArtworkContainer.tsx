@@ -46,8 +46,8 @@ export default function ArtworkContainer() {
 
   return (
     <div className="relative w-full h-full">
-      {/* Artwork Title Overlay - Moved to Bottom */}
-      <div className="absolute bottom-6 left-6 z-20 pointer-events-none">
+      {/* Artwork Title Overlay - Back to Top */}
+      <div className="absolute top-20 left-6 z-20 pointer-events-none">
         <div className="glass p-4 rounded-lg fade-in">
           <h2 className="zen-title text-xl mb-2">{currentArtworkData.title}</h2>
           <p className="zen-subtitle text-sm max-w-md">

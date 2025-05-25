@@ -135,13 +135,21 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Main Navigation Bar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+      {/* Combined Navigation and Instructions at Bottom */}
+      <nav className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
       }`}>
         <div className="glass p-4 m-4 rounded-lg">
+          {/* Instructions Row */}
+          <div className="flex items-center justify-center space-x-6 zen-subtitle text-xs mb-4">
+            <span>Use mouse/touch to interact with the artwork</span>
+            <span>•</span>
+            <span>Scroll to navigate</span>
+            <span>•</span>
+            <span>Menu for artwork list</span>
+          </div>
+
           <div className="flex items-center justify-between">
-            
             {/* Logo */}
             <div className="flex items-center space-x-4">
               <h1 className="zen-title text-2xl tracking-widest">ard.</h1>
@@ -262,20 +270,7 @@ export default function Navigation() {
         />
       )}
 
-      {/* Bottom Instructions (only show when navigation is visible) */}
-      <div className={`fixed bottom-4 left-4 right-4 z-30 transition-all duration-500 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-      }`}>
-        <div className="glass p-3 rounded-lg">
-          <div className="flex items-center justify-center space-x-6 zen-subtitle text-xs">
-            <span>Use mouse/touch to interact with the artwork</span>
-            <span>•</span>
-            <span>Scroll to navigate</span>
-            <span>•</span>
-            <span>Menu for artwork list</span>
-          </div>
-        </div>
-      </div>
+
     </>
   );
 }
