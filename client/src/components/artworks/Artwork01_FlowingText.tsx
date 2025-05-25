@@ -23,35 +23,63 @@ export default function Artwork01_FlowingText() {
 
     function createSpiderWeb() {
       spiderWeb = [];
-      const centerX = p.width / 2;
-      const centerY = p.height / 2;
-      const maxRadius = Math.min(p.width, p.height) * 0.4;
+      const centerX = p.width / 2 + p.random(-50, 50);
+      const centerY = p.height / 2 + p.random(-50, 50);
+      const maxRadius = Math.min(p.width, p.height) * 0.35;
       
-      // Radial threads
-      for (let i = 0; i < 8; i++) {
-        const angle = (i / 8) * p.TWO_PI;
+      // Radial threads - slightly irregular
+      const numRadials = 6 + Math.floor(p.random(3));
+      for (let i = 0; i < numRadials; i++) {
+        const angle = (i / numRadials) * p.TWO_PI + p.random(-0.2, 0.2);
+        const radiusVariation = maxRadius * (0.8 + p.random(0.4));
         spiderWeb.push({
           type: 'radial',
           x1: centerX,
           y1: centerY,
-          x2: centerX + p.cos(angle) * maxRadius,
-          y2: centerY + p.sin(angle) * maxRadius
+          x2: centerX + p.cos(angle) * radiusVariation,
+          y2: centerY + p.sin(angle) * radiusVariation
         });
       }
       
-      // Circular threads
-      for (let r = 50; r <= maxRadius; r += 60) {
-        for (let i = 0; i < 64; i++) {
-          const angle1 = (i / 64) * p.TWO_PI;
-          const angle2 = ((i + 1) / 64) * p.TWO_PI;
+      // Organic spiral instead of concentric circles
+      const spiralTurns = 4;
+      const spiralSteps = 200;
+      for (let i = 0; i < spiralSteps - 1; i++) {
+        const t1 = i / spiralSteps;
+        const t2 = (i + 1) / spiralSteps;
+        
+        const r1 = (t1 * maxRadius * 0.8) + p.random(-15, 15);
+        const r2 = (t2 * maxRadius * 0.8) + p.random(-15, 15);
+        
+        const angle1 = t1 * spiralTurns * p.TWO_PI + p.random(-0.1, 0.1);
+        const angle2 = t2 * spiralTurns * p.TWO_PI + p.random(-0.1, 0.1);
+        
+        // Only add some segments to make it look more natural
+        if (p.random() < 0.7) {
           spiderWeb.push({
-            type: 'circular',
-            x1: centerX + p.cos(angle1) * r,
-            y1: centerY + p.sin(angle1) * r,
-            x2: centerX + p.cos(angle2) * r,
-            y2: centerY + p.sin(angle2) * r
+            type: 'spiral',
+            x1: centerX + p.cos(angle1) * r1,
+            y1: centerY + p.sin(angle1) * r1,
+            x2: centerX + p.cos(angle2) * r2,
+            y2: centerY + p.sin(angle2) * r2
           });
         }
+      }
+      
+      // Add some connecting strands for realism
+      for (let i = 0; i < 15; i++) {
+        const angle1 = p.random(0, p.TWO_PI);
+        const angle2 = angle1 + p.random(-1, 1);
+        const r1 = p.random(30, maxRadius * 0.9);
+        const r2 = p.random(30, maxRadius * 0.9);
+        
+        spiderWeb.push({
+          type: 'connecting',
+          x1: centerX + p.cos(angle1) * r1,
+          y1: centerY + p.sin(angle1) * r1,
+          x2: centerX + p.cos(angle2) * r2,
+          y2: centerY + p.sin(angle2) * r2
+        });
       }
     }
 
@@ -222,7 +250,7 @@ export default function Artwork01_FlowingText() {
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full cursor-none"
+      className="w-full h-full cursor-crosshair"
       style={{ 
         background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)'
       }}
