@@ -99,20 +99,7 @@ export default function ArtworkContainer() {
         )}
       </div>
 
-      {/* Artwork Code Display (Bottom Right) */}
-      <div className="absolute bottom-20 right-6 z-20 pointer-events-none">
-        <div className="glass p-4 rounded-lg max-w-sm fade-in">
-          <h4 className="zen-title text-sm mb-2">Concept</h4>
-          <p className="zen-subtitle text-xs leading-relaxed">
-            {currentArtworkData.philosophy}
-          </p>
-          {currentArtworkData.codeSnippet && (
-            <div className="mt-3 p-2 bg-black/30 rounded text-xs font-mono text-green-300 overflow-hidden">
-              <pre className="whitespace-pre-wrap">{currentArtworkData.codeSnippet}</pre>
-            </div>
-          )}
-        </div>
-      </div>
+
     </div>
   );
 }
