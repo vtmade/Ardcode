@@ -33,6 +33,72 @@ export default function Artwork04_FloatingGeometry() {
       new THREE.Vector3(2, -5, -3)
     ];
 
+    // Mouse/touch interaction for creating new light sources
+    const mouse = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+
+    function onPointerMove(event: PointerEvent) {
+      // Calculate normalized device coordinates
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function onPointerClick(event: PointerEvent) {
+      // Convert mouse position to 3D world coordinates
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+      raycaster.setFromCamera(mouse, camera);
+      
+      // Create new light source at clicked position in 3D space
+      const distance = 5; // Distance from camera
+      const worldPosition = new THREE.Vector3();
+      worldPosition.copy(raycaster.ray.direction).multiplyScalar(distance).add(camera.position);
+      
+      // Add new light source
+      lightSources.push(worldPosition);
+      
+      // Add visual representation of new light
+      const light = new THREE.PointLight(0xffffff, 0.5, 10);
+      light.position.copy(worldPosition);
+      scene.add(light);
+
+      const glowGeometry = new THREE.SphereGeometry(0.15, 8, 8);
+      const glowMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0xffffaa, 
+        transparent: true, 
+        opacity: 0.8 
+      });
+      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+      glow.position.copy(worldPosition);
+      scene.add(glow);
+      
+      // Add gentle pulsing animation to new light
+      const originalScale = glow.scale.clone();
+      let pulsePhase = 0;
+      const pulseAnimation = () => {
+        pulsePhase += 0.1;
+        const pulse = 1 + Math.sin(pulsePhase) * 0.3;
+        glow.scale.copy(originalScale).multiplyScalar(pulse);
+        glow.material.opacity = 0.6 + Math.sin(pulsePhase) * 0.2;
+      };
+      
+      // Store animation function for cleanup if needed
+      (glow as any).pulseAnimation = pulseAnimation;
+
+      // Remove oldest light sources if too many (keep maximum 8)
+      if (lightSources.length > 8) {
+        lightSources.shift();
+        // Find and remove oldest light from scene
+        scene.children.forEach(child => {
+          if (child instanceof THREE.PointLight && child !== light) {
+            scene.remove(child);
+            return;
+          }
+        });
+      }
+    }
+
     // Add point lights at light sources
     lightSources.forEach(pos => {
       const light = new THREE.PointLight(0xffffff, 0.5, 10);
@@ -165,6 +231,11 @@ export default function Artwork04_FloatingGeometry() {
     }
     mothsRef.current = moths;
 
+    // Add event listeners for interaction
+    renderer.domElement.addEventListener('pointermove', onPointerMove);
+    renderer.domElement.addEventListener('pointerdown', onPointerClick);
+    renderer.domElement.style.cursor = 'crosshair';
+
     // Handle window resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -178,6 +249,13 @@ export default function Artwork04_FloatingGeometry() {
       moths.forEach(moth => {
         moth.seekLight(lightSources);
         moth.flutter();
+      });
+
+      // Animate interactive lights (pulsing effect)
+      scene.children.forEach(child => {
+        if ((child as any).pulseAnimation) {
+          (child as any).pulseAnimation();
+        }
       });
 
       // Gentle camera movement
@@ -194,6 +272,10 @@ export default function Artwork04_FloatingGeometry() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      
+      // Remove interaction event listeners
+      renderer.domElement.removeEventListener('pointermove', onPointerMove);
+      renderer.domElement.removeEventListener('pointerdown', onPointerClick);
       
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
