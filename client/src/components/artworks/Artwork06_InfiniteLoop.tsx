@@ -218,7 +218,7 @@ function CodeLoop() {
           color="#c4b59a"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.json"
+
         >
           {line}
         </Text>
@@ -310,7 +310,7 @@ export default function Artwork06_InfiniteLoop() {
         anchorY="middle"
         maxWidth={8}
         textAlign="center"
-        font="/fonts/inter.json"
+
       >
         {"The path that can be traveled\nhas no beginning or end"}
       </Text>

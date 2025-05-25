@@ -107,7 +107,6 @@ function InterconnectedNodes() {
               color="#c4b59a"
               anchorX="center"
               anchorY="middle"
-              font="/fonts/inter.json"
             >
               {node.label}
             </Text>
@@ -199,7 +198,6 @@ export default function Artwork04_FloatingGeometry() {
           anchorY="middle"
           maxWidth={6}
           textAlign="center"
-          font="/fonts/inter.json"
         >
           {"Form is emptiness\nEmptiness is form"}
         </Text>

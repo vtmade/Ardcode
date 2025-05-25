@@ -258,7 +258,7 @@ function QuantumEquations() {
           color="#c4b59a"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.json"
+
         >
           {equation}
         </Text>
