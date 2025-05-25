@@ -80,10 +80,10 @@ export default function Artwork10_TheVoid() {
       ];
     };
     
-    const wavelength = 25;
+    const wavelength = 35; // Longer wavelength for gentler patterns
     
     const animate = () => {
-      time += 0.012;
+      time += 0.008; // Slower, more meditative movement
       
       // Gradually reduce mouse influence
       mouseInfluence *= 0.95;
@@ -119,9 +119,9 @@ export default function Artwork10_TheVoid() {
             amplitude += Math.sin((distance / wavelength - time) * 2 * Math.PI + phase) * mouseBoost;
           });
           
-          // Normalize and threshold
+          // Normalize and threshold - gentler interference
           const normalized = amplitude / sources.length;
-          const threshold = 0.15 + mouseInfluence * 0.1; // Dynamic threshold
+          const threshold = 0.08 + mouseInfluence * 0.05; // Softer threshold for subtlety
           
           // Determine if this is a line point
           const isLine = Math.abs(normalized) < threshold;
@@ -132,15 +132,15 @@ export default function Artwork10_TheVoid() {
               const index = ((y + dy) * width + (x + dx)) * 4;
               
               if (isLine) {
-                // Warm ochre lines with intensity based on proximity to mouse
+                // Gentle warm ochre lines with soft intensity
                 const mouseDistance = Math.sqrt((x + dx - mouseX) ** 2 + (y + dy - mouseY) ** 2);
-                const proximity = Math.exp(-mouseDistance / 100);
-                const intensity = 0.7 + mouseInfluence * proximity * 0.3;
+                const proximity = Math.exp(-mouseDistance / 150); // Gentler proximity effect
+                const intensity = 0.4 + mouseInfluence * proximity * 0.2; // Much softer base intensity
                 
                 data[index] = Math.floor(139 * intensity);     // R
                 data[index + 1] = Math.floor(115 * intensity); // G
                 data[index + 2] = Math.floor(85 * intensity);  // B
-                data[index + 3] = Math.floor(255 * intensity); // A
+                data[index + 3] = Math.floor(180 * intensity); // A - softer opacity
               } else {
                 // Dark background
                 data[index] = 10;      // R
@@ -155,22 +155,22 @@ export default function Artwork10_TheVoid() {
       
       ctx.putImageData(imageData, 0, 0);
       
-      // Draw mouse influence ripple
+      // Draw gentle mouse influence ripple
       if (mouseInfluence > 0.1) {
-        const rippleAlpha = mouseInfluence * 0.3;
-        const rippleRadius = (1 - mouseInfluence) * 120 + 20;
+        const rippleAlpha = mouseInfluence * 0.15; // Much softer ripples
+        const rippleRadius = (1 - mouseInfluence) * 80 + 15; // Smaller, gentler ripples
         
         ctx.strokeStyle = `rgba(180, 150, 100, ${rippleAlpha})`;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1; // Thinner lines
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, rippleRadius, 0, Math.PI * 2);
         ctx.stroke();
         
-        // Inner ripple
-        const innerAlpha = mouseInfluence * 0.15;
-        const innerRadius = rippleRadius * 0.5;
+        // Inner ripple - very subtle
+        const innerAlpha = mouseInfluence * 0.08;
+        const innerRadius = rippleRadius * 0.6;
         ctx.strokeStyle = `rgba(139, 115, 85, ${innerAlpha})`;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 0.5;
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, innerRadius, 0, Math.PI * 2);
         ctx.stroke();
