@@ -76,10 +76,10 @@ export default function Navigation() {
             
             {/* Logo */}
             <div className="flex items-center space-x-4">
-              <h1 className="zen-title text-2xl tracking-widest">ARD</h1>
+              <h1 className="zen-title text-2xl tracking-widest">ard.</h1>
               <div className="hidden md:block w-px h-6 bg-stone-600" />
               <span className="hidden md:block zen-subtitle text-sm">
-                Interactive Art Gallery
+                Code Art by Vinay Thakur
               </span>
             </div>
 
