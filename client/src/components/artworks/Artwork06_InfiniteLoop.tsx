@@ -6,18 +6,40 @@ import * as THREE from "three";
 function MoebiusStrip() {
   const meshRef = useRef<THREE.Mesh>(null);
   
-  // Create Möbius strip geometry
+  // Create Möbius strip geometry manually
   const geometry = useMemo(() => {
-    const geometry = new THREE.ParametricGeometry((u, v, target) => {
-      u = u * 2 * Math.PI;
-      v = (v - 0.5) * 2;
-      
-      const x = (1 + v / 2 * Math.cos(u / 2)) * Math.cos(u);
-      const y = (1 + v / 2 * Math.cos(u / 2)) * Math.sin(u);
-      const z = v / 2 * Math.sin(u / 2);
-      
-      target.set(x * 3, y * 3, z * 3);
-    }, 100, 20);
+    const uSegments = 100;
+    const vSegments = 20;
+    const vertices = [];
+    const indices = [];
+    
+    for (let i = 0; i <= uSegments; i++) {
+      for (let j = 0; j <= vSegments; j++) {
+        const u = (i / uSegments) * 2 * Math.PI;
+        const v = ((j / vSegments) - 0.5) * 2;
+        
+        const x = (1 + v / 2 * Math.cos(u / 2)) * Math.cos(u);
+        const y = (1 + v / 2 * Math.cos(u / 2)) * Math.sin(u);
+        const z = v / 2 * Math.sin(u / 2);
+        
+        vertices.push(x * 3, y * 3, z * 3);
+        
+        if (i < uSegments && j < vSegments) {
+          const a = i * (vSegments + 1) + j;
+          const b = i * (vSegments + 1) + j + 1;
+          const c = (i + 1) * (vSegments + 1) + j + 1;
+          const d = (i + 1) * (vSegments + 1) + j;
+          
+          indices.push(a, b, d);
+          indices.push(b, c, d);
+        }
+      }
+    }
+    
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
     
     return geometry;
   }, []);
