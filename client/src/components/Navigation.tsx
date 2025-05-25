@@ -143,7 +143,7 @@ export default function Navigation() {
           <div className="flex items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center space-x-2">
-              <h1 className="zen-title text-lg tracking-widest">ard.</h1>
+              <h1 className="zen-title text-lg tracking-widest">ard. by vinay thakur</h1>
             </div>
 
             {/* Center: Navigation Instructions */}
