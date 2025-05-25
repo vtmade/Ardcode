@@ -99,9 +99,10 @@ export default function ArtworkContainer() {
         )}
       </div>
 
-      {/* Artwork Philosophy Display (Bottom Right) */}
+      {/* Artwork Code Display (Bottom Right) */}
       <div className="absolute bottom-20 right-6 z-20 pointer-events-none">
         <div className="glass p-4 rounded-lg max-w-sm fade-in">
+          <h4 className="zen-title text-sm mb-2">Concept</h4>
           <p className="zen-subtitle text-xs leading-relaxed">
             {currentArtworkData.philosophy}
           </p>
@@ -110,16 +111,6 @@ export default function ArtworkContainer() {
               <pre className="whitespace-pre-wrap">{currentArtworkData.codeSnippet}</pre>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Attribution Banner (Bottom) */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none">
-        <div className="glass p-3 rounded-lg fade-in">
-          <div className="text-center">
-            <h1 className="zen-title text-lg tracking-widest mb-1">ARD</h1>
-            <p className="zen-subtitle text-xs">made by Vinay Thakur</p>
-          </div>
         </div>
       </div>
     </div>
