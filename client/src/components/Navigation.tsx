@@ -144,17 +144,15 @@ export default function Navigation() {
             {/* Left: Logo */}
             <div className="flex items-center space-x-2">
               <h1 className="zen-title text-lg tracking-widest">ard.</h1>
-              <span className="zen-subtitle text-xs">Code Art</span>
+              <span className="zen-subtitle text-xs">code art by vinay thakur</span>
             </div>
 
             {/* Center: Current Info + Progress */}
             <div className="flex-1 mx-6">
               <div className="flex items-center justify-center space-x-4 text-xs zen-subtitle mb-1">
-                <span>{currentArtworkData.title}</span>
-                <span>•</span>
                 <span>{String(currentArtwork + 1).padStart(2, '0')} / {String(ARTWORKS.length).padStart(2, '0')}</span>
                 <span>•</span>
-                <span>Scroll • Interact</span>
+                <span>Scroll • Mouse/Touch to interact</span>
               </div>
               {/* Compact Progress Bar */}
               <div className="h-0.5 bg-stone-800 rounded-full overflow-hidden">
