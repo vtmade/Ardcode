@@ -290,11 +290,11 @@ class DigitalMoth {
   },
   {
     title: "Breathing Space",
-    type: "3D",
-    technique: "Topological Transformation",
-    philosophy: "Space itself inhales and exhales with consciousness",
+    type: "2D",
+    technique: "Crystalline Growth",
+    philosophy: "Balance of opposites, return to wholeness, keep to the block",
     description:
-      "Explore a Klein bottle that breathes, where inside becomes outside in impossible geometries that pulse with life.",
+      "Crystalline forms grow in perfect balance, always returning to their stable core structure.",
     codeSnippet: `// Create a breathing Klein bottle
 function createKleinBottle(time) {
   const segments = 32;
