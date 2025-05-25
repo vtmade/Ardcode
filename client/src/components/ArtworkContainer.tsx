@@ -46,24 +46,29 @@ export default function ArtworkContainer() {
 
   return (
     <div className="relative w-full h-full">
-      {/* Artwork Title Overlay - Micro Size */}
-      <div className="absolute top-6 left-6 z-20 pointer-events-none">
-        <div className="glass p-0.5 rounded fade-in">
-          <h2 className="zen-title mb-0" style={{fontSize: '7px'}}>{currentArtworkData.title}</h2>
-          <p className="zen-subtitle max-w-32 leading-none" style={{fontSize: '7px'}}>
-            {currentArtworkData.description}
-          </p>
-          <div className="mt-0 flex items-center space-x-0.5">
-            <span className={`px-0.5 py-0 rounded ${
-              currentArtworkData.type === '3D' 
-                ? 'bg-blue-500/20 text-blue-300' 
-                : 'bg-green-500/20 text-green-300'
-            }`} style={{fontSize: '7px'}}>
-              {currentArtworkData.type}
-            </span>
-            <span className="zen-subtitle" style={{fontSize: '7px'}}>
-              {currentArtworkData.technique}
-            </span>
+      {/* Artwork Title Overlay - Horizontal Strip */}
+      <div className="absolute top-4 left-4 right-4 z-20 pointer-events-none">
+        <div className="glass p-1 rounded fade-in">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <h2 className="zen-title mb-0" style={{fontSize: '9px'}}>{currentArtworkData.title}</h2>
+              <span className="zen-subtitle" style={{fontSize: '9px'}}>•</span>
+              <p className="zen-subtitle leading-none" style={{fontSize: '9px'}}>
+                {currentArtworkData.description}
+              </p>
+            </div>
+            <div className="flex items-center space-x-1">
+              <span className={`px-1 py-0.5 rounded ${
+                currentArtworkData.type === '3D' 
+                  ? 'bg-blue-500/20 text-blue-300' 
+                  : 'bg-green-500/20 text-green-300'
+              }`} style={{fontSize: '9px'}}>
+                {currentArtworkData.type}
+              </span>
+              <span className="zen-subtitle" style={{fontSize: '9px'}}>
+                {currentArtworkData.technique}
+              </span>
+            </div>
           </div>
         </div>
       </div>
