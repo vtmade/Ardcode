@@ -25,53 +25,69 @@ export default function Artwork01_FlowingText() {
       spiderWeb = [];
       const centerX = p.width / 2;
       const centerY = p.height / 2;
-      const maxRadius = Math.min(p.width, p.height) * 0.3;
+      const maxRadius = Math.min(p.width, p.height) * 0.4;
       
-      // Store radial anchor points for connecting rings
-      const radialPoints = [];
-      const numRadials = 8;
+      // Create a mesh-like web with more connecting lines
+      const gridSize = 40;
+      const rows = Math.floor(p.height / gridSize) + 1;
+      const cols = Math.floor(p.width / gridSize) + 1;
       
-      // Create radial threads from center outward
-      for (let i = 0; i < numRadials; i++) {
-        const angle = (i / numRadials) * p.TWO_PI;
-        const endX = centerX + p.cos(angle) * maxRadius;
-        const endY = centerY + p.sin(angle) * maxRadius;
-        
-        spiderWeb.push({
-          type: 'radial',
-          x1: centerX,
-          y1: centerY,
-          x2: endX,
-          y2: endY
-        });
-        
-        // Store points at different distances for rings
-        for (let r = 0.2; r <= 1; r += 0.2) {
-          radialPoints.push({
-            x: centerX + p.cos(angle) * (maxRadius * r),
-            y: centerY + p.sin(angle) * (maxRadius * r),
-            ring: r,
-            angle: angle
-          });
+      // Horizontal mesh lines
+      for (let row = 0; row < rows; row++) {
+        const y = row * gridSize;
+        for (let col = 0; col < cols - 1; col++) {
+          const x1 = col * gridSize;
+          const x2 = (col + 1) * gridSize;
+          
+          // Only create lines within web radius with some randomness
+          const distFromCenter = p.dist(x1 + gridSize/2, y, centerX, centerY);
+          if (distFromCenter < maxRadius && p.random() < 0.7) {
+            spiderWeb.push({
+              type: 'mesh',
+              x1: x1 + p.random(-5, 5),
+              y1: y + p.random(-5, 5),
+              x2: x2 + p.random(-5, 5),
+              y2: y + p.random(-5, 5)
+            });
+          }
         }
       }
       
-      // Create connecting rings between radial threads
-      for (let ring = 0.2; ring <= 1; ring += 0.2) {
-        const ringPoints = radialPoints.filter(point => point.ring === ring);
-        
-        for (let i = 0; i < ringPoints.length; i++) {
-          const currentPoint = ringPoints[i];
-          const nextPoint = ringPoints[(i + 1) % ringPoints.length];
+      // Vertical mesh lines
+      for (let col = 0; col < cols; col++) {
+        const x = col * gridSize;
+        for (let row = 0; row < rows - 1; row++) {
+          const y1 = row * gridSize;
+          const y2 = (row + 1) * gridSize;
           
-          spiderWeb.push({
-            type: 'ring',
-            x1: currentPoint.x,
-            y1: currentPoint.y,
-            x2: nextPoint.x,
-            y2: nextPoint.y
-          });
+          // Only create lines within web radius with some randomness
+          const distFromCenter = p.dist(x, y1 + gridSize/2, centerX, centerY);
+          if (distFromCenter < maxRadius && p.random() < 0.7) {
+            spiderWeb.push({
+              type: 'mesh',
+              x1: x + p.random(-5, 5),
+              y1: y1 + p.random(-5, 5),
+              x2: x + p.random(-5, 5),
+              y2: y2 + p.random(-5, 5)
+            });
+          }
         }
+      }
+      
+      // Add some diagonal connections for more natural look
+      for (let i = 0; i < 30; i++) {
+        const angle = p.random(0, p.TWO_PI);
+        const dist1 = p.random(50, maxRadius * 0.8);
+        const dist2 = p.random(50, maxRadius * 0.8);
+        const angle2 = angle + p.random(-0.5, 0.5);
+        
+        spiderWeb.push({
+          type: 'diagonal',
+          x1: centerX + p.cos(angle) * dist1,
+          y1: centerY + p.sin(angle) * dist1,
+          x2: centerX + p.cos(angle2) * dist2,
+          y2: centerY + p.sin(angle2) * dist2
+        });
       }
     }
 
@@ -115,71 +131,63 @@ export default function Artwork01_FlowingText() {
       
       // Draw dewdrops
       dewdrops.forEach((drop, index) => {
-        // Mouse interaction - gentle repulsion and attraction
+        // Very gentle mouse interaction
         let mouseDistance = p.dist(p.mouseX, p.mouseY, drop.x, drop.y);
         if (mouseDistance < mouseInfluence) {
           let angle = p.atan2(drop.y - p.mouseY, drop.x - p.mouseX);
           let force = (mouseInfluence - mouseDistance) / mouseInfluence;
           
-          // Gentle repulsion when close, attraction when farther
-          if (mouseDistance < mouseInfluence * 0.3) {
-            drop.vx += p.cos(angle) * force * 0.8;
-            drop.vy += p.sin(angle) * force * 0.8;
-          } else {
-            drop.vx -= p.cos(angle) * force * 0.2;
-            drop.vy -= p.sin(angle) * force * 0.2;
-          }
+          // Extremely soft repulsion
+          drop.vx += p.cos(angle) * force * 0.1;
+          drop.vy += p.sin(angle) * force * 0.1;
         }
         
-        // Gentle return to original position
-        drop.vx += (drop.originalX - drop.x) * 0.005;
-        drop.vy += (drop.originalY - drop.y) * 0.005;
+        // Very gentle return to original position
+        drop.vx += (drop.originalX - drop.x) * 0.002;
+        drop.vy += (drop.originalY - drop.y) * 0.002;
         
-        // Subtle wobble like real dewdrops
-        drop.vx += p.sin(p.frameCount * drop.wobble + drop.shimmer) * 0.1;
-        drop.vy += p.cos(p.frameCount * drop.wobble * 0.7 + drop.shimmer) * 0.05;
+        // Extremely subtle wobble like real dewdrops
+        drop.vx += p.sin(p.frameCount * drop.wobble + drop.shimmer) * 0.02;
+        drop.vy += p.cos(p.frameCount * drop.wobble * 0.7 + drop.shimmer) * 0.01;
         
-        // Apply gravity very subtly
-        drop.vy += 0.01;
-        
-        // Apply velocity with strong damping for realistic water behavior
+        // Apply velocity with very strong damping for smooth movement
         drop.x += drop.vx;
         drop.y += drop.vy;
-        drop.vx *= 0.92;
-        drop.vy *= 0.92;
+        drop.vx *= 0.98;
+        drop.vy *= 0.98;
         
         // Update shimmer
         drop.shimmer += 0.02;
         
-        // Draw dewdrop with twinkling effect
+        // Draw dewdrop with gentle twinkling effect in ochre/brown tones
         p.push();
         p.translate(drop.x, drop.y);
         
-        // Twinkling intensity - some drops twinkle more than others
-        const twinkle = p.sin(drop.shimmer * 2) * 0.5 + 0.5;
-        const sparkle = p.sin(drop.shimmer * 3.7) * 0.3 + 0.7;
-        const currentAlpha = drop.alpha * twinkle * 0.8;
+        // Gentle twinkling intensity
+        const twinkle = p.sin(drop.shimmer * 1.5) * 0.4 + 0.6;
+        const sparkle = p.sin(drop.shimmer * 2.3) * 0.2 + 0.8;
+        const currentAlpha = drop.alpha * twinkle * 0.9;
         
-        // Very subtle main dewdrop body
-        p.fill(100, 120, 140, currentAlpha * 60);
+        // Main dewdrop body in subtle brown/ochre
+        p.fill(139, 115, 85, currentAlpha * 120);
         p.noStroke();
-        p.ellipse(0, 0, drop.size * 1.5, drop.size * 1.5);
+        p.ellipse(0, 0, drop.size * 1.2, drop.size * 1.2);
         
-        // Bright twinkling center
+        // Gentle twinkling center in warm ochre
         const centerBrightness = twinkle * sparkle;
-        p.fill(200, 220, 255, centerBrightness * 180);
-        p.ellipse(-drop.size * 0.2, -drop.size * 0.2, drop.size * 0.4, drop.size * 0.4);
+        p.fill(180, 150, 100, centerBrightness * 150);
+        p.ellipse(-drop.size * 0.15, -drop.size * 0.15, drop.size * 0.3, drop.size * 0.3);
         
-        // Occasional bright flash for extra twinkle
-        if (twinkle > 0.8) {
-          p.fill(255, 255, 255, (twinkle - 0.8) * 5 * 255);
-          p.ellipse(0, 0, drop.size * 0.3, drop.size * 0.3);
+        // Soft highlight for gentle twinkle
+        if (twinkle > 0.7) {
+          p.fill(220, 190, 130, (twinkle - 0.7) * 3 * 180);
+          p.ellipse(0, 0, drop.size * 0.2, drop.size * 0.2);
         }
         
-        // Subtle outer glow when twinkling
-        if (sparkle > 0.6) {
-          p.fill(150, 180, 220, (sparkle - 0.6) * 2.5 * 40);
-          p.ellipse(0, 0, drop.size * 3, drop.size * 3);
+        // Very subtle outer glow in warm tones
+        if (sparkle > 0.8) {
+          p.fill(160, 130, 90, (sparkle - 0.8) * 5 * 30);
+          p.ellipse(0, 0, drop.size * 2.5, drop.size * 2.5);
         }
         
         p.pop();
