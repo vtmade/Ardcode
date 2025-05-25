@@ -42,7 +42,19 @@ export default function Artwork01_FlowingText() {
     };
 
     p.draw = () => {
-      p.background(10, 10, 10, 50); // Trailing effect
+      // Colorful gradient background
+      p.colorMode(p.HSB, 360, 100, 100, 255);
+      let bg1 = (p.frameCount * 0.2) % 360;
+      let bg2 = (bg1 + 120) % 360;
+      
+      for (let y = 0; y < p.height; y += 5) {
+        let inter = p.map(y, 0, p.height, 0, 1);
+        let hue = p.lerp(bg1, bg2, inter);
+        p.fill(hue, 25, 95, 30);
+        p.noStroke();
+        p.rect(0, y, p.width, 5);
+      }
+      p.colorMode(p.RGB, 255);
       
       particles.forEach(particle => {
         // Mouse interaction
@@ -68,16 +80,23 @@ export default function Artwork01_FlowingText() {
         particle.vx *= 0.95;
         particle.vy *= 0.95;
         
-        // Render character
-        p.fill(139, 115, 85, particle.alpha * 255);
+        // Colorful character rendering
+        let hue = (p.frameCount * 0.5 + particle.originalX * 0.1) % 360;
+        let saturation = 70 + Math.sin(p.frameCount * 0.01 + particle.originalY * 0.01) * 30;
+        let brightness = 85 + Math.sin(p.frameCount * 0.02) * 15;
+        
+        p.colorMode(p.HSB, 360, 100, 100, 255);
+        p.fill(hue, saturation, brightness, particle.alpha * 255);
         p.textSize(particle.size);
         p.textAlign(p.CENTER, p.CENTER);
         p.text(particle.char, particle.x, particle.y);
         
-        // Add glow effect
-        p.fill(139, 115, 85, particle.alpha * 50);
+        // Add colorful glow effect
+        p.fill(hue + 30, saturation * 0.8, brightness + 10, particle.alpha * 80);
         p.textSize(particle.size + 4);
         p.text(particle.char, particle.x, particle.y);
+        
+        p.colorMode(p.RGB, 255);
       });
       
       // Add breathing effect overlay

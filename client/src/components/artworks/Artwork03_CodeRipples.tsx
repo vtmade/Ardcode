@@ -45,7 +45,19 @@ export default function Artwork03_CodeRipples() {
     };
 
     p.draw = () => {
-      p.background(10, 10, 10);
+      // Rainbow gradient background
+      p.colorMode(p.HSB, 360, 100, 100, 255);
+      let bgHue = (p.frameCount * 0.3) % 360;
+      
+      for (let i = 0; i < p.width; i += 10) {
+        for (let j = 0; j < p.height; j += 10) {
+          let hue = (bgHue + i * 0.1 + j * 0.1) % 360;
+          p.fill(hue, 20, 98, 200);
+          p.noStroke();
+          p.rect(i, j, 10, 10);
+        }
+      }
+      p.colorMode(p.RGB, 255);
       
       // Draw background grid
       p.stroke(139, 115, 85, 30);

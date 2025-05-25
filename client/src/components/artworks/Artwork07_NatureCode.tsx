@@ -155,7 +155,19 @@ export default function Artwork07_NatureCode() {
     }
 
     p.draw = () => {
-      p.background(5, 8, 5, 30); // Dark green with trails
+      // Vibrant nature-inspired gradient background
+      p.colorMode(p.HSB, 360, 100, 100, 255);
+      let bgHue = (p.frameCount * 0.2) % 120 + 90; // Green to blue spectrum
+      
+      for (let y = 0; y < p.height; y += 8) {
+        let progress = y / p.height;
+        let hue = bgHue + progress * 60;
+        let saturation = 40 + Math.sin(p.frameCount * 0.01 + progress * 3) * 20;
+        p.fill(hue, saturation, 92, 150);
+        p.noStroke();
+        p.rect(0, y, p.width, 8);
+      }
+      p.colorMode(p.RGB, 255);
       
       // Draw growing trees
       trees.forEach(tree => {
