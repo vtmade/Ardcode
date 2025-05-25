@@ -46,15 +46,15 @@ export default function ArtworkContainer() {
 
   return (
     <div className="relative w-full h-full">
-      {/* Artwork Title Overlay - Minimal Size */}
+      {/* Artwork Title Overlay - Ultra Minimal */}
       <div className="absolute top-6 left-6 z-20 pointer-events-none">
-        <div className="glass p-1.5 rounded fade-in">
-          <h2 className="zen-title text-xs mb-0.5">{currentArtworkData.title}</h2>
-          <p className="zen-subtitle text-xs max-w-48">
+        <div className="glass p-1 rounded fade-in">
+          <h2 className="zen-title text-xs mb-0">{currentArtworkData.title}</h2>
+          <p className="zen-subtitle text-xs max-w-40 leading-tight">
             {currentArtworkData.description}
           </p>
-          <div className="mt-0.5 flex items-center space-x-1">
-            <span className={`text-xs px-0.5 py-0.5 rounded ${
+          <div className="mt-0 flex items-center space-x-0.5">
+            <span className={`text-xs px-0.5 py-0 rounded ${
               currentArtworkData.type === '3D' 
                 ? 'bg-blue-500/20 text-blue-300' 
                 : 'bg-green-500/20 text-green-300'
