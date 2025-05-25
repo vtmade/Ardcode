@@ -406,10 +406,10 @@ function createKleinBottle(time) {
   {
     title: "Memory Palace",
     type: "2D",
-    technique: "Recursive Architecture",
-    philosophy: "Every thought builds a room in the infinite library of mind",
+    technique: "Particle Convergence",
+    philosophy: "Strength without violence, victory without anger, alignment with heaven",
     description:
-      "Navigate through impossible architectural spaces where memories take the form of floating geometric structures.",
+      "Thousands of particles transform through gentle convergence, showing how power emerges through harmony.",
     codeSnippet: `class MemoryRoom {
   constructor(depth = 0, maxDepth = 4) {
     this.depth = depth;
