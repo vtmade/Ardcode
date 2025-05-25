@@ -49,27 +49,19 @@ export default function ArtworkContainer() {
       {/* Artwork Title Overlay - Micro Size */}
       <div className="absolute top-6 left-6 z-20 pointer-events-none">
         <div className="glass p-0.5 rounded fade-in">
-          <h2 className="zen-title mb-0" style={{ fontSize: "10px" }}>
-            {currentArtworkData.title}
-          </h2>
-          <p
-            className="zen-subtitle max-w-32 leading-none"
-            style={{ fontSize: "10px" }}
-          >
+          <h2 className="zen-title mb-0" style={{fontSize: '7px'}}>{currentArtworkData.title}</h2>
+          <p className="zen-subtitle max-w-32 leading-none" style={{fontSize: '7px'}}>
             {currentArtworkData.description}
           </p>
           <div className="mt-0 flex items-center space-x-0.5">
-            <span
-              className={`px-0.5 py-0 rounded ${
-                currentArtworkData.type === "3D"
-                  ? "bg-blue-500/20 text-blue-300"
-                  : "bg-green-500/20 text-green-300"
-              }`}
-              style={{ fontSize: "10px" }}
-            >
+            <span className={`px-0.5 py-0 rounded ${
+              currentArtworkData.type === '3D' 
+                ? 'bg-blue-500/20 text-blue-300' 
+                : 'bg-green-500/20 text-green-300'
+            }`} style={{fontSize: '7px'}}>
               {currentArtworkData.type}
             </span>
-            <span className="zen-subtitle" style={{ fontSize: "10px" }}>
+            <span className="zen-subtitle" style={{fontSize: '7px'}}>
               {currentArtworkData.technique}
             </span>
           </div>
@@ -78,24 +70,24 @@ export default function ArtworkContainer() {
 
       {/* Artwork Content */}
       <div className="w-full h-full">
-        {currentArtworkData.type === "3D" ? (
+        {currentArtworkData.type === '3D' ? (
           <Canvas
             camera={{
               position: [0, 0, 10],
               fov: 45,
               near: 0.1,
-              far: 1000,
+              far: 1000
             }}
             gl={{
               antialias: true,
               alpha: true,
-              powerPreference: "high-performance",
+              powerPreference: "high-performance"
             }}
             dpr={Math.min(window.devicePixelRatio, 2)}
           >
             <color attach="background" args={["#0a0a0a"]} />
             <fog attach="fog" args={["#0a0a0a", 10, 100]} />
-
+            
             <Suspense fallback={null}>
               <ArtworkComponent />
             </Suspense>
@@ -106,6 +98,8 @@ export default function ArtworkContainer() {
           </Suspense>
         )}
       </div>
+
+
     </div>
   );
 }

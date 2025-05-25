@@ -109,7 +109,7 @@ export default function Artwork01_FlowingText() {
         y: y,
         vx: 0,
         vy: 0,
-        size: p.random(1.2, 4.8),
+        size: p.random(1, 4),
         alpha: p.random(0.3, 0.9),
         shimmer: p.random(0, p.TWO_PI),
         wobble: p.random(0.01, 0.03),
@@ -121,8 +121,8 @@ export default function Artwork01_FlowingText() {
       // Dark background like other artworks
       p.background(10, 10, 10);
       
-      // Draw spider web with thicker lines like particle galaxy
-      p.strokeWeight(1.2);
+      // Draw spider web in light grey
+      p.strokeWeight(0.5);
       spiderWeb.forEach(thread => {
         const shimmer = p.sin(p.frameCount * 0.015) * 0.2 + 0.8;
         p.stroke(120, 120, 120, 80 * shimmer);
@@ -211,7 +211,7 @@ export default function Artwork01_FlowingText() {
           y: p.mouseY + p.random(-30, 30),
           vx: p.random(-1, 1),
           vy: p.random(-1, 1),
-          size: p.random(1.2, 3.6),
+          size: p.random(1, 3),
           alpha: 0.8,
           shimmer: p.random(0, p.TWO_PI),
           wobble: p.random(0.01, 0.03),
