@@ -11,10 +11,10 @@ export const ARTWORKS: Artwork[] = [
   {
     title: "Morning Dew",
     type: "2D",
-    technique: "Canvas Displacement Mapping",
-    philosophy: "Clarity emerges from gentle disturbance",
+    technique: "Flowing Particle Bloom",
+    philosophy: "Feminine creative force, eternal fertility, root energy",
     description:
-      "Morning dew trembles on invisible silk threads, each droplet catching light as the digital web sways gently.",
+      "Thousands of gentle particles bloom and flow from the center like morning dew, responding to touch with soft, luminous interactions.",
     codeSnippet: `class DewDropText {
   constructor(char, x, y) {
     this.char = char;
