@@ -45,10 +45,10 @@ export default function Artwork03_CodeRipples() {
     };
 
     p.draw = () => {
-      p.background(10, 10, 10);
+      p.background(249, 249, 249);
       
       // Draw background grid
-      p.stroke(139, 115, 85, 30);
+      p.stroke(89, 65, 45, 50);
       p.strokeWeight(1);
       backgroundGrid.forEach(point => {
         // Apply ripple effects to grid
@@ -110,7 +110,7 @@ export default function Artwork03_CodeRipples() {
         
         // Draw ripple circles
         p.noFill();
-        p.stroke(139, 115, 85, ripple.amplitude * 2);
+        p.stroke(89, 65, 45, ripple.amplitude * 2);
         p.strokeWeight(2);
         p.circle(ripple.x, ripple.y, ripple.radius * 2);
         
