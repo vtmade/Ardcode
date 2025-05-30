@@ -92,8 +92,8 @@ export default function Artwork10_TheVoid() {
       const height = canvas.height;
       const sources = createSources();
       
-      // Dark background to match gallery
-      ctx.fillStyle = '#0a0a0a';
+      // Light background to match gallery
+      ctx.fillStyle = '#f9f9f9';
       ctx.fillRect(0, 0, width, height);
       
       // Create image data for pixel manipulation
@@ -142,10 +142,10 @@ export default function Artwork10_TheVoid() {
                 data[index + 2] = Math.floor(85 * intensity);  // B
                 data[index + 3] = Math.floor(180 * intensity); // A - softer opacity
               } else {
-                // Dark background
-                data[index] = 10;      // R
-                data[index + 1] = 10;  // G
-                data[index + 2] = 10;  // B
+                // Light background
+                data[index] = 249;     // R
+                data[index + 1] = 249; // G
+                data[index + 2] = 249; // B
                 data[index + 3] = 255; // A
               }
             }
