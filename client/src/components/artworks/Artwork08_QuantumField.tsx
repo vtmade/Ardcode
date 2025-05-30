@@ -216,7 +216,7 @@ export default function Artwork08_QuantumField() {
     <div 
       className="w-full h-full cursor-crosshair"
       style={{ 
-        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)'
+        background: 'linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 50%, #f9f9f9 100%)'
       }}
     >
       <canvas

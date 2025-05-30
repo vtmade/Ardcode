@@ -168,7 +168,7 @@ export default function Artwork03_CodeRipples() {
     <div 
       ref={containerRef} 
       className="w-full h-full cursor-crosshair"
-      style={{ background: 'radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 70%)' }}
+      style={{ background: 'radial-gradient(circle at center, #f5f5f5 0%, #f9f9f9 70%)' }}
     />
   );
 }

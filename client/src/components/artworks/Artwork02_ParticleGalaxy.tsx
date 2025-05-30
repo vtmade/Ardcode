@@ -375,7 +375,7 @@ const HankiesInTheWind: React.FC<HankiesInTheWindProps> = ({ initialZoom = 6 }) 
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#0a0a0a'
+        backgroundColor: '#f9f9f9'
       }}
     />
   )
