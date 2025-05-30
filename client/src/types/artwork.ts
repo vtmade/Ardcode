@@ -1,8 +1,6 @@
 export interface Artwork {
   title: string;
   type: "2D" | "3D";
-  technique: string;
-  philosophy: string;
   description: string;
   codeSnippet?: string;
 }
@@ -11,8 +9,6 @@ export const ARTWORKS: Artwork[] = [
   {
     title: "Morning Dew",
     type: "2D",
-    technique: "Flowing Particle Bloom",
-    philosophy: "Feminine creative force, eternal fertility, root energy",
     description:
       "Thousands of gentle particles bloom and flow from the center like morning dew, responding to touch with soft, luminous interactions.",
     codeSnippet: `class DewDropText {
@@ -33,7 +29,7 @@ export const ARTWORKS: Artwork[] = [
     const sway = sin(time * this.frequency + this.homeX * 0.01) * this.amplitude;
     const targetX = this.homeX + sway;
     const targetY = this.homeY + cos(time * this.frequency * 0.7) * 0.2;
-    
+
     // Surface tension draws each character home
     this.x += (targetX - this.x) * this.dampening;
     this.y += (targetY - this.y) * this.dampening;
@@ -48,10 +44,8 @@ export const ARTWORKS: Artwork[] = [
 }`,
   },
   {
-    title: "Liquid Geometry",
+    title: "Floating Particles",
     type: "2D",
-    technique: "Procedural Point Clouds",
-    philosophy: "Life travels on invisible currents",
     description:
       "Countless motes drift through space like pollen on warm air, following ancient migration patterns written in mathematics.",
     codeSnippet: `// Seeds of possibility carried by digital wind
@@ -74,15 +68,13 @@ for (let i = 0; i < particleCount; i++) {
   velocities[i * 3] = (Math.random() - 0.5) * 0.02;
   velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
   velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
-  
+
   phases[i] = Math.random() * Math.PI * 2;
 }`,
   },
   {
-    title: "Stone Ripples",
+    title: "Interactive Ripples",
     type: "2D",
-    technique: "Interference Patterns",
-    philosophy: "Every keystroke creates waves across the still mind",
     description:
       "Code rests like stones on water's surface. Touch disturbs the reflection, creating subtle interference patterns.",
     codeSnippet: `let waves = [];
@@ -108,7 +100,7 @@ function drawCode() {
 
   codeLines.forEach((line, lineIndex) => {
     const baseY = height/2 + (lineIndex - 1) * 40;
-    
+
     for (let i = 0; i < line.length; i++) {
       const charX = width/2 - line.length * 4 + i * 8;
       let charY = baseY;
@@ -130,10 +122,8 @@ function drawCode() {
 }`,
   },
   {
-    title: "Lunar Moths",
+    title: "Digital Moths",
     type: "2D",
-    technique: "Organic Path Finding",
-    philosophy: "Form follows the invisible architecture of space",
     description:
       "Delicate geometric forms drift like nocturnal moths, drawn to points of light in the digital darkness.",
     codeSnippet: `// Create ephemeral geometry
@@ -147,18 +137,18 @@ class DigitalMoth {
       (Math.random() - 0.5) * 20,
       (Math.random() - 0.5) * 20
     );
-    
+
     this.velocity = new THREE.Vector3();
     this.target = new THREE.Vector3();
     this.wing_phase = Math.random() * Math.PI * 2;
     this.wing_speed = 0.1 + Math.random() * 0.05;
-    
+
     // Delicate wing geometry
     const shape = new THREE.Shape();
     shape.moveTo(0, 0);
     shape.quadraticCurveTo(1.5, 0.8, 2, 0);
     shape.quadraticCurveTo(1.5, -0.3, 0, 0);
-    
+
     const geometry = new THREE.ShapeGeometry(shape);
     const material = new THREE.MeshLambertMaterial({
       color: 0xf8f8ff,
@@ -166,7 +156,7 @@ class DigitalMoth {
       opacity: 0.7,
       side: THREE.DoubleSide
     });
-    
+
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.scale.setScalar(0.6);
   }
@@ -175,7 +165,7 @@ class DigitalMoth {
     // Find nearest light
     let closestLight = lightPositions[0];
     let minDistance = this.position.distanceTo(closestLight);
-    
+
     lightPositions.forEach(light => {
       const distance = this.position.distanceTo(light);
       if (distance < minDistance) {
@@ -187,19 +177,19 @@ class DigitalMoth {
     // Spiral approach - never quite arriving
     const direction = closestLight.clone().sub(this.position);
     const distance = direction.length();
-    
+
     if (distance > 1) {
       direction.normalize().multiplyScalar(0.02);
-      
+
       // Add orbital component
       const perpendicular = new THREE.Vector3()
         .crossVectors(direction, new THREE.Vector3(0, 1, 0))
         .normalize()
         .multiplyScalar(0.015);
-      
+
       this.velocity.add(direction).add(perpendicular);
     }
-    
+
     this.velocity.multiplyScalar(0.95); // Gentle dampening
     this.position.add(this.velocity);
   }
@@ -207,7 +197,7 @@ class DigitalMoth {
   flutter() {
     this.wing_phase += this.wing_speed;
     const flutter = Math.sin(this.wing_phase) * 0.3;
-    
+
     this.mesh.position.copy(this.position);
     this.mesh.rotation.z = flutter;
     this.mesh.lookAt(this.position.clone().add(this.velocity));
@@ -215,10 +205,8 @@ class DigitalMoth {
 }`,
   },
   {
-    title: "Fibonacci Garden",
+    title: "Growing Spiral",
     type: "2D",
-    technique: "Golden Spiral Growth",
-    philosophy: "Nature's algorithms are written in living geometry",
     description:
       "A garden grows according to the Fibonacci sequence, each leaf and petal emerging in perfect mathematical harmony.",
     codeSnippet: `class LivingSpiral {
@@ -243,16 +231,16 @@ class DigitalMoth {
   grow() {
     this.maturity += this.growthRate;
     const maxElements = Math.floor(this.maturity);
-    
+
     while (this.elements.length < maxElements && this.elements.length < 89) {
       const n = this.elements.length;
       const angle = n * 2.39996; // Golden angle in radians
       const radius = Math.sqrt(n) * 8;
-      
+
       // Each element follows the spiral
       const x = this.centerX + Math.cos(angle) * radius;
       const y = this.centerY + Math.sin(angle) * radius;
-      
+
       this.elements.push({
         x, y, angle,
         size: this.fibonacci(n % 13) * 0.1,
@@ -267,21 +255,21 @@ class DigitalMoth {
       const age = this.maturity - element.birth;
       const growth = Math.min(age / 3, 1); // Gentle emergence
       const currentSize = element.size * growth;
-      
+
       if (currentSize > 0.1) {
         ctx.save();
         ctx.translate(element.x, element.y);
         ctx.rotate(element.angle);
-        
+
         // Petal-like shapes with subtle color
         const opacity = 0.3 + growth * 0.4;
         ctx.fillStyle = \`hsla(\${element.hue}, 40%, 70%, \${opacity})\`;
-        
+
         // Draw organic petal shape
         ctx.beginPath();
         ctx.ellipse(0, 0, currentSize * 2, currentSize, 0, 0, Math.PI * 2);
         ctx.fill();
-        
+
         ctx.restore();
       }
     });
@@ -289,10 +277,8 @@ class DigitalMoth {
 }`,
   },
   {
-    title: "Breathing Space",
+    title: "Klein Bottle",
     type: "2D",
-    technique: "Crystalline Growth",
-    philosophy: "Balance of opposites, return to wholeness, keep to the block",
     description:
       "Crystalline forms grow in perfect balance, always returning to their stable core structure.",
     codeSnippet: `// Create a breathing Klein bottle
@@ -304,16 +290,16 @@ function createKleinBottle(time) {
 
   for (let i = 0; i <= segments; i++) {
     const u = (i / segments) * Math.PI * 2;
-    
+
     for (let j = 0; j <= segments; j++) {
       const v = (j / segments) * Math.PI * 2;
-      
+
       // Klein bottle parametric equations with breathing
       const breathe = 1 + Math.sin(time * 0.0008) * 0.1;
       const r = 4 * breathe;
-      
+
       let x, y, z;
-      
+
       if (u < Math.PI) {
         x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (r + Math.cos(u)) * Math.cos(v + Math.PI);
         y = 8 * Math.sin(u) + (r + Math.cos(u)) * Math.sin(v + Math.PI);
@@ -323,12 +309,12 @@ function createKleinBottle(time) {
         y = 8 * Math.sin(u);
         z = -3 * Math.cos(u) * (1 + Math.sin(u)) + (r - Math.cos(u)) * Math.sin(v);
       }
-      
+
       // Gentle scaling with breath
       x *= breathe;
       y *= breathe;
       z *= breathe;
-      
+
       vertices.push(x * 0.1, y * 0.1, z * 0.1);
     }
   }
@@ -341,10 +327,8 @@ function createKleinBottle(time) {
 }`,
   },
   {
-    title: "Whisper Threads",
+    title: "Emerging Text",
     type: "2D",
-    technique: "Emergent Typography",
-    philosophy: "Words form themselves from the silence between thoughts",
     description:
       "Watch as text emerges from invisible threads, weaving meaning from the spaces between letters.",
     codeSnippet: `class WhisperThread {
@@ -353,7 +337,7 @@ function createKleinBottle(time) {
     this.progress = 0;
     this.speed = 0.008;
     this.threads = [];
-    
+
     // Create invisible threads between characters
     for (let i = 0; i < this.message.length; i++) {
       this.threads.push({
@@ -369,14 +353,14 @@ function createKleinBottle(time) {
 
   weave() {
     this.progress += this.speed;
-    
+
     this.threads.forEach((thread, index) => {
       const localProgress = this.progress - thread.emergence;
-      
+
       if (localProgress > 0) {
         thread.alpha = Math.min(localProgress * 2, 1) * 
                       (0.7 + Math.sin(millis() * 0.01 * thread.vibration) * 0.3);
-        
+
         // Gentle floating motion
         thread.y += Math.sin(millis() * 0.003 + index) * 0.1;
       }
@@ -385,12 +369,12 @@ function createKleinBottle(time) {
 
   whisper(ctx) {
     ctx.font = '14px Times';
-    
+
     this.threads.forEach(thread => {
       if (thread.alpha > 0) {
         ctx.fillStyle = \`rgba(120, 120, 120, \${thread.alpha})\`;
         ctx.fillText(thread.char, thread.x, thread.y);
-        
+
         // Add subtle glow
         ctx.fillStyle = \`rgba(180, 180, 180, \${thread.alpha * 0.3})\`;
         ctx.fillText(thread.char, thread.x + 0.5, thread.y + 0.5);
@@ -404,10 +388,8 @@ function createKleinBottle(time) {
 }`,
   },
   {
-    title: "Memory Palace",
+    title: "3D Memory Rooms",
     type: "2D",
-    technique: "Particle Convergence",
-    philosophy: "Strength without violence, victory without anger, alignment with heaven",
     description:
       "Thousands of particles transform through gentle convergence, showing how power emerges through harmony.",
     codeSnippet: `class MemoryRoom {
@@ -417,9 +399,9 @@ function createKleinBottle(time) {
     this.memories = [];
     this.portals = [];
     this.ambient = new THREE.Group();
-    
+
     this.createArchitecture();
-    
+
     if (depth < maxDepth) {
       this.createPortals();
     }
@@ -429,14 +411,14 @@ function createKleinBottle(time) {
     // Each room has unique proportions based on depth
     const scale = Math.pow(0.7, this.depth);
     const hue = (this.depth * 60) % 360;
-    
+
     // Floating memory fragments
     for (let i = 0; i < 8 - this.depth; i++) {
       const memory = this.createMemoryFragment(scale, hue);
       this.memories.push(memory);
       this.ambient.add(memory.mesh);
     }
-    
+
     // Ethereal walls that fade with depth
     const wallMaterial = new THREE.MeshPhongMaterial({
       color: new THREE.Color().setHSL(hue / 360, 0.3, 0.8),
@@ -444,10 +426,10 @@ function createKleinBottle(time) {
       opacity: 0.1 / (this.depth + 1),
       side: THREE.DoubleSide
     });
-    
+
     // Create room boundaries
     const roomSize = 20 * scale;
-    
+
     [-1, 1].forEach(side => {
       const wall = new THREE.Mesh(
         new THREE.PlaneGeometry(roomSize, roomSize),
@@ -466,7 +448,7 @@ function createKleinBottle(time) {
       new THREE.TetrahedronGeometry(1),
       new THREE.IcosahedronGeometry(1)
     ];
-    
+
     const geometry = shapes[Math.floor(Math.random() * shapes.length)];
     const material = new THREE.MeshPhongMaterial({
       color: new THREE.Color().setHSL((hue + Math.random() * 60) / 360, 0.6, 0.7),
@@ -474,16 +456,16 @@ function createKleinBottle(time) {
       opacity: 0.7,
       shininess: 100
     });
-    
+
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(
       (Math.random() - 0.5) * 15 * scale,
       (Math.random() - 0.5) * 10 * scale,
       (Math.random() - 0.5) * 15 * scale
     );
-    
+
     mesh.scale.setScalar(0.3 * scale);
-    
+
     return {
       mesh,
       rotationSpeed: {
@@ -503,7 +485,7 @@ function createKleinBottle(time) {
       memory.mesh.rotation.x += memory.rotationSpeed.x;
       memory.mesh.rotation.y += memory.rotationSpeed.y;
       memory.mesh.rotation.z += memory.rotationSpeed.z;
-      
+
       // Floating motion
       memory.floatPhase += memory.floatSpeed;
       memory.mesh.position.y = memory.originalY + 
@@ -517,11 +499,8 @@ function createKleinBottle(time) {
 }`,
   },
   {
-    title: "Digital Zen Garden",
+    title: "Zen Garden",
     type: "2D",
-    technique: "Connected Abundance",
-    philosophy:
-      "Giving without expectation, endless abundance, natural success",
     description:
       "Interconnected particles spread across the digital landscape, sharing gentle connections that demonstrate the flow of abundance throughout the entire space.",
     codeSnippet: `class ZenGarden {
@@ -537,14 +516,14 @@ function createKleinBottle(time) {
 
   meditate() {
     this.meditation_time += 16; // delta time
-    
+
     // Stones appear through patience
     if (this.meditation_time - this.last_placement > this.patience_required) {
       this.placeStone();
       this.last_placement = this.meditation_time;
       this.patience_required *= 1.2; // Each stone requires more patience
     }
-    
+
     // Rake lines flow around stones
     this.updateRaking();
   }
@@ -553,11 +532,11 @@ function createKleinBottle(time) {
     if (this.stones.length < 7) { // Sacred number of stones
       const attempts = 50;
       let placed = false;
-      
+
       for (let i = 0; i < attempts && !placed; i++) {
         const x = random(this.width * 0.2, this.width * 0.8);
         const y = random(this.height * 0.2, this.height * 0.8);
-        
+
         // Check minimum distance from other stones
         let validPlacement = true;
         this.stones.forEach(stone => {
@@ -565,7 +544,7 @@ function createKleinBottle(time) {
             validPlacement = false;
           }
         });
-        
+
         if (validPlacement) {
           this.stones.push({
             x, y,
@@ -581,29 +560,29 @@ function createKleinBottle(time) {
 
   updateRaking() {
     this.raked_lines = [];
-    
+
     // Create flowing lines that respect the stones
     for (let y = 50; y < this.height - 50; y += 8) {
       const line = [];
-      
+
       for (let x = 30; x < this.width - 30; x += 3) {
         let rake_y = y;
-        
+
         // Lines curve around stones
         this.stones.forEach(stone => {
           const distance = dist(x, y, stone.x, stone.y);
           const influence = stone.size + 20;
-          
+
           if (distance < influence) {
             const angle = atan2(y - stone.y, x - stone.x);
             const deflection = map(distance, 0, influence, 15, 0);
             rake_y += sin(angle + PI/2) * deflection;
           }
         });
-        
+
         line.push({x, y: rake_y});
       }
-      
+
       this.raked_lines.push(line);
     }
   }
@@ -612,11 +591,11 @@ function createKleinBottle(time) {
     // Soft sand background
     ctx.fillStyle = '#f8f6f0';
     ctx.fillRect(0, 0, this.width, this.height);
-    
+
     // Draw raked patterns
     ctx.strokeStyle = 'rgba(180, 170, 160, 0.6)';
     ctx.lineWidth = 1;
-    
+
     this.raked_lines.forEach(line => {
       ctx.beginPath();
       line.forEach((point, index) => {
@@ -628,12 +607,12 @@ function createKleinBottle(time) {
       });
       ctx.stroke();
     });
-    
+
     // Draw stones with gentle shadows
     this.stones.forEach(stone => {
       const age = this.meditation_time - stone.birth;
       const emergence = Math.min(age / 2000, 1); // Slow emergence
-      
+
       if (emergence > 0) {
         // Stone shadow
         ctx.fillStyle = \`rgba(140, 130, 120, \${emergence * 0.3})\`;
@@ -644,7 +623,7 @@ function createKleinBottle(time) {
           0, 0, Math.PI * 2
         );
         ctx.fill();
-        
+
         // Stone itself
         ctx.fillStyle = \`rgba(90, 85, 80, \${emergence})\`;
         ctx.beginPath();
@@ -669,10 +648,8 @@ function createKleinBottle(time) {
 }`,
   },
   {
-    title: "The Void",
+    title: "Empty Canvas",
     type: "2D",
-    technique: "Wave Interference",
-    philosophy: "Pure unknowing, freedom from stagnation, true wholeness",
     description:
       "Interactive waves continuously transform and interfere, showing how patterns emerge from openness to change and the void of pure potential.",
     codeSnippet: `class EmptyCanvas {
@@ -687,7 +664,7 @@ function createKleinBottle(time) {
   breathe() {
     // Even emptiness has rhythm
     this.void_depth += 0.001;
-    
+
     // Occasionally, the faintest suggestion of something
     if (Math.random() < 0.0001) {
       this.addWhisper();
@@ -699,7 +676,7 @@ function createKleinBottle(time) {
     const depth_alpha = Math.sin(this.void_depth) * 0.02 + 0.98;
     ctx.fillStyle = \`rgba(8, 8, 8, \${depth_alpha})\`;
     ctx.fillRect(0, 0, this.width, this.height);
-    
+
     // Render accumulated silence
     this.silence.forEach((whisper, index) => {
       this.renderNothing(ctx, whisper, index);
@@ -714,7 +691,7 @@ function createKleinBottle(time) {
       existence: 0.001,
       meaning: undefined
     });
-    
+
     // Keep only the most recent absences
     if (this.silence.length > 3) {
       this.silence.shift();
@@ -725,12 +702,12 @@ function createKleinBottle(time) {
     // The visual representation of absence
     const x = whisper.x;
     const y = whisper.y;
-    
+
     ctx.fillStyle = 'rgba(180, 180, 180, 0.05)';
     ctx.beginPath();
     ctx.arc(x, y, 1, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // It fades immediately
     setTimeout(() => {
       // Already gone
@@ -759,7 +736,7 @@ function setup() {
 function draw() {
   canvas.meditate();
   canvas.render(drawingContext);
-  
+
   // The paradox: showing emptiness requires showing something
   // But what we show is the container for nothingness
 }
