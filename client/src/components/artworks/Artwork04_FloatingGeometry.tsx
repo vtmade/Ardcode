@@ -109,7 +109,7 @@ export default function Artwork04_FloatingGeometry() {
         lastFrameTime = currentTime - remainder;
         
         // Clear background with dark theme
-        ctx.fillStyle = '#0a0a0a';
+        ctx.fillStyle = '#f9f9f9';
         ctx.fillRect(0, 0, width, height);
 
         time += 0.02;

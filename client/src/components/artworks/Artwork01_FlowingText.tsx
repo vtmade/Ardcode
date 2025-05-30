@@ -114,8 +114,8 @@ export default function Artwork01_FlowingText() {
       // Gradually reduce mouse influence
       mouseInfluence *= 0.92;
       
-      // Dark background with subtle trails
-      ctx.fillStyle = 'rgba(10, 10, 10, 0.08)';
+      // Light background with subtle trails
+      ctx.fillStyle = 'rgba(249, 249, 249, 0.08)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       particles.forEach(particle => {

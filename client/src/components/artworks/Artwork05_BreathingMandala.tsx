@@ -26,7 +26,7 @@ export default function Artwork05_BreathingMandala() {
     const scaleFactor = 1.5;
     
     // Project colors
-    const backgroundColor = '#0a0a0a'; // Dark background to match gallery
+    const backgroundColor = '#f9f9f9'; // Light background to match gallery
     const lineColor = 'rgba(139, 115, 85, 0.4)'; // Warm ochre with transparency
     
     let animationId: number | null = null;

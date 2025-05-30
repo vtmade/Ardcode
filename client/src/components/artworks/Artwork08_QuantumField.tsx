@@ -83,7 +83,7 @@ export default function Artwork08_QuantumField() {
         lastTime = currentTime;
         
         // Dark background with subtle trails
-        ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+        ctx.fillStyle = 'rgba(249, 249, 249, 0.1)';
         ctx.fillRect(0, 0, width, height);
       
         particles.forEach(particle => {

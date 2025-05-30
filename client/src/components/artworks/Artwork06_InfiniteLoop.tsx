@@ -229,7 +229,7 @@ export default function Artwork06_InfiniteLoop() {
       
       if (deltaTime >= frameInterval) {
         // Dark background to match gallery
-        ctx.fillStyle = '#0a0a0a';
+        ctx.fillStyle = '#f9f9f9';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         time += 0.005;
