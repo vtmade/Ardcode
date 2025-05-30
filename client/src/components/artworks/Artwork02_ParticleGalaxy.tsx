@@ -192,7 +192,7 @@ const HankiesInTheWind: React.FC<HankiesInTheWindProps> = ({ initialZoom = 6 }) 
 
     renderer.setPixelRatio(Math.min(dpr, 2))
     renderer.setSize(width, height)
-    renderer.setClearColor(0x0a0a0a)
+    renderer.setClearColor(0xf9f9f9)
     container.appendChild(renderer.domElement)
 
     // Atmospheric lighting to match gallery aesthetic

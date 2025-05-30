@@ -48,7 +48,7 @@ export default function Artwork07_NatureCode() {
       ctx.fillRect(0, 0, width, height);
 
       // Warm ochre lines
-      ctx.strokeStyle = 'rgba(139, 115, 85, 0.6)';
+      ctx.strokeStyle = 'rgba(89, 65, 45, 0.8)';
       ctx.lineWidth = 0.8;
 
       // Sample points for marching squares algorithm

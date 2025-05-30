@@ -137,9 +137,9 @@ export default function Artwork10_TheVoid() {
                 const proximity = Math.exp(-mouseDistance / 150); // Gentler proximity effect
                 const intensity = 0.4 + mouseInfluence * proximity * 0.2; // Much softer base intensity
                 
-                data[index] = Math.floor(139 * intensity);     // R
-                data[index + 1] = Math.floor(115 * intensity); // G
-                data[index + 2] = Math.floor(85 * intensity);  // B
+                data[index] = Math.floor(89 * intensity);      // R - darker
+                data[index + 1] = Math.floor(65 * intensity);  // G - darker
+                data[index + 2] = Math.floor(45 * intensity);  // B - darker
                 data[index + 3] = Math.floor(180 * intensity); // A - softer opacity
               } else {
                 // Light background

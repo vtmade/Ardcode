@@ -176,7 +176,7 @@ export default function Artwork01_FlowingText() {
         
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(139, 115, 85, ${enhancedOpacity})`;
+        ctx.fillStyle = `rgba(89, 65, 45, ${enhancedOpacity})`;
         ctx.fill();
         
         // Add glow for particles near mouse

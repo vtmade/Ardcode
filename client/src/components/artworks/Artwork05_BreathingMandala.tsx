@@ -27,7 +27,7 @@ export default function Artwork05_BreathingMandala() {
     
     // Project colors
     const backgroundColor = '#f9f9f9'; // Light background to match gallery
-    const lineColor = 'rgba(139, 115, 85, 0.4)'; // Warm ochre with transparency
+    const lineColor = 'rgba(89, 65, 45, 0.6)'; // Darker warm ochre with transparency
     
     let animationId: number | null = null;
     
