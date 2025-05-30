@@ -8,7 +8,7 @@ import { useArtwork } from "./lib/stores/useArtwork";
 // Error fallback component
 function ErrorFallback({ error }: { error: Error }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-900 text-stone-100">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 text-stone-900">
       <div className="text-center">
         <h2 className="text-2xl font-serif mb-4">Something went wrong</h2>
         <pre className="text-sm text-stone-400">{error.message}</pre>
@@ -108,7 +108,7 @@ function PoemScreen({ onContinue }: { onContinue: () => void }) {
 
   return (
     <div 
-      className="fixed inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center z-50 cursor-pointer"
+      className="fixed inset-0 bg-gradient-to-br from-stone-50 via-stone-100 to-stone-50 flex items-center justify-center z-50 cursor-pointer"
       onClick={onContinue}
     >
       {/* Water effect canvas */}
@@ -119,16 +119,16 @@ function PoemScreen({ onContinue }: { onContinue: () => void }) {
       />
       
       <div className="text-center max-w-2xl px-8 relative z-10">
-        <h1 className="text-3xl zen-title text-stone-200 mb-8 drop-shadow-lg">When Code Meets Nature's Song</h1>
+        <h1 className="text-3xl zen-title text-stone-800 mb-8 drop-shadow-lg">When Code Meets Nature's Song</h1>
         
-        <div className="text-stone-300 text-lg leading-relaxed mb-8 zen-subtitle drop-shadow-md">
-          <p className="hover:text-stone-200 transition-colors duration-700">The morning dew on spider's thread,</p>
-          <p className="hover:text-stone-200 transition-colors duration-700">Like gentle code that softly spreads,</p>
-          <p className="hover:text-stone-200 transition-colors duration-700">Each particle knows where to go,</p>
-          <p className="hover:text-stone-200 transition-colors duration-700">Following patterns nature chose</p>
+        <div className="text-stone-700 text-lg leading-relaxed mb-8 zen-subtitle drop-shadow-md">
+          <p className="hover:text-stone-900 transition-colors duration-700">The morning dew on spider's thread,</p>
+          <p className="hover:text-stone-900 transition-colors duration-700">Like gentle code that softly spreads,</p>
+          <p className="hover:text-stone-900 transition-colors duration-700">Each particle knows where to go,</p>
+          <p className="hover:text-stone-900 transition-colors duration-700">Following patterns nature chose</p>
         </div>
         
-        <p className="text-stone-400 text-sm zen-subtitle mb-8 drop-shadow-sm">ard. by vinay thakur</p>
+        <p className="text-stone-600 text-sm zen-subtitle mb-8 drop-shadow-sm">ard. by vinay thakur</p>
         
         {/* Gentle indicator to continue */}
         <div className="text-stone-500 text-xs animate-pulse">
@@ -143,7 +143,7 @@ function PoemScreen({ onContinue }: { onContinue: () => void }) {
 function Loading() {
   return (
     <div className="flex items-center justify-center w-full h-full">
-      <div className="text-stone-400 text-sm">Loading...</div>
+      <div className="text-stone-600 text-sm">Loading...</div>
     </div>
   );
 }
@@ -160,7 +160,7 @@ function App() {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900">
+      <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-stone-50 via-stone-100 to-stone-50">
         
         {/* Main Content */}
         <div className="relative z-10 w-full h-full">
@@ -173,7 +173,7 @@ function App() {
         <Navigation />
 
         {/* Ambient overlay */}
-        <div className="fixed inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-5" />
+        <div className="fixed inset-0 bg-gradient-to-t from-stone-200/20 via-transparent to-transparent pointer-events-none z-5" />
         
         {/* Subtle grain texture */}
         <div 
