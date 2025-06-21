@@ -3,8 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check endpoint for Railway
-  app.get("/", (req, res) => {
+  // Health check endpoint for Railway (only for API requests)
+  app.get("/health", (req, res) => {
     res.status(200).json({ 
       status: "ok", 
       message: "Ardcode server is running",
